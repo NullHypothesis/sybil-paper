@@ -1,0 +1,52 @@
+\documentclass[10pt,twocolumn]{confpaper}
+
+\usepackage{amsmath}
+\usepackage{hyperref}
+\usepackage{listings}
+
+\renewcommand*\ttdefault{txtt}
+
+\lstset{
+	language=bash,
+	showstringspaces=false,
+	basicstyle=\scriptsize\ttfamily,
+}
+
+\newcommand{\supsym}[1]{\raisebox{4pt}{{\footnotesize #1}}}
+\newcommand{\pu}{$\dag$}
+\newcommand{\kau}{\supsym{$\diamond$}}
+\newcommand{\tor}{\supsym{$\star$}}
+
+\date{\today}
+\title{
+	\ttlfnt{Mining Tor network data for anomalies}
+}
+
+\author{}
+
+\begin{document}
+
+\maketitle
+
+\input{abstract}
+
+\input{introduction}
+
+\input{related_work}
+
+\input{design}
+
+\input{results}
+
+\input{discussion}
+
+\input{conclusion}
+
+\input{acknowledgements}
+
+\bibliography{literature.bib}
+\bibliographystyle{plain}
+
+\input{appendix}
+
+\end{document}

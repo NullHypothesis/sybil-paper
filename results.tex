@@ -1,0 +1,28 @@
+\section{Results}
+\label{sec:results}
+
+\subsection{Sybil groups}
+Our system identified the following Sybil groups.
+
+\begin{table}[ht]
+\centering
+\begin{tabular}{l c p{4cm}}
+\textbf{Group ID} & \textbf{\# of relays} & \textbf{Attack} \\
+\hline
+Sigaint & 70 & Transparent onion URL rewriting. \\
+\ldots & \ldots & \ldots \\
+\end{tabular}
+\caption{Sybil groups identified by our system.}
+\label{bar}
+\end{table}
+
+\subsection{Other anomalies}
+\begin{itemize}
+	\item Some events with unexpectedly high network churn.  Generally, churn
+		is not problematic.  It can be problematic, however, for guard relays,
+		if they change their IP addresses.
+
+	\item Several relays changed their fingerprint an unusually high amount of
+		times.  Cause often misconfiguration, but in some cases likely attacks
+		on Tor's DHT.
+\end{itemize}

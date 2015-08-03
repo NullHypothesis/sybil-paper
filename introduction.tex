@@ -1,0 +1,28 @@
+\section{Introduction}
+\label{sec:introduction}
+
+\begin{itemize}
+	\item Massive amount of data archived by Tor.  Nobody looked at it before.
+
+	\item We have a good understanding of how relays should behave, and we mine
+		archived data for anomalies.
+
+	\item Example anomalies are \emph{1)} unexpectedly high churn rates,
+		\emph{2)} relays that change their fingerprint a lot, and \emph{3)}
+		unidentified Sybil groups.
+
+	\item Our work improves our understanding of the Tor network, which guides
+		future design decisions.
+
+	\item We are also able to uncover Sybil attacks.
+
+	\item We can analyse past data, but also run our code on new data as it
+		arrives.
+\end{itemize}
+
+The rest of this paper is structured as follows.  We begin by discussing
+related work in Section~\ref{sec:related_work}.  Section~\ref{sec:design}
+presents the design of our analysis tools, which is then followed by
+experimental results in Section~\ref{sec:results}.  We discuss our results in
+Section~\ref{sec:discussion} and conclude the paper in
+Section~\ref{sec:conclusion}.

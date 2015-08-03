@@ -1,0 +1,105 @@
+\section{Design}
+\label{sec:design}
+
+\subsection{Data sets}
+Our data sets are taken from CollecTor~\cite{collector}, a service run by The
+Tor Project that archives network data such as consensuses, router descriptors,
+and network status votes.  With some of the archived data dating back to as
+early as 2004, we are able to restore arbitrary Tor network states in the last
+ten years.
+
+We obtained the following data sets from CollecTor.
+\begin{description}
+	\item[Descriptors] Tor relays periodically upload server descriptors, which
+		capture their configuration, to directory authorities.  Relays upload
+		their descriptors no later than every 18 hours, or sooner, depending on
+		certain conditions.
+
+	\item[Consensuses] The Tor network's consensus contains a list of all
+		running Tor relays.  Directory authorities vote hourly on the state of
+		the network, and the outcome is the consensus.  Every relay status in
+		the consensus contains a digest that is used to obtain the relay's
+		respective descriptor.
+
+	\item[Torperf] The performance measurement service Torperf regularly makes
+		simple HTTP requests over the Tor network and records various
+		performance numbers.
+\end{description}
+
+\begin{table}[t]
+\centering
+\begin{tabular}{l c c c}
+\textbf{Data set} & \textbf{Files} & \textbf{Size} & \textbf{Time span} \\
+\hline
+% 47677982862 bytes.
+Consensuses & 67,671 & 44 GiB & 10/2007 -- 07/2015 \\
+% 48252370463 bytes.
+Descriptors & 30,759,243 & 44 GiB & 12/2005 -- 07/2015 \\
+% 1375933490 bytes.
+Torperf data & 18,348 & 1 GiB & 07/2009 -- 07/2015 \\
+\end{tabular}
+\caption{Characterization of our data sets.}
+\label{tab:datasets}
+\end{table}
+
+Table~\ref{tab:datasets} gives an overview of our data sets.
+
+\subsection{Mining for anomalies}
+\begin{itemize}
+	\item Measure churn~\cite{Godfrey2006a} over time.  $C_{t}$ is the network
+		consensus at time $t$.
+$$
+\textrm{churn} = \frac{1}{2} \cdot \frac{\lvert C_{t-1} \ominus C_{t} \rvert}
+{\textrm{max}\{\lvert C_{t-1} \rvert, \lvert C_{t} \rvert \}}
+$$
+
+	\item Can we define ``normality'' profiles for relay types?
+
+	\item Some definitions of normality global, e.g., fingerprint distribution
+\end{itemize}
+
+\subsection{Threat model}
+To detect Sybils in archived data, we have the following assumptions.  We
+expect that an adversary:
+\begin{itemize}
+	\item Makes an effort to stay under the radar.  Previous work has shown
+		that real-world relay-level attackers do this~\cite{Winter2014a}.
+
+	\item The adversary is limited by time and money.
+
+	\item Slowly injects Sybils over time.
+\end{itemize}
+
+We expect that an adversary does not:
+\begin{itemize}
+	\item Have infinite resources to create perfect Sybils.
+\end{itemize}
+
+\subsection{Detecting Sybils}
+\begin{itemize}
+	\item Nearest-neighbour search.  Using Levenshtein distance and vantage
+		point trees.
+
+	\item Similarity function and subsequent visualization.
+\end{itemize}
+
+\subsection{Defending against Sybils}
+\begin{itemize}
+	\item Directory authority operators remove relay's \texttt{Valid} flag, or
+		vote to entirely remove the relay from the network.
+
+	\item Current process relies on too much human interaction for blocking to
+		be fast.
+\end{itemize}
+
+\subsection{Meaningful results}
+\begin{itemize}
+	\item Our system is meant to identify anomalies, and act upon them.
+
+	\item A security system's output is often difficult to act upon.  Sommer
+		and Paxson call this the \emph{semantic gap}~\cite[\S
+		III.C]{Sommer2010a}.
+
+	\item We try to have good visualization tools to make it clear why our
+		system raises alerts, and what can be done about it.
+\end{itemize}
