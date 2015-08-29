@@ -1,10 +1,29 @@
-\documentclass[10pt,twocolumn]{confpaper}
+%\documentclass[10pt,twocolumn]{confpaper}
+\documentclass[oneside,twocolumn]{article}
 
+\usepackage[big]{dgruyter_NEW}
+
+\usepackage{algorithm}
+\usepackage[noend]{algpseudocode}
+\usepackage{tikz}
 \usepackage{amsmath}
 \usepackage{hyperref}
 \usepackage{listings}
+\usepackage{xcolor}
+
+\definecolor{darkblue}{rgb}{0,0,0.7}
+\hypersetup{
+	colorlinks=true,
+	urlcolor=darkblue,
+	linkcolor=darkblue,
+	citecolor=darkblue
+}
 
 \renewcommand*\ttdefault{txtt}
+
+\newcommand{\mynote}[1]{\textcolor{red}{\textbf{Note:} #1}}
+
+\definecolor{mygray}{rgb}{0.95,0.95,0.95}
 
 \lstset{
 	language=bash,
@@ -12,23 +31,20 @@
 	basicstyle=\scriptsize\ttfamily,
 }
 
-\newcommand{\supsym}[1]{\raisebox{4pt}{{\footnotesize #1}}}
-\newcommand{\pu}{$\dag$}
-\newcommand{\kau}{\supsym{$\diamond$}}
-\newcommand{\tor}{\supsym{$\star$}}
-
 \date{\today}
 \title{
-	\ttlfnt{Mining Tor network data for anomalies}
+	%\ttlfnt{Mining Tor network data for anomalies}
+	%Sybil groups in the Tor network
+	Identifying and characterizing Sybils in the Tor network
 }
 
-\author{}
+\author{Anonymous}
 
 \begin{document}
 
-\maketitle
-
 \input{abstract}
+
+\maketitle
 
 \input{introduction}
 

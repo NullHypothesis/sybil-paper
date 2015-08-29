@@ -1,25 +1,101 @@
 \section{Introduction}
 \label{sec:introduction}
 
+% Short introduction to Sybil attacks.
+Distributed systems are believed to be more robust than their centralized
+counterparts against attacks such as coercion, denial of service, and
+surveillance.  The Tor network is no exception.  As its distributed nature is
+improved, its resistance to attackers targeting choke points strenghtens.
+However, the absence of a central, controlling authority opens the gates to
+\emph{Sybil attacks}.  Sybil attacks---introduced by Douceur in
+2002~\cite{Douceur2002a}---are defined as one physical entity controlling many
+virtual entities in a distributed system.  The attacks is problematic because
+many distributed systems make assumptions on the maximum number of malicious
+nodes they can endure.
+
+% How do Sybil attacks relate to Tor? -- DHT manipulation.
+The potential gain of performing a Sybil attack differs from system to system.
+In the case of Tor, attackers are frequently motivated by manipulating Tor's
+distributed hash table (DHT)~\cite{rendspec}.  To understand how this is an
+issue, we need to take a step back.  Tor clients need a hidden service
+descriptor to learn how to connect to a given hidden service such as
+\url{3g2upl4pq6kufc4m.onion}, the DuckDuckGo search engine.  These descriptors
+are stored in Tor's DHT.  The DHT implementation suffers from a weakness that
+allows an attacker to predict at which position in the DHT a descriptor will be
+stored.  The attacker can then change its fingerprints to become responsible
+for a given hidden service~\cite{Biryukov2013a}.\footnote{This boils down to
+brute-forcing the RSA key pair of a relay until its fingerprint is reasonably
+close to the descriptor's position in the DHT.}  Six Sybil relays are
+sufficient to become the sole responsible party for a hidden service, allowing
+the attacker to monitor (still anonymous) clients requests, or refuse to serve
+the hidden service, effectively taking it down.
+
+% How do Sybil attacks relate to Tor? -- Increased traffic exposure.
+In addition to DHT manipulation, Sybils allow an attacker to increase its
+exposure to traffic.  Note that generally, instead of running $n$ relays, an
+attacker can run a single relay that provides just as much bandwidth as $n$
+relays together.  But at some point, an attacker will have to scale
+horizontally because there are limits to how much traffic can be relayed by a
+single machine.  Once an attacker can see a non-trivial fraction of Tor
+traffic, it is able to:
+\begin{description}
+	\item[Manipulate exit traffic] to steal passwords, break into TLS
+		connections, or inject data~\cite{Winter2014a}.
+	\item[End-to-end correlate] traffic by running entry guards as well as exit
+		relays.  Note that a network-level adversary such as an ISP or a
+		government might only need to run one of both.
+	\item[Harvest bridge addresses] by running middle nodes and isolating the
+		IP addresses of incoming Tor connections that don't originate from
+		(publicly known) guard relays~\cite{Ling2012a}.
+\end{description}
+
+% Sybils can be a side effect.
+Instead of being a direct means to an end, Sybils can be a \emph{side effect}
+of another issue.  In Section~\ref{sec:sybil_groups}, we provide evidence for
+what we believe is a botnet whose members are running Tor relays.  Similarly,
+in August 2013, attackers infected computers with malware that used a Tor
+hidden service as command and control server~\cite{Hopper2014a}.  In this case,
+however, the infected machines were only Tor clients, and not relays.
+
+% Why previously proposed solutions don't work.
+Having outlined the problem, it is tempting to look for solutions in the
+substantional amount of previous work that proposed Sybil mitigation
+techniques.  In his seminal 2002 paper~\cite{Douceur2002a}, Douceur formally
+showed that the only method guaranteed to keep out Sybils is a central
+authority that verifies new nodes as they join the distributed system.  This
+conflicts with Tor's design that seeks to eliminate central points.  In the
+absence of a central authority, researchers have proposed several techniques
+that boil down to identifying resources that are difficult for an attacker to
+scale.  Past work has focused extensively on computational resources and edges
+in social graphs, which can both be difficult to scale for an attacker.
+Computational resources can be useful if an attacker that seeks to operate 100
+Sybils suddently needs 100 times the computational resources she would need for
+a single virtual identity.  Social graph-based Sybil detection techniques
+assume that it is difficult for Sybils to establish a large number of
+connections with non-Sybils.  Unfortunately, both resources do not apply to the
+Tor network. Requiring relay operators to complete proof-of-works is pointless
+as running a relay already involves computational work.  Social graph-based
+defenses do not apply because there is no trust relationship between Tor
+relays.\footnote{To clarify, relay operators are encouraged to set the
+\texttt{MyFamily} option for relays under their control, but this type of
+trust relationship does not span to relays run by others.}
+
+% Our contributions.
+Given the nonapplicability of existing approaches, we focus on techniques to
+find Sybils in the Tor network.  We implemented these techniques in a tool,
+sybilhunter, which we then use to analyze historical network data, dating back
+to as early as 2007, to discover past attacks and anomalies.  Finally, we
+extensively characterize the Sybil groups we discover.  To sum up, we provide
+the following contributions:
 \begin{itemize}
-	\item Massive amount of data archived by Tor.  Nobody looked at it before.
-
-	\item We have a good understanding of how relays should behave, and we mine
-		archived data for anomalies.
-
-	\item Example anomalies are \emph{1)} unexpectedly high churn rates,
-		\emph{2)} relays that change their fingerprint a lot, and \emph{3)}
-		unidentified Sybil groups.
-
-	\item Our work improves our understanding of the Tor network, which guides
-		future design decisions.
-
-	\item We are also able to uncover Sybil attacks.
-
-	\item We can analyse past data, but also run our code on new data as it
-		arrives.
+	\item We consider Sybils in Tor and show how this problem differs from
+		related work.
+	\item Design and implement a platform for continuous monitoring of archived
+		Tor data.
+	\item Analze past incidents in-depth.
 \end{itemize}
 
+% Structure of the paper.
 The rest of this paper is structured as follows.  We begin by discussing
 related work in Section~\ref{sec:related_work}.  Section~\ref{sec:design}
 presents the design of our analysis tools, which is then followed by
