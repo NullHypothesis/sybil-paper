@@ -1,25 +1,18 @@
-%\documentclass[10pt,twocolumn]{confpaper}
-\documentclass[oneside,twocolumn]{article}
+\documentclass[10pt,twocolumn]{confpaper}
 
-\usepackage[big]{dgruyter_NEW}
-
+\usepackage[backref=true,backend=biber]{biblatex}
+\usepackage[T1]{fontenc}
+\usepackage[scaled=0.8]{beramono}
+\usepackage[defaultsans,scale=0.9]{cantarell}
+\addbibresource{literature.bib}
 \usepackage{algorithm}
 \usepackage[noend]{algpseudocode}
 \usepackage{tikz}
 \usepackage{amsmath}
-\usepackage{hyperref}
 \usepackage{listings}
 \usepackage{xcolor}
 
-\definecolor{darkblue}{rgb}{0,0,0.7}
-\hypersetup{
-	colorlinks=true,
-	urlcolor=darkblue,
-	linkcolor=darkblue,
-	citecolor=darkblue
-}
-
-\renewcommand*\ttdefault{txtt}
+\urlstyle{sf}
 
 \newcommand{\mynote}[1]{\textcolor{red}{\textbf{Note:} #1}}
 
@@ -32,19 +25,19 @@
 }
 
 \date{\today}
-\title{
-	%\ttlfnt{Mining Tor network data for anomalies}
-	%Sybil groups in the Tor network
-	Identifying and characterizing Sybils in the Tor network
-}
+\title{\ttlfnt{Identifying and characterizing\\Sybils in the Tor network}}
 
-\author{Anonymous}
+\author{\aufnt{Anonymous}}
 
 \begin{document}
 
+\maketitle
+
+\begin{sloppypar}
+
 \input{abstract}
 
-\maketitle
+\ifthenelse{\equal{\onlyAbstract}{no}}{% !onlyAbstract
 
 \input{introduction}
 
@@ -58,11 +51,18 @@
 
 \input{conclusion}
 
-\input{acknowledgements}
+\balance\input{conclusion}\label{lastpage}
 
-\bibliography{literature.bib}
-\bibliographystyle{plain}
+\end{sloppypar}
 
-\input{appendix}
+\section*{Acknowledgments}
+
+\small
+\setlength{\parskip}{-1pt}
+\setlength{\itemsep}{-1pt}
+\balance%
+\printbibliography
+}{% onlyAbstract
+}
 
 \end{document}

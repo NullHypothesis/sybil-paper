@@ -1,5 +1,37 @@
 \appendix
 
+\section{Uptime patterns}
+
+\begin{figure*}[t]
+	\centering
+	\includegraphics[width=\textwidth]{diagrams/heartbleed-uptimes.jpg}
+	\caption{April 2014, the month the Heartbleed bug was discovered.  The Tor
+		Project asked relay operators to change their keypairs.  As a result,
+		our tool flagged many relays as disappearing and appearing at the same
+		time.  The large block in the middle of the diagram happened because The
+		Tor Project eventually rejected a large number of relays that did not
+		change their keypairs in time.}
+	\label{fig:heartbleed-uptimes}
+\end{figure*}
+
+\begin{figure*}[t]
+	\centering
+	\includegraphics[width=\textwidth]{diagrams/lizard-uptimes.jpg}
+	\caption{December 2014, when a group of people started several hundred Tor
+	relays in the Google cloud.  The relays were only online for a small number
+	of hours because they were promptly rejected by The Tor Project.}
+	\label{fig:lizard-uptimes}
+\end{figure*}
+
+\begin{figure*}[t]
+	\centering
+	\includegraphics[width=\textwidth]{diagrams/planetlab-uptimes.jpg}
+	\caption{December 2014, when a group of people started several hundred Tor
+	relays in the Google cloud.  The relays were only online for a small number
+	of hours because they were promptly rejected by The Tor Project.}
+	\label{fig:lizard-uptimes}
+\end{figure*}
+
 \section{Reproducing our work}
 % \begin{lstlisting}
 % go get git.torproject.org/user/phw/sybilhunter.git

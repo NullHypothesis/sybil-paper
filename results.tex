@@ -39,6 +39,17 @@ Narrow distribution, with 99.9\% of all churn values being in the interval $[0, 
 	\label{fig:fingerprints}
 \end{figure}
 
+\begin{figure*}[t]
+	\centering
+	\includegraphics[width=\textwidth]{diagrams/uptimes.pdf}
+	\caption{A visualization of the uptime pattern of Tor relays.  The matrix'
+	x-axis represents a Tor relay, one per column.  The y-axis represents a
+	relay's uptime status in one consensus file.  A black pixel indicates that
+	the relay was online, and a white pixel indicates that it was offline.  Red
+	pixels marks similar relays, as determined by Algorithm~\ref{alg:uptime}.}
+	\label{fig:fingerprints}
+\end{figure*}
+
 There is an interesting plateau at 24, encompassing xx relays.
 
 \subsection{Sybil groups}
@@ -47,12 +58,15 @@ Table~\ref{tab:sybils} contains all the Sybil groups we identified.  For every
 group, we document when it first appeared in the Tor network, its ``name,''
 size, and a description of its characteristics.
 
+The number of relays refers to the maximum amount of Sybils that was online at
+any point in time.
+
 \begin{table*}[t]
 \centering
 \begin{tabular}{l c c p{10cm}}
 \textbf{First seen} & \textbf{Group ID} & \textbf{\# of relays} & \textbf{Characteristics} \\
 \hline
-2015-07-10 & denkonet & 58 & Unknown. \\
+2015-07-10 & DenkoNet & 58 & Hosted on Amazon AWS.  Only online for one consensus. \\
 2015-07-02 & cloudvps & 55 & Unknown. \\
 2015-06-29 & onion rewrite & 55 & Transparent onion URL rewriting. \\
 2015-06-17 & 1jabberat & X & not good. \\
@@ -66,11 +80,43 @@ size, and a description of its characteristics.
 features wide, geographical distribution, which is uncommon for typical Tor
 relays. \\
 2013-02-03 & AmazonEC2 & XX & Changed their fingerprint exactly 24 times. \\
-LizardNSA & X & & Y \\
+% Shared: nickname, IP address, port, platform, version.
+2014-12-26 & LizardNSA & 3,347 & \\
+2014-12-26 & FuslVZTOR & 246 & \\
+2014-12-30 & Anonpoke & 284 & \\
 \end{tabular}
-\caption{Sybil groups identified by our system.}
+\caption{Sybil groups identified by our system.  Our raw data is available
+online at {\normalfont\url{https://nymity.ch/sybilhunting/}}.}
 \label{tab:sybils}
 \end{table*}
+
+\paragraph{default}
+Likely a Windows-powered botnet.
+
+\paragraph{LizardNSA}
+All relays were hosted in the Google Cloud, and only online for nine hours,
+until the directory authorities started rejecting them.  The majority of
+machines were middle relays (96\%), but the attackers also started some exit
+relays (4\%).  The Sybils were set up to be hidden service directories, but the
+relays were taken offline before they were assigned the \texttt{HSDir} flag.  If
+all relays would have obtained the \texttt{HSDir} flag in time, they would have
+constituted almost 50\% of all hidden service directories; the median number of
+hidden service directories on Dec. 26 was 3,551.
+
+\paragraph{FuslVZTOR}
+All machines were middle relays and hosted in 212.38.181.0/24, a VPS provider's
+network in the UK.  The directory authorities started rejecting the relays five
+hours after they were first seen.  The relays advertized the default bandwidth
+of 1 GiB/s and used seemingly randomly determined ports.  Other than happening
+in parallel to the LizardNSA attack, there is no reason to believe that both
+incidents are related.
+
+\paragraph{Anonpoke}
+The relays were online for four hours until they were rejected.  All relays were
+hosted by a VPS provider in the US, with the curious exception of a single relay
+that was hosted in the UK, and running a different Tor version.  The relays
+advertized the default bandwidth of 1 GiB/s on port 9001 and 9030.  All relays
+were middle relays and running as directory mirror.
 
 \subsection{Other anomalies}
 \begin{itemize}
