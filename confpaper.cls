@@ -208,7 +208,9 @@
 %%%
 %%%  PDF setup
 %%%
-\RequirePackage[breaklinks=true,filecolor=black,citecolor=blue,urlcolor=blue,linkcolor=blue,colorlinks,pdfpagelabels,pdfpagelayout=SinglePage]{hyperref}
+\RequirePackage{xcolor}
+\definecolor{darkblue}{rgb}{0,0,0.5}
+\RequirePackage[breaklinks=true,filecolor=black,citecolor=darkblue,urlcolor=darkblue,linkcolor=darkblue,colorlinks,pdfpagelabels,pdfpagelayout=SinglePage]{hyperref}
 
 % \renewcommand*{\backref}[1]{}
 % \renewcommand*{\backrefalt}[4]{
