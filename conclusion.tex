@@ -1,9 +1,23 @@
 \section{Conclusion}
 \label{sec:conclusion}
+In this paper, we worked towards finding and characterizing Sybils in the Tor
+network.  We first invested significant engineering effort into the development
+of sybilhunter, a command line tool to find and analyze Sybil clusters.
 
-\begin{itemize}
-	\item Ultimately not possible to find all Sybil attacks.
-	\item But we can make a good effort and find plenty of attacks.
-\end{itemize}
+Equipped with this new tool, we set out to analyze The Tor Project's network
+data---archived as well as online data---for signs of Sybil relays.  We
+uncovered several Sybil groups and gained new insight into real-world Sybil
+attacks.  We found that 1) Sybil relays frequently look alike in their
+appearance and behavior, 2) malicious Sybils differ greatly in their technical
+sophistication, and 3) determining the root cause for Sybils is challenging
+because it is often difficult to distinguish between benign and malicious
+Sybils.
 
-Online resources are available at \\ \url{https://nymity.ch/sybilhunting/}.
+\mynote{Insights sound pretty obvious.  Should be rephrased.}
+
+Given the lack of a central identity-verifying authority, it is always possible
+for a well-executed Sybil attack to stay under our radar, but we found that a
+simple set of tools and techniques can go a long way towards finding malicious
+Sybils, thus making the Tor network more secure and trustworthy for its users.
+Online resources for our paper are available at
+\url{https://nymity.ch/sybilhunting/}.
