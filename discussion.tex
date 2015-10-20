@@ -3,13 +3,15 @@
 
 \subsection{Operational experience}
 \label{sec:operational}
-\begin{itemize}
-	\item We are running our system since YYYY-MM-DD.
-	\item Difficult to get relays blacklisted because of overloaded dirauth operators.
-	\item Root cause analysis difficult.  Especially if relays behave exactly
-		like benign relays would.  Weighing up up pros vs. cons when
-		considering to reject a relay is necessary.
-\end{itemize}
+
+\mynote{Mention since when we are running our systems and what it was like.}
+
+\mynote{Difficult to get relays blacklisted because of overloaded dirauth
+operators.}
+
+\mynote{Root cause analysis difficult.  Especially if relays behave exactly like
+benign relays would.  Weighing up up pros vs. cons when considering to reject a
+relay is necessary.}
 
 \subsection{Balancing transparency and secrecy}
 \label{sec:secrecy}
@@ -41,15 +43,15 @@ network participants~\cite{Douceur2002a}.  A central authority is unlikely to
 be viable for the Tor network.  It would be in conflict with Tor's goal of
 distributing trust and alienate relay operators.
 
-We will now explore how costly a Sybil attack is in practice.  First, an
-adversary needs a number of systems to run Tor relays on.  These systems should
-be geographically distributed to maximize IP address diversity.  One option is
-to rent virtual private systems, starting at around \$3 per month for 1 Gbps.
-In 2011, the price for 1,000 compromised systems to install malware on (so
-called \emph{loads}) ranged from \$13 (in Asia) to \$125 (in the U.S.)\cite[\S
-5]{Stone-Gross2011a}.
+% We will now explore how costly a Sybil attack is in practice.  First, an
+% adversary needs a number of systems to run Tor relays on.  These systems should
+% be geographically distributed to maximize IP address diversity.  One option is
+% to rent virtual private systems, starting at around \$3 per month for 1 Gbps.
+% In 2011, the price for 1,000 compromised systems to install malware on (so
+% called \emph{loads}) ranged from \$13 (in Asia) to \$125 (in the U.S.)\cite[\S
+% 5]{Stone-Gross2011a}.
 
-\mynote{Analysis not yet done.}
+\mynote{Try to give a rough estimate of how costly a Sybil attack is.}
 
 \subsection{Use and abuse of cloud providers}
 Table~\ref{tab:sybils} contains several cloud-hosted Sybil clusters.
@@ -82,7 +84,7 @@ contributed about 18 times more bandwidth than Microsoft-hosted relays.
 	% \begin{tabular}{lllllll}
 	\begin{tabular}{lllll}
 	% Provider & Min. & 1st Qu. & Median & Mean & 3rd Qu. & Max. \\
-	Provider & Min. & Median & Mean & Max. \\
+	\textbf{Provider} & \textbf{Min.} & \textbf{Median} & \textbf{Mean} & \textbf{Max.} \\
 	\hline
 	% Google & 0 & 0 & 0 & 0 & 0 & 0 \\
 	Google & 0 & 0 & 0 & 0 \\
