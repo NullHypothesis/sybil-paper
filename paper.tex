@@ -10,14 +10,11 @@
 \usepackage{tikz}
 \usepackage{amsmath}
 \usepackage{listings}
-\usepackage{xcolor}
 \usepackage[mark]{gitinfo2}
 
 \urlstyle{sf}
 
 \newcommand{\mynote}[1]{\textcolor{red}{\textbf{Note:} #1}}
-
-\definecolor{mygray}{rgb}{0.95,0.95,0.95}
 
 \lstset{
 	language=bash,
@@ -49,19 +46,18 @@
 
 \input{discussion}
 
-\input{conclusion}
-
 \balance\input{conclusion}\label{lastpage}
 
 \end{sloppypar}
 
 \section*{Acknowledgments}
 
-\small
 \setlength{\parskip}{-1pt}
 \setlength{\itemsep}{-1pt}
 \balance%
 \printbibliography
+
+\input{appendix}
 }{% onlyAbstract
 }
 
