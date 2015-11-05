@@ -1,41 +1,54 @@
-\documentclass[10pt,twocolumn]{confpaper}
+\documentclass[USenglish,oneside,twocolumn]{article}
 
-\usepackage[backref=true,backend=biber]{biblatex}
+\usepackage[utf8]{inputenc}
+\usepackage[big]{dgruyter_NEW}
 \usepackage[T1]{fontenc}
 \usepackage[scaled=0.8]{beramono}
 \usepackage[defaultsans,scale=0.9]{cantarell}
-\addbibresource{literature.bib}
-\usepackage{algorithm}
-\usepackage[noend]{algpseudocode}
+\usepackage[linesnumbered,boxed]{algorithm2e}
 \usepackage{tikz}
 \usepackage{amsmath}
-\usepackage{listings}
-\usepackage[mark]{gitinfo2}
+\usepackage[mark,raisemark=-1cm]{gitinfo2}
+
+\definecolor{darkblue}{rgb}{0,0,0.7}
+\hypersetup{
+	colorlinks=true,
+	urlcolor=darkblue,
+	linkcolor=darkblue,
+	citecolor=darkblue
+}
 
 \urlstyle{sf}
 
 \renewcommand*{\bibfont}{\small}
 \newcommand{\mynote}[1]{\textcolor{red}{\textbf{Note:} #1}}
 
-\lstset{
-	language=bash,
-	showstringspaces=false,
-	basicstyle=\scriptsize\ttfamily,
-}
-
-\title{\ttlfnt{Identifying and characterizing\\Sybils in the Tor network}}
-
-\author{\aufnt{Anonymous}}
+\cclogo{\includegraphics{by-nc-nd.pdf}}
 
 \begin{document}
 
-\maketitle
+\author{Anonymous}
 
-\begin{sloppypar}
+\title{\huge Identifying and characterizing Sybils\\in the Tor network}
+
+\runningtitle{Identifying and characterizing Sybils in the Tor network}
 
 \input{abstract}
 
-\ifthenelse{\equal{\onlyAbstract}{no}}{% !onlyAbstract
+\keywords{Tor, Sybil attack}
+
+\journalname{Proceedings on Privacy Enhancing Technologies}
+\DOI{Editor to enter DOI}
+\startpage{1}
+\received{..}
+\revised{..}
+\accepted{..}
+
+\journalyear{2015}
+\journalvolume{2015}
+\journalissue{2}
+
+\maketitle
 
 \input{introduction}
 
@@ -47,17 +60,11 @@
 
 \input{discussion}
 
-\balance\input{conclusion}\label{lastpage}
+\input{conclusion}
 
-\end{sloppypar}
-
-\setlength{\parskip}{-1pt}
-\setlength{\itemsep}{-1pt}
-\balance%
-\printbibliography
+\bibliography{literature}{}
+\bibliographystyle{plain}
 
 \input{appendix}
-}{% onlyAbstract
-}
 
 \end{document}

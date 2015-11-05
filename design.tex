@@ -404,27 +404,32 @@ both patterns.}
 \end{figure}
 
 \begin{algorithm}[t]
+\SetKwData{Dist}{dist}
+\SetKwData{Amp}{amp}
+\SetKwData{Hours}{hours}
+\SetKwData{Result}{result}
+\SetKwInOut{Input}{input}
+\SetKwInOut{Output}{output}
+
+\Input{$A$ and $B$, two uptime patterns}
+\Output{$\Result$}
+\BlankLine
+$\Dist \leftarrow 0$\;
+$\Amp \leftarrow 0$\;
+\ForEach{$t \in \Hours$}{
+    \eIf{$A_{t} \ne B_{t}$}{
+        \If{$\Amp < 1$}{
+            $\Amp \leftarrow \Amp + 0.1$\;
+        }
+    $\Dist \leftarrow \Dist + \Amp$\;
+    }{
+        $\Amp \leftarrow 0$\;
+    }
+}
+$\Result \leftarrow \Dist / \lvert \Hours \rvert$\;
 \caption{Our algorithm to quantify the similarity between the uptime pattern
 of two relays $A$ and $B$.}
 \label{alg:uptime}
-\begin{algorithmic}[1]
-\Function{Distance}{$A, B$}
-    \State $dist \gets 0$
-    \State $amp \gets 0$
-
-    \For{$t$ \textbf{in} $hours$}
-        \If{$A_{t} \ne B_{t}$}
-            \If{$amp < 1$}
-                \State $amp \gets amp + 0.1$
-            \EndIf
-        \State $dist \gets dist + amp$
-        \Else
-            \State $amp \gets 0$
-        \EndIf
-    \EndFor
-    \State \textbf{return} $dist / \lvert hours \rvert$
-\EndFunction
-\end{algorithmic}
 \end{algorithm}
 
 We employ Algorithm~\ref{alg:uptime} in a visualization that sybilhunter can
