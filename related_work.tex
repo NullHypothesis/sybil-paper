@@ -1,20 +1,28 @@
 \section{Related work}
 \label{sec:related_work}
-\mynote{Need to find a good way to connect prior research.}
-
 The concept of a Sybil attack was coined by Douceur in 2002~\cite{Douceur2002a}.
-Douceur formally showed that without a central verification authority,
-Sybil attacks are always possible.  The attack can be mitigated, however, by
-making assumptions on the attacker's available resources.  These assumptions
-became the focus of subsequent work.  Researchers tried to identify resources
-that are difficult to scale for attackers.
+In his seminal work, Douceur analytically showed that without a central
+verification authority, Sybil attacks are always possible.  The attack can be
+mitigated, however, by making assumptions on the attacker's resources.  These
+assumptions became the focus of subsequent work, in which researchers tried to
+find resources that are difficult for an attacker to scale.
 
-\cite{Li2012a,Borisov2006a,Danezis2009a,Yu2006a,Wolchok2010a,Wang2012a,Liu2015a}
+Two categories of Sybil-resistant schemes turned out to be particularly popular:
+schemes that build on \emph{social} and \emph{resource} constraints.  Social
+constraints are based on the insight that it is difficult for an attacker to
+build trust relationships with honest users.  Past work exploited this fact in
+systems such as SybilGuard~\cite{Yu2006a}, SybilLimit~\cite{Yu2008a}, and
+SybilInfer~\cite{Danezis2009a}.  Resource constraints were based on
+computational puzzles~\cite{Borisov2006a,Li2012a}.  For an overview of Sybil
+defenses, refer to Levine, Shields, and Margolin's technical
+report~\cite{Levine2006a}.  Related to the Tor network, Margolin and
+Levine~\cite{Margolin2008a} evaluated a recurring fee onion routing protocol in
+which network participants pay a small amount of money for circuit creation.
 
-Related to the Tor network, Margolin and Levine~\cite{Margolin2008a} evaluated
-a recurring fee onion routing protocol in which network participants pay a
-small amount of money for circuit creation.  This should make it prohibitively
-expensive to run Sybil attacks.
+In parallel to Sybil prevention, research has focused on characterizing
+real-world Sybils.  Wang and Kangasharju uncovered a Sybil attack in
+BitTorrent's distributed hash table~\cite{Wang2012a}.  Thomas, Grier, and Paxson
+found several thousand Sybil accounts on Twitter to dilute political
+speech~\cite{Thomas2012a}, and much work has focused on detecting Sybils that
+are used to send spam~\cite{Gao2010a}.
 
-Bauer's work caused Tor to limit number of relays per IP
-address~\cite{Bauer2007a}.
