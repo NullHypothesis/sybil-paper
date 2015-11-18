@@ -13,8 +13,45 @@ of all we found in Table~\ref{tab:sybils}.
 \mynote{How good is our algorithm ad detecting \texttt{MyFamily} members, or
 malicious relays that we know belong together?}
 
+We determine the precision $\mathcal{P}$ and recall $\mathcal{R}$ that are
+defined as
+
+$$\mathcal{P} = \frac{|\textit{Correctly identified Sybils}|}
+{|\textit{Uncorrectly identified Sybils}|}$$
+
+$$\mathcal{R} = \frac{|\textit{Correctly identified Sybils}|}
+{|\textit{Correctly identified Sybils} \cap \textit{Unidentified Sybils}|}$$
+
+Precision is defined as the amount of true positives over false positives and
+recall is defined as the amount of true positives over over true positives plus
+false negatives.
+
+Note that, by taking the set of families as ground truth, we are overestimating
+the power of our algorithm.  relay operators make an effort to make relays look
+the same.
+
+
 \subsection{Performance}
 \label{sec:performance}
+
+Used SSD for analysis, bottleneck was CPU.
+
+Table~\ref{tab:exp-deployment}
+\begin{table}[t]
+	\centering
+	\begin{tabular}{lccc}
+	\textbf{Analysis} & \textbf{Frequency} & \textbf{Window} & \textbf{Run time} \\
+	\hline
+	Network churn & Hourly & One hour & $\sim$0.16s \\
+	Uptime matrix & Daily & One month & $\sim$67s \\
+	Fingerprint analysis & Daily & One month & $\sim$55s \\
+	Nearest-neighbor & Daily & One hour & $\sim$17s \\
+	Similarity matrix & Daily & One hour & 10s \\
+	\end{tabular}
+	\caption{Todo.}
+	\label{tab:exp-deployment}
+\end{table}
+
 
 \mynote{How time consuming is calculation of the similarity matrix?  What about
 other demanding analysis techniques?  Is it possible to run them in real-time
@@ -226,10 +263,42 @@ online. \emph{URL redacted for anonymization.}}
 \label{tab:sybils}
 \end{table*}
 
-\paragraph{default}
-Likely a Windows-powered botnet.
+\subsubsection{default}
+This Sybil group, named after the shared nickname ``default,'' has been around
+since 2011 (see Figure~\ref{fig:default-over-time}) and consists of
+Windows-powered relays only.  All members run Tor in version 0.2.4.X, many
+releases are older than Sep. 2014.  We extracted relays by filtering consensuses
+for nicknames that are set to ``default,'' onion routing ports set to 443, and
+directory ports set to 9030.  The group features high IP address churn.  For
+Oct. 2015, we found ``default'' relays in 73 countries, with the top three
+countries being Germany~(50\%), Russia~(8\%), and Austria~(7\%).  The majority
+of these relays, however, has little uptime.
+Figure~\ref{fig:default-sybils-uptime} shows the uptime matrix for ``default''
+relays in Oct. 2015.  Many relays exhibit a weak diurnal pattern, suggesting
+that they are powered off regularly.
 
-\paragraph{LizardNSA}
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.47\textwidth]{diagrams/default-over-time}
+	\caption{The amount of relays that we deem part of the Sybil group
+	``default'' over time.  The relays surfaced in Sep. 2011.}
+	\label{fig:default-over-time}
+\end{figure}
+
+To get a better understanding of the amount of ``default'' relays over time, we
+analyzed all consensuses, extracting the number of relays whose nickname was
+``default,'' whose onion routing port was 443, and whose directory port was
+9001.  We further smoothed the time series using a simple moving average with
+window size X to highlight the underlying trend.  The resulting time series is
+shown in Figure~\ref{fig:default-over-time}.
+
+The above suggests that some of these relays are running without the owner's
+knowledge.  The relays don't fit the pattern of Sefnit (a.k.a.
+Mevade)~\cite{sefnit} and SKynet~{skynet}, two pieces of malware that use an
+onion service as command and control server.  Nevertheless, we believe that
+these could could be part of a botnet.
+
+\subsubsection{LizardNSA}
 All relays were hosted in the Google Cloud, and only online for nine hours,
 until the directory authorities started rejecting them.  The majority of
 machines were middle relays (96\%), but the attackers also started some exit
@@ -239,7 +308,7 @@ all relays would have obtained the \texttt{HSDir} flag in time, they would have
 constituted almost 50\% of all hidden service directories; the median number of
 hidden service directories on Dec. 26 was 3,551.
 
-\paragraph{FuslVZTOR}
+\subsubsection{FuslVZTOR}
 All machines were middle relays and hosted in 212.38.181.0/24, a VPS provider's
 network in the UK.  The directory authorities started rejecting the relays five
 hours after they were first seen.  The relays advertized the default bandwidth
@@ -247,7 +316,7 @@ of 1 GiB/s and used seemingly randomly determined ports.  Other than happening
 in parallel to the LizardNSA attack, there is no reason to believe that both
 incidents are related.
 
-\paragraph{Anonpoke}
+\subsubsection{Anonpoke}
 The relays were online for four hours until they were rejected.  All relays were
 hosted by a VPS provider in the US, with the curious exception of a single relay
 that was hosted in the UK, and running a different Tor version.  The relays
@@ -255,10 +324,15 @@ advertized the default bandwidth of 1 GiB/s on port 9001 and 9030.  All relays
 were middle relays and running as directory mirror.  All Sybils were configured
 to be a hidden service directory, but did not manage to get the flag in time.
 
-\paragraph{planetlab}
+\subsubsection{PlanetLab}
 A set of relays that used a variation of the strings ``planet'', ``plab'',
 ``pl'', and ``planetlab'' as their nickname.  The relays' exit policy allowed
 ports 6660--6667, but they did not get the \texttt{Exit} flag.  The Sybils were
 online for three days and then removed by The Tor Project, as mentioned in a
 blog post~\cite{planetlab}.  The blog post further says that the relays were run
 by a researchers.
+
+\subsubsection{Bitcoin}
+The ones that are stealing bitcoins.
+
+Look at blockchain and figure out how much they stole.
