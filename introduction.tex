@@ -22,7 +22,7 @@ descriptor to learn how to connect to a given hidden service such as
 are stored in Tor's DHT.  The DHT implementation suffers from a weakness that
 allows an attacker to predict at which position in the DHT a descriptor will be
 stored.  The attacker can then change its fingerprints to become responsible
-for a given hidden service~\cite{Biryukov2013a}.\footnote{This boils down to
+for a given hidden service~\cite{Biryukov2013a}.\footnote{This reduces to
 brute-forcing the RSA key pair of a relay until its fingerprint is reasonably
 close to the descriptor's position in the DHT.}  Six Sybil relays are
 sufficient to become the sole responsible party for a hidden service, allowing
@@ -30,15 +30,14 @@ the attacker to monitor (still anonymous) clients requests, or refuse to serve
 the hidden service, effectively taking it down.
 
 % How do Sybil attacks relate to Tor? -- Increased traffic exposure.
-In addition to DHT manipulation, Sybils allow an attacker to increase its
-exposure to traffic.  Note that generally, instead of running $n$ relays, an
-attacker can run a single relay that provides just as much bandwidth as $n$
-relays together.  But at some point, an attacker will have to scale
-horizontally because there are limits to how much traffic can be relayed by a
-single machine.  Once an attacker can see a non-trivial fraction of Tor
-traffic, it is able to:
+In addition to DHT manipulation, Sybils in Tor allow an attacker to increase its
+exposure to traffic.  Generally, running $n$ relays equates running a single
+relay that provides as much bandwidth as all $n$ relays.  But at some point, an
+attacker will have to scale horizontally because there are limits to how much
+traffic can be relayed by a single machine.  As an attacker's bandwidth fraction
+grows, it is increasingly able to:
 \begin{description}
-	\item[Manipulate exit traffic] to steal passwords, break into TLS
+	\item[Manipulate exit traffic] to steal credentials, break into TLS
 		connections, or inject data~\cite{Winter2014a}.
 	\item[End-to-end correlate] traffic by running entry guards as well as exit
 		relays~\cite{Johnson2013a}.  Note that a network-level adversary such as
@@ -53,27 +52,37 @@ traffic, it is able to:
 % Sybils can be a side effect.
 Instead of being a direct means to an end, Sybils can be a \emph{side effect}
 of another issue.  In Section~\ref{sec:sybil_groups}, we provide evidence for
-what we believe is a botnet whose members are running Tor relays.  Similarly,
+what we believe is a botnet whose zombies are running Tor relays.  Similarly,
 in August 2013, attackers infected computers with malware that used a Tor
 hidden service as command and control server~\cite{Hopper2014a}.  In this case,
 however, the infected machines were only Tor clients, and not relays.
 
+% Existing Sybil defense mechanisms.
+As of November 2015, the Tor network employs a number of---implicit and
+explicit---defense strategies against Sybils.  First, directory authorities
+accept at most two relays per IP address~\cite{Bauer2007b} to prevent
+low-resource Sybil attacks~\cite{Bauer2007a}.  Second, The Tor Project has
+gradually increased the minimal time until relays obtain the Stable (seven days)
+and the HSDir (96 hours) flag to increase the cost of Sybil relays.  Finally,
+operating a Tor relay causes recurring resource costs---most notably bandwidth
+and CPU---which can further limit an adversary.
+
 % Why previously proposed solutions don't work.
-Having outlined the problem, it is tempting to look for solutions in the
-substantional amount of previous work that proposed Sybil mitigation techniques.
-In his seminal 2002 paper~\cite{Douceur2002a}, Douceur formally showed that the
-only method guaranteed to keep out Sybils is a \emph{central authority} that
-verifies new nodes as they join the distributed system.  This approach conflicts
-with Tor's design philosophy because it seeks to eliminate central points of
-control.  In addition, a major factor contributing to Tor's growth is the low
-barrier of entry, allowing operators to set up relays quickly and anonymously.
-A controlling authority would raise that barrier.  Barring a central authority,
+It is tempting to look for strong defenses in the substantial amount of previous
+work that proposed Sybil mitigation techniques.  In his seminal 2002
+paper~\cite{Douceur2002a}, Douceur formally showed that the only method
+guaranteed to keep out Sybils is a \emph{central authority} that verifies new
+nodes as they join the distributed system.  This approach conflicts with Tor's
+design philosophy because it seeks to eliminate central points of control.  In
+addition, a major factor contributing to Tor's growth is the low barrier of
+entry, allowing operators to set up relays quickly and anonymously.  A
+controlling authority would raise that barrier.  Barring a central authority,
 researchers have proposed techniques that build on a resource that is difficult
 for an attacker to scale.  Past work has focused extensively on
 \emph{computational resources} and \emph{edges in social graphs}.
 
 Computational resources can be useful if an attacker that seeks to
-operate 100 Sybils suddently needs 100 times the computational resources she
+operate 100 Sybils suddenly needs 100 times the computational resources she
 would need for a single virtual identity.  Social graph-based Sybil detection
 techniques assume that it is difficult for Sybils to establish a large number of
 connections with non-Sybils.  Unfortunately, both resources do not apply to the
