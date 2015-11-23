@@ -1,63 +1,18 @@
 \section{Evaluation and results}
 \label{sec:results}
 We now discuss the results we obtained by applying the techniques we presented
-above on the datasets we presented in Section~\ref{sec:datasets}.  In addition,
-we evaluate the performance of sybilhunter (Section~\ref{sec:performance}) and
-characterize the Sybils we discovered (Section~\ref{sec:sybil_groups}).
+above on the datasets we presented in Section~\ref{sec:datasets}.  We begin by
+presenting the results of the churn rate analysis (\S~\ref{sec:churn}), followed
+by the uptime analysis (\S~\ref{sec:uptime}), and the fingerprint analysis
+(\S~\ref{sec:fingerprint-anomalies}).  Next, we characterize the most
+interesting Sybils we found in our analysis (\S~\ref{sec:sybil_groups}).
+Finally, we evaluate our nearest-neighbor search (\S~\ref{sec:accuracy}) and the
+computational performance of all our analysis techniques
+(\S~\ref{sec:performance}).
 
-We characterize the most interesting Sybils as we proceed and give an overview
-of all we found in Table~\ref{tab:sybils}.
-
-\subsection{Accuracy of nearest-neighbor search}
-
-\mynote{How good is our algorithm ad detecting \texttt{MyFamily} members, or
-malicious relays that we know belong together?}
-
-We determine the precision $\mathcal{P}$ and recall $\mathcal{R}$ that are
-defined as
-
-$$\mathcal{P} = \frac{|\textit{Correctly identified Sybils}|}
-{|\textit{Uncorrectly identified Sybils}|}$$
-
-$$\mathcal{R} = \frac{|\textit{Correctly identified Sybils}|}
-{|\textit{Correctly identified Sybils} \cap \textit{Unidentified Sybils}|}$$
-
-Precision is defined as the amount of true positives over false positives and
-recall is defined as the amount of true positives over over true positives plus
-false negatives.
-
-Note that, by taking the set of families as ground truth, we are overestimating
-the power of our algorithm.  relay operators make an effort to make relays look
-the same.
-
-
-\subsection{Performance}
-\label{sec:performance}
-
-Used SSD for analysis, bottleneck was CPU.
-
-Table~\ref{tab:exp-deployment}
-\begin{table}[t]
-	\centering
-	\begin{tabular}{lccc}
-	\textbf{Analysis} & \textbf{Frequency} & \textbf{Window} & \textbf{Run time} \\
-	\hline
-	Network churn & Hourly & One hour & $\sim$0.16s \\
-	Uptime matrix & Daily & One month & $\sim$67s \\
-	Fingerprint analysis & Daily & One month & $\sim$55s \\
-	Nearest-neighbor & Daily & One hour & $\sim$17s \\
-	Similarity matrix & Daily & One hour & 10s \\
-	\end{tabular}
-	\caption{Todo.}
-	\label{tab:exp-deployment}
-\end{table}
-
-
-\mynote{How time consuming is calculation of the similarity matrix?  What about
-other demanding analysis techniques?  Is it possible to run them in real-time
-as new consensuses are published?}
 
 \subsection{Churn rate analysis}
+\label{sec:churn}
 We determined the churn rates of two subsequent consensuses for all 69,133
 consensuses.  There are 158 gaps in the archived data, so we ended up with
 $68,975 \cdot 2 = 137,950$ churn values for both time series.
@@ -112,10 +67,12 @@ on on 2008-08-19:
           do not have the Running flag are not listed at all.
 \end{quote}
 
-\subsection{Uptimes}
+\subsection{Uptime analysis}
+\label{sec:uptime}
 We generated relay uptime illustrations for every month since 2007, resulting in
-93 uptime visualizations.\footnote{All images are available online, but the URL
-was redacted for anonymization.}  We now discuss a subset of these images that
+93 uptime visualizations.\footnote{All images are available online, on the following
+onion service: \url{http://qviewr5ittnqdcvi.onion}.}
+We now discuss a subset of these images that
 contain particularly interesting patterns.
 
 Figure~\ref{fig:2010-06-planetlab} shows June 2010, featuring a clear ``Sybil
@@ -218,6 +175,7 @@ Sybils, hosted in Amazon EC2, that changed their fingerprint exactly 24 times.
 belonged to legacy VPN service, VPN users might have run Tor relays there.
 IP addresses were also not permanent, which might have caused the churn.
 
+
 \subsection{Sybil characterization}
 \label{sec:sybil_groups}
 Table~\ref{tab:sybils} contains all the Sybil groups we identified.  For every
@@ -274,8 +232,8 @@ Oct. 2015, we found ``default'' relays in 73 countries, with the top three
 countries being Germany~(50\%), Russia~(8\%), and Austria~(7\%).  The majority
 of these relays, however, has little uptime.
 Figure~\ref{fig:default-sybils-uptime} shows the uptime matrix for ``default''
-relays in Oct. 2015.  Many relays exhibit a weak diurnal pattern, suggesting
-that they are powered off regularly.
+relays in Oct. 2015.  Many relays exhibit a diurnal pattern, suggesting
+that they are powered off regularly---as it often is the case for desktop PCs.
 
 \begin{figure}[t]
 	\centering
@@ -302,11 +260,11 @@ these could could be part of a botnet.
 All relays were hosted in the Google Cloud, and only online for nine hours,
 until the directory authorities started rejecting them.  The majority of
 machines were middle relays (96\%), but the attackers also started some exit
-relays (4\%).  The Sybils were set up to be hidden service directories, but the
+relays (4\%).  The Sybils were set up to be onion service directories, but the
 relays were taken offline before they were assigned the \texttt{HSDir} flag.  If
 all relays would have obtained the \texttt{HSDir} flag in time, they would have
-constituted almost 50\% of all hidden service directories; the median number of
-hidden service directories on Dec. 26 was 3,551.
+constituted almost 50\% of all onion service directories; the median number of
+onion service directories on Dec. 26 was 3,551.
 
 \subsubsection{FuslVZTOR}
 All machines were middle relays and hosted in 212.38.181.0/24, a VPS provider's
@@ -322,7 +280,7 @@ hosted by a VPS provider in the US, with the curious exception of a single relay
 that was hosted in the UK, and running a different Tor version.  The relays
 advertized the default bandwidth of 1 GiB/s on port 9001 and 9030.  All relays
 were middle relays and running as directory mirror.  All Sybils were configured
-to be a hidden service directory, but did not manage to get the flag in time.
+to be an onion service directory, but did not manage to get the flag in time.
 
 \subsubsection{PlanetLab}
 A set of relays that used a variation of the strings ``planet'', ``plab'',
@@ -336,3 +294,103 @@ by a researchers.
 The ones that are stealing bitcoins.
 
 Look at blockchain and figure out how much they stole.
+
+
+\subsection{Accuracy of nearest-neighbor search}
+\label{sec:accuracy}
+A proper evaluation of our algorithm's classification performance requires
+ground truth, i.e., Sybil relays that are \emph{known} to belong together.  All
+we have, however, are Sybils that we \emph{believe} belong together.  We can use
+this dataset as ground truth, but the resulting performance scores are likely an
+overestimate of our algorithm's true performance because we manually tuned it to
+consider the features that we believe our powerful Sybil predictors.
+
+% We can (ab)use MyFamily data as ground truth.
+In addition to our Sybil dataset, relay families can serve as ground truth.  A
+relay family is a set of Tor relays that is controlled by one operator, and is
+configured to express this mutual relationship in the family members'
+configuration file.  In a way, relay families can be seen as benign Sybils.  Tor
+clients never use more than one member of a family in their path to prevent
+correlation attacks.  As of Nov.  2015, there are approximately \mynote{XXX}
+families in the network, ranging from only two relays to \mynote{XXX} relays.
+We can evaluate our algorithm by making it find the nearest neighbours of a
+family member, which, ideally, should be its family members.  Again, using
+families as ground truth is very likely to overestimate results because family
+operators frequently configure their relays almost identically.  At the time of
+this writing, a popular relay family uses the nicknames ``AccessNow000'' to
+``AccessNow009,'' uses adjacent IP addresses, and identical contact information.
+We expect the operators of malicious Sybils, however, to go out of their way to
+obscure the relationship between their relays.
+
+% Concrete MyFamily experiment.
+To evaluate our nearest-neighbour search, we used all relay families that were
+present in the first consensus that was published in Oct. 2015.  \mynote{Quick
+overview of how many families were present.} For every relay that had a mutual
+family relationship, we built a vantage point tree and then searched for its $n$
+nearest neighbours where $n$ is the amount of mutual family relationships.
+Basically, we evaluated how good our algorithm is at finding the relatives of a
+family member.  We determined the precision and recall, both in the interval
+$[0,1]$ and telling us how many of the nearest neighbours are family members
+(precision) and how many family members were in the nearest neighbours (recall).
+More formally, precision $\mathcal{P}$ is defined as
+$$\mathcal{P} = \frac{|\textrm{\footnotesize Correctly identified Sybils}|}
+{|\textrm{\footnotesize Uncorrectly identified Sybils}|}$$
+and recall $\mathcal{R}$ is defined as
+$$\mathcal{R} = \frac{|\textrm{\footnotesize Correctly identified Sybils}|}
+{|\textrm{\footnotesize Correctly identified Sybils} \cap \textrm{\footnotesize Unidentified Sybils}|}.$$
+For every family member in the consensus, we determined one precision and recall
+value, respectively.  All values are illustrated in
+Figure~\ref{fig:precision-recall}, showing precision on the x-axis and recall on
+the y-axis.  The more points in the top right corner, the better is our
+algorithm's classification performance.  Most value pairs were either $(1,1)$
+(XXX\%) or $(0,0)$ (YYY\%).
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.32\textwidth]{diagrams/precision-recall.pdf}
+	\caption{Precision and recall when our algorithm is applied on the relay
+		family dataset.}
+	\label{fig:precision-recall}
+\end{figure}
+
+We manually investigated some classification results and found that
+\mynote{explain}.
+
+\subsection{Computational cost}
+\label{sec:performance}
+We are interested in the computational cost of our analysis techniques.  Fast
+methods lend themselves to being run hourly, for every new consensus, while
+slower techniques must be run less frequent.  Table~\ref{tab:exp-deployment}
+gives an overview of the runtime of our methods.\footnote{All performance
+numbers were determined on an Intel Core i7-3520M CPU at 2.9 GHz.}  Note that we
+placed our datasets on a solid state drive, to shift eliminate I/O as
+performance bottleneck.
+
+\begin{table}[t]
+	\centering
+	\begin{tabular}{lccc}
+	\textbf{Method} & \textbf{Invocation} & \textbf{Analysis window} & \textbf{Run time} \\
+	\hline
+	Network churn & Hourly & One hour & $\sim$0.16s \\
+	Nearest-neighbor & Daily & --- & $\sim$15s \\
+	Fingerprint analysis & Daily & One month & $\sim$55s \\
+	Uptime matrix & Daily & One month & $\sim$67s \\
+	Similarity matrix & Daily & --- & XXX \\
+	\end{tabular}
+	\caption{The computational cost of our analysis techniques, measured in
+	execution time.  Network churn analysis is very fast and can easily be run
+	hourly while the creation of a similarity matrix takes more time and can be
+	run daily.}
+	\label{tab:exp-deployment}
+\end{table}
+
+The table columns contain, from left to right, our analysis technique, how often
+we intend to run the technique, the technique's data time window, and how long
+it takes to compute its output.  The calculation of network churn is very
+fast---it takes as input only two consensus files---and can easily be done for
+every network consensus.  Nearest-neighbour search takes approximately 15
+seconds, most of which is spent building the vantage point tree.  We used
+nearest-neighbour search for manual analysis, but it could be used
+automatically.  Fingerprint and uptime analysis for one month work of consensus
+files both take approximately one minute and can easily be run daily.  Finally,
+computing a similarity matrix takes \mynote{XXX}.

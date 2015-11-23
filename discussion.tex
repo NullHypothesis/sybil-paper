@@ -1,5 +1,10 @@
 \section{Discussion}
 \label{sec:discussion}
+We will now reason about our proposed techniques and their evaluation by
+discussing our operational experience (\S~\ref{sec:operational}), presenting the
+balance between transparency and secrecy (\S~\ref{sec:secrecy}), reiterating
+our work's shortcomings (\S~\ref{sec:limitations}), and outline the rold cloud
+providers play in Sybil attacks (\S~\ref{sec:cloud}).
 
 \subsection{Operational experience}
 \label{sec:operational}
@@ -34,9 +39,10 @@ available exitmap's scanning framework~\cite{exitmap}, but sharing its
 to work well as attackers are only interested in scanning modules, e.g., which
 URLs, protocols, and ports are probed.
 
-\subsection{Limiting factors}
+\subsection{Limitations}
+\label{sec:limitations}
 We mentioned in Section~\ref{sec:threat_model} that we are unable to prevent
-all Sybil attacks.  An adversary not constrained by time and money will always
+all Sybil attacks.  An adversary unconstrained by time and money will always
 be able to inject Sybils.  This is already known since Douceur showed in 2002
 that the only way to prevent Sybil attacks is a central authority that verifies
 network participants~\cite{Douceur2002a}.  A central authority is unlikely to
@@ -54,6 +60,7 @@ distributing trust and alienate relay operators.
 \mynote{Try to give a rough estimate of how costly a Sybil attack is.}
 
 \subsection{Use and abuse of cloud providers}
+\label{sec:cloud}
 Table~\ref{tab:sybils} contains several cloud-hosted Sybil clusters.
 Presumably, cloud-hosted relays are attractive to attackers because they
 provide cheap, disposable, and hourly-billed platforms.  But does the bandwidth

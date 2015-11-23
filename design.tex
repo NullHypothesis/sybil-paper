@@ -1,19 +1,20 @@
 \section{Design}
 \label{sec:design}
-We now discuss the design philosophy behind sybilhunter, our Sybil detection
-tool.  Sybilhunter takes as input archived Tor network data, and then attempts
-to isolate Sybil groups.  The big picture is shown in Figure~\ref{fig:system}.
-We motivate our design decisions with the experience we gained by manually
-analyzing numerous Sybil groups in the Tor network.  We iteratively improved
-and refactored sybilhunter when we experienced operational shortcomings.  We
-further augment our design with ideas from related work, e.g., Cao et al.
-observed that Sybil groups have things in common and changes happen more or
-less at the same time~\cite{Cao2014a}.
+We begin by presenting methods on detecting Sybil relays in the Tor network.
+These methods are implemented in our tool sybilhunter, whose design philosophy
+we will discuss as well.  Sybilhunter takes as input archived Tor network data
+and then attempts to expose Sybil groups, as illustrated in
+Figure~\ref{fig:system}.  While developing sybilhunter, we faced numerous design
+decisions that we tackled by drawing on the experience we gained by manually
+analyzing numerous Sybil relay groups.  We iteratively improved sybilhunter when
+we experienced operational shortcomings.  We further augment our design with
+ideas from related work, e.g., Cao et al. observed that Sybil groups share
+properties and frequently change at the same time~\cite{Cao2014a}.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.42\textwidth]{diagrams/system_architecture.pdf}
-	\caption{Our system architecture.  Two different data sets serve as input
+	\includegraphics[width=0.4\textwidth]{diagrams/system_architecture.pdf}
+	\caption{Our system architecture.  Two different datasets serve as input
 		to sybilhunter, our Sybil detection tool; 1) archived consensuses and
 		server descriptors, and 2) malicious relays that we gather by running
 		exitmap~\cite{Winter2014a}.  Sybilhunter then attempts to extract Sybil
@@ -21,80 +22,126 @@ less at the same time~\cite{Cao2014a}.
 	\label{fig:system}
 \end{figure}
 
-Sybilhunter is designed to run in different scenarios.  We can 1) run it over
-historical network data, ranging back to 2007, 2) run it online to detect new
-Sybils as they join the network, and 3) use it to find relays that are
-potentially associated with previously discovered bad exit relays.
+Sybilhunter is designed to 1) run over historical network data, dating back to
+2007; 2) run over online data, to detect new Sybils as they join the network;
+and 3) find relays that might be associated with previously discovered,
+malicious relays.  Generally speaking, sybilhunter seeks to expose relays that
+are similar in their \emph{behavior} (\S~\ref{sec:churn-time-series},
+\S~\ref{sec:uptime-matrix}, and \S~\ref{sec:fingerprint-analysis}) and
+\emph{appearance} (\S~\ref{sec:nearest-neighbor}).  In addition to our analysis
+methods, the following sections discuss our datasets (\S~\ref{sec:datasets}) and
+our threat model (\S~\ref{sec:threat_model}).
 
-Generally speaking, we seek to isolate relays that are similar in
-\emph{appearance} (\S~\ref{sec:nearest-neighbor}) as well as in \emph{behavior}
-(\S~\ref{sec:churn-time-series}, \S~\ref{sec:uptime-matrix}, and
-\S~\ref{sec:fingerprint-analysis}).  The following sections discuss our data sets
-and analysis modules of sybilhunter.
-
-\mynote{Can we model the arrival rate of relay descriptor as Poisson process
-and find outliers in it?}
-
-\subsection{Data sets}
+\subsection{Datasets}
 \label{sec:datasets}
-We employ two types of data sets, both of which are illustrated in
-Figure~\ref{fig:system}.  First, we mine \emph{archived consensuses and server
-descriptors} for relay clusters and second, we use the \emph{output of the
-exitmap scanner} (in combination with archived data) to find associated,
-malicious relays.
+We employ two types of datasets, both of which are illustrated in
+Figure~\ref{fig:system}.  We mine \emph{archived consensuses and router
+descriptors} for relay clusters, and we use the \emph{output of the exitmap
+scanner}---in combination with archived data---to find associated, malicious
+relays.
 
 \subsubsection{Consensuses and router descriptors}
-We took the data sets we use for our analyses from CollecTor~\cite{collector},
-a service run by The Tor Project that archives network data such as
-consensuses, router descriptors, and network status votes.  Some of the
-archived data dates back to as early as 2004, allowing us to restore arbitrary
-Tor network states in the last ten years.  CollecTor archives numerous data
-sources, but not all are relevant for our hunt for Sybils, which is why we only
-analyse the following two:
+The consensus and router descriptor dataset comes from
+CollecTor~\cite{collector}, a service that is run by The Tor Project and
+archives network data such as consensuses, router descriptors, and network
+status votes.  Some of the archived data dates back to as early as 2004,
+allowing us to restore arbitrary Tor network states in the last ten years.  Not
+all of CollecTor's archived data is relevant for our hunt for Sybils, which is
+why we only analyse the following two:
 
 \begin{description}
-	\item[Descriptors] Tor relays and bridges periodically upload server
+	\item[Descriptors] Tor relays and bridges periodically upload router
 		descriptors, which capture their configuration, to directory
 		authorities.  Relays upload their descriptors no later than every 18
-		hours, or sooner, depending on certain conditions.
+		hours, or sooner, depending on certain conditions.  Note that some
+		information in router descriptors is not verified by directory
+		authorities.  As a result, relays are able to spoof information such as
+		their operating system, Tor version, and Uptime.
 
-	\item[Consensuses] The Tor network's consensus contains a list of all
-		running Tor relays.  Directory authorities vote hourly on the state of
-		the network, and the outcome is the consensus.  Every relay status in
-		the consensus contains a digest that is used to obtain the relay's
-		respective descriptor, as can be seen in Figure~\ref{fig:datasets}.
+	\item[Consensuses] Every hour, directory authorities vote on the state of
+		the network, producing the consensus, which is a list of all running Tor
+		relays.  Every relay status in the consensus contains a digest that is
+		used to obtain the relay's respective descriptor, as shown in
+		Figure~\ref{fig:datasets}.
 \end{description}
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=0.3\textwidth]{diagrams/data_sets.pdf}
-	\caption{Our data set contains consensuses and router descriptors.  This
-		diagram shows how they relate to each other.}
+	\caption{Our dataset contains consensuses (produced by directory
+		authorities) and router descriptors (produced by relays).}
 	\label{fig:datasets}
 \end{figure}
 
-Table~\ref{tab:collector-dataset} gives an overview of the size of our data
-sets.  We found it challenging to process such large amounts of data.  We
-started by using the Python parsing library Stem, which is maintained by The Tor
-Project.  The size of the data sets as well as the amount of files turned out to
-be difficult to handle for Stem because it was implemented in an interpreted,
-dynamic language.
+Table~\ref{tab:collector-dataset} gives an overview of the size of our dataset.
+We found it challenging to process such large amounts of data.  We started by
+using the Python parsing library Stem~\cite{stem}, which is maintained by The
+Tor Project.  The size of the datasets and the amount of files turned out to be
+difficult to handle for Stem because it was implemented in an interpreted,
+dynamic language.  To be able to process our dataset more efficiently, we
+implemented a new parser in the Go programming language~\cite{zoossh}.  Our
+parser consists of approximately 2,000 lines of code (and 1,000 additional lines
+for tests) and supports both strict and lazy parsing.  According to our
+benchmarks, our parser can process approximately 27 consensuses per
+second.\footnote{Measured on an Intel Core i7 2.9 GHz CPU.  We placed our
+datasets on a solid state drive to remove the I/O bottleneck.}  Stem, for
+comparison, averages at around 1.8 consensuses per second.  Note, however, that
+Stem parses some more fields than our parser, which means that our results is an
+overestimation.
 
 \begin{table}[t]
 \centering
 \begin{tabular}{l c c c}
-\textbf{Data set} & \textbf{Files} & \textbf{Size} & \textbf{Time span} \\
+\textbf{Dataset} & \textbf{Files} & \textbf{Size} & \textbf{Time span} \\
 \hline
 % 47677982862 bytes.
 Consensuses & 67,671 & 44 GiB & 10/2007 -- 07/2015 \\
 % 48252370463 bytes.
 Descriptors & 30,759,243 & 44 GiB & 12/2005 -- 07/2015 \\
-% 1375933490 bytes.
-% Torperf data & 18,348 & 1 GiB & 07/2009 -- 07/2015 \\
 \end{tabular}
-\caption{Characterization of our data sets.}
+\caption{Overview of our consensus and server descriptor dataset.}
 \label{tab:collector-dataset}
 \end{table}
+
+Figure~\ref{fig:datasets} illustrates the relationship between our data.
+Primarily, we are interested in the hourly consensus files.  A consensus file
+consists of \emph{router statuses} that contain basic information about Tor
+relays such as its bandwidth, flags, and exit policy.  As of August 2015,
+consensuses contain approximately 6,000 router statuses.  Every router status
+contains a digest that is used to locate its corresponding \emph{router
+descriptor}.  Again, router descriptors are published as they were received by
+Tor relays while consensus files are voted on, and published, by directory
+authorities.  Some fields in a router status are also subject to verification.
+For example, the Tor network operates bandwidth scanners that verify if a relay
+is able to sustain the bandwidth it claims to handle in its router descriptor.
+
+\subsubsection{Malicious relays}
+We use a second, complementary dataset, shown in
+Table~\ref{tab:exitmap-dataset}, that consists of malicious exit relays we
+gathered by running Winter's exitmap~\cite[\S 3.1]{Winter2014a} over 15 months.
+Exitmap is a Python-based scanning framework for Tor exit relays.  Exitmap
+modules perform a network task that can then be run over all exit relays.  One
+use case is HTTPS MitM detection: A module can fetch the X.509 certificate of a
+web server over all exit relays and then compare the fingerprint to the
+expected, valid fingerprint.  In addition to the original modules that the
+exitmap's authors shared with us, we implemented modules to detect HTML
+tampering and TLS downgrading.  Our modules ran from August 2014 to November
+2015 and discovered 225 malicious exit relays, which we all reported to The Tor
+Project.
+
+\mynote{Verify numbers here.}
+% blockchain.info tampering
+% <20140811014615.GB23748@nymity.ch> 1
+% <20140920132357.GC8751@nymity.ch> 1
+% <20141021133016.GA11247@nymity.ch> 2
+% <20141025182433.GA23244@nymity.ch> 1
+% <20150109195428.GA29115@nymity.ch> 23
+% <20150210154109.GD10777@nymity.ch> 1
+% <20150804202838.GA4774@nymity.ch> 4
+% <20150630022923.GA2340@nymity.ch> 55
+% <20150605120807.GA20320@nymity.ch> 49
+% <20150423004031.GA11395@nymity.ch> 70
+% <20150311131506.GE23215@nymity.ch> 18
 
 \begin{table}[t]
 \centering
@@ -120,93 +167,38 @@ Descriptors & 30,759,243 & 44 GiB & 12/2005 -- 07/2015 \\
 \label{tab:exitmap-dataset}
 \end{table}
 
-We then implemented a new parser from scratch in the Go programming
-language~\cite{zoossh}.  Our parser consists of approximately 2,000 lines of
-code (and 1,000 more lines for tests) and supports strict and lazy parsing, to
-minimize unnecessary parsing.  According to our benchmarks, our parser is able
-to parse approximately 27 consensuses per second.\footnote{Measured on an Intel
-Core i7 2.9 GHz CPU.  We placed our data sets on a solid state drive to
-minimize I/O.}  Stem, for comparison, averages at around 1.8 consensuses per
-second.\footnote{Note, however, that Stem parses slightly more fields than our
-parser, which means that both parsers would be closer together in a fair
-comparison.}
-
-Figure~\ref{fig:datasets} illustrates the relationship between our data.
-Primarily, we are interested in the hourly consensus files.  A consensus file
-consists of \emph{router statuses} that contain basic information about Tor
-relays such as its bandwidth, flags, and exit policy.  As of August 2015,
-consensuses contain approximately 6,000 router statuses.  Every router status
-contains a digest that is used to locate its corresponding \emph{router
-descriptor}.  It is important to understand that router descriptors are
-published as they were received by Tor relays whereas consensus files are voted
-on, and published, by directory authorities.  Some fields in a router status
-are also subject to verification.  For example, the Tor network operates
-bandwidth scanners that verify if a relay is able to sustain the bandwidth it
-claims to handle in its router descriptor.
-
-\subsubsection{Malicious relays}
-We use a second, complementary data set that consists of malicious exit relays
-we gather by running exitmap~\cite[\S 3.1]{Winter2014a}.  The dataset is shown
-in Table~\ref{tab:exitmap-dataset}.  Exitmap is a Python-based scanning
-framework for Tor exit relays.  Exitmap modules perform a network task that can
-then be run over all exit relays.  One use case is HTTPS MitM detection: A
-module can fetch the X.509 certificate of a web server over all exit relays and
-then compare the fingerprint to the expected, valid fingerprint.  In addition to
-the original modules, exitmap's authors shared with us, we implemented modules
-to detect HTML tampering and TLS downgrading.  Our modules ran from August 2014
-to August 2015 and discovered 225 malicious exit relays, which we all reported
-to The Tor Project.
-% blockchain.info tampering
-% <20140811014615.GB23748@nymity.ch> 1
-% <20140920132357.GC8751@nymity.ch> 1
-% <20141021133016.GA11247@nymity.ch> 2
-% <20141025182433.GA23244@nymity.ch> 1
-% <20150109195428.GA29115@nymity.ch> 23
-% <20150210154109.GD10777@nymity.ch> 1
-% <20150804202838.GA4774@nymity.ch> 4
-% <20150630022923.GA2340@nymity.ch> 55
-% <20150605120807.GA20320@nymity.ch> 49
-% <20150423004031.GA11395@nymity.ch> 70
-% <20150311131506.GE23215@nymity.ch> 18
-
-We include malicious exit relays in our data set because we found that they
-frequently \emph{surface in groups}, i.e., an attacker runs the same attack on
-several, physically distinct exit relays.  Winter et al.'s work~\cite[\S
-5.2]{Winter2014a} showed that attackers make an effort to stay under the radar,
-which is why we cannot only rely on active probing to find and block such
-relays.  We also seek to find the \emph{nearest neighbors} of each newly
-discovered malicious relay, which we discuss in
+We include malicious exit relays in our dataset because these relays frequently
+\emph{surface in groups}, i.e., an attacker runs the same attack on several,
+physically distinct exit relays~\cite{Winter2014a}.  Winter et al.'s
+work~\cite[\S 5.2]{Winter2014a} further showed that attackers make an effort to
+stay under the radar, which is why we cannot only rely on active probing to find
+and block such relays.  We also seek to find the \emph{nearest neighbors} of
+each newly discovered malicious relay, which we discuss in
 Section~\ref{sec:nearest-neighbor}.
 
 \subsection{Threat model}
 \label{sec:threat_model}
-\mynote{Threat model is vague.  Ideas for better phrasing?}
-
-Sybilhunter, our Sybil detection tool, can process \emph{past data} just as
-\emph{future data}.  Future data, however, can be manipulated by adversaries
-that seek to evade our system and the powerful nature of Sybil
-attacks~\cite{Douceur2002a} limits us in what we can defend against.  This is
-reflected in our adversarial assumptions, which we now discuss.  We expect that
-an an adversary \emph{does}:
+Recall that sybilhunter can process \emph{past data} just as \emph{future data}.
+Future data, however, can be manipulated by adversaries that seek to evade our
+system and the powerful nature of Sybil attacks~\cite{Douceur2002a} limits our
+defenses.  This is reflected in our adversarial assumptions.  We assume our
+adversaries to:
 \begin{itemize}
-	\item Run multiple Tor relays.
+	\item Run more than one Tor relay.
 
 	\item Add Tor relays all at once or slowly over time.
 
 	\item Run active or passive attacks.
 
 	\item Make a limited effort to stay under the radar by diversifying
-		different aspects of their Tor relays.
+		different parts of their relay configuration.
+
+	\item Have some redundancy in their behavior or appearance, e.g., similar
+		configuration.
 \end{itemize}
 
-We expect that an adversary \emph{does not}:
-\begin{itemize}
-	\item Have infinite resources to create undetectable Sybils.
-\end{itemize}
-
-
-\mynote{The order of subsections here isn't fixed yet.  There might be a better
-way of organizing them.}
+Note that our methods fail if Sybils exhibit no redundancy.  In a way, our
+methods exploit our adversaries' 
 
 \subsection{Network churn time series}
 \label{sec:churn-time-series}
@@ -225,19 +217,21 @@ years, all of which seemed true positives, i.e., they should be of interest to
 directory authority operators.  The script did not raise false positives because
 the median number of new fingerprints in a consensus is only six---significantly
 below the conservative threshold of 49.  The script's conservative threshold
-probably causes false negatives, but we cannot determine the rate because we
-lack ground truth.  In addition, The Tor Project's script can be defeated by a
-``trickling'' attack in which Sybils are slowly added over time.  We now extend
-The Tor Project's approach to make it more robust against these shortcomings.
+probably causes false negatives, but we cannot determine the false positive rate
+because we lack ground truth.  In addition, The Tor Project's script can be
+defeated by a ``trickling'' attack in which Sybils are slowly added over time.
+We now extend The Tor Project's approach to make it more robust against these
+shortcomings.
 
 We found that churn anomalies worthy of our attention range from \emph{flat
 hills} (see Figure~\ref{fig:flat-hill}) to \emph{sudden spikes} (see
 Figure~\ref{fig:sudden-spike}).  The former can be a sign of an event that
 affected a large number of relays in the network\footnote{This happened shortly
-after the heartbleed vulnerability.  The Tor Project advised relay operators
+after the heartbleed vulnerability when The Tor Project asked relay operators
 to generate new keys.  Naturally, relay operators did not do this at the same
 hour, but gradually over approximately two days.} while the latter can happen if
-an attacker adds several dozen relays in one or two hours.
+an attacker adds relays over time, or an external event causes an influx of
+relays.
 
 \begin{figure}[t]
 	\centering
@@ -256,15 +250,16 @@ an attacker adds several dozen relays in one or two hours.
 \end{figure}
 
 To quantify the churn rate $\sigma$ between two subsequent consensus documents,
-we adapt the formula proposed by Godfrey et al.~\cite{Godfrey2006a}.  Godfrey et
-al.'s formula yields a single churn value that captures both, new and gone
-systems.  That means that an unusually low number of gone systems could ``hide''
-an unusually high number of new systems---an undesired property for a system
-that should highlight abnormal changes.  To address this issue, we split the
-formula in two parts and create a time series for new relays ($\sigma_{n}$) as
-well as for gone relays ($\sigma_{g}$).  $C_{t}$ is the network consensus at
-time $t$, and $\setminus$ denotes the complement between two consensuses, i.e.,
-the number of relays that is in one consensus, but not the other.
+we adapt Godfrey et al.~\cite{Godfrey2006a} formula which yields a single churn
+value that captures both new and gone systems.  That means that an unusually low
+number of gone systems could cancel out an unusually high number of new
+systems---an undesired property for a system that should highlight abnormal
+changes.  To address this issue, we split the formula in two parts and create a
+time series for new relays ($\sigma_{n}$) as well as for gone relays
+($\sigma_{g}$).  $C_{t}$ is the network consensus at time $t$, and $\setminus$
+denotes the complement between two consensuses, i.e., the number of relays that
+is in one consensus, but not the other.  We now defined $\sigma_{n}$ and
+$\sigma_{g}$ as:
 
 \begin{equation}
 \sigma_{n} = \frac{\lvert C_{t} \setminus C_{t-1} \rvert}
@@ -283,17 +278,18 @@ $\sigma_{n,g}$ for the sequence $C_{t}, C_{t-1}$, $C_{t-2}$, \ldots, yields a
 time series of churn values that can readily be inspected for abnormal spikes as
 the one in Figure~\ref{fig:sudden-spike}.  To detect changes in the underlying
 trend, we can smooth $\sigma_{n,g}$ using a simple moving average $\lambda$,
+defined as:
 
 \begin{equation}
 \lambda = \frac{1}{w} \cdot \sum_{i=0}^{w} \sigma_{i}
 \end{equation}
 
 As we increase the window size $w$, we are able to detect more subtle changes in
-the underlying trend.  In an operating setting, we believe that this parameter
+the underlying trend.  In an operational setting, we believe that this parameter
 should be kept secret because otherwise it would help attackers to stay under
-the radar.  Refer to Section~\ref{sec:secrecy} for a more comprehensive
-discussion.  If $\lambda$ or $\sigma_{n,g}$ exceed a manually defined threshold,
-an alert is raised.
+the radar.  Refer to Section~\ref{sec:secrecy} for a comprehensive discussion on
+this transparency and secrecy tradeoff.  If $\lambda$ or $\sigma_{n,g}$ exceed a
+manually defined threshold, an alert is raised.
 
 \mynote{We could plot the number of alerts we would get for a sequence of
 thresholds.}
@@ -317,8 +313,8 @@ distinct uptime pattern.
 
 We represent uptime patterns as a binary sequences.  Every hour, when a new
 consensus is published, we append a new data point to the sequence for each Tor
-relay.  It is tempting to then use the Hamming distance to quantify the
-similarity between two relays.  The Hamming distance is the amount of positions
+relay.  It is tempting to quantify the similarity between two relays with the
+Hamming distance, defined as the amount of positions
 at which two strings of equal length differ.  This, however, does not perfectly
 capture our intuition as we show in Figure~\ref{fig:uptime-pattern}.  Relay $B$
 and $C$ have the same Hamming distance to relay $A$: two.  Intuitively, however,
@@ -465,74 +461,72 @@ Section~\ref{sec:fingerprint-anomalies} for examples.
 
 Once the columns are sorted, we run our algorithm to determine the distance
 between two subsequent uptime sequences.  If the distance is under our
-threshold, we mark both uptime sequences as red, to make them easy to find in
+threshold, we mark both uptime sequences as red, to make highlight them in
 manual analysis.
 
 \subsection{Fingerprint analysis}
 \label{sec:fingerprint-analysis}
-The information a Tor client needs to connect to a hidden service is saved in
-a distributed hash table (DHT) that consists of a subset of all Tor relays, the
-hidden service directories (HSDirs).  A daily-changing set of six HSDirs are
-responsible for a given hidden service.  Tor clients ask these HSDirs for
-information about the hidden service they want to connect to.
-
-A HSDir becomes responsible for a hidden service when its fingerprint
-is closest to the descriptor ID that is derived from the hidden service's public
-key, a time stamp, and additional information.
+The information a Tor client needs to connect to an onion service is saved in a
+distributed hash table (DHT) that is formed consists of a subset of all Tor
+relays, the onion service directories (HSDirs).  A daily-changing set of six
+HSDirs are responsible for a given onion service and are asked by Tor clients
+for information about the onion service they want to connect to.  A HSDir
+becomes responsible for an onion service when its fingerprint is close to the
+descriptor ID that is derived from the onion service's public key, a time stamp,
+and additional information.
 % https://gitweb.torproject.org/torspec.git/tree/rend-spec.txt:231
 % descriptor-id = H(permanent-id | H(time-period | descriptor-cookie | replica))
-Note that the DHT and all its HSDirs is known and it is also possible to
-calculate which index in the fingerprint ring will be used by a hidden service
-at a future point in time~\cite{Biryukov2013a}.  Attackers can exploit this
-knowledge by generating identity keys until their fingerprint is close to the
-hidden service's index, thus becoming responsible for it.  To save resources,
-an attacker can run a single, physical Tor relay and generate a new identity
-periodically.
+Note that the DHT and all its HSDirs is known, making it possible to calculate
+which index in the ring will be used by an onion service at a future point in
+time~\cite{Biryukov2013a}.  Attackers can exploit this knowledge by repeatedly
+generating identity keys until their fingerprint is close to the onion service's
+index, thus becoming its HSDir.
 
 We detect relays that change their fingerprint frequently by maintaining a
 lookup table that maps a relay's IP addresses to a list of all fingerprints we
 have seen it use.  We order the lookup table by the relays that changed the
 fingerprints the most, and output the results.
 
-\mynote{Elaborate.}
-
 \subsection{Nearest-neighbor search}
 \label{sec:nearest-neighbor}
-We frequently found ourselves in a situation where exitmap discovered a
-malicious exit relay and we were trying to find similar, potentially associated
-relays.  This involved extensive manual work, which we soon started to automate.
-In particular, we needed an algorithm for nearest-neighbor search: given a
-``seed'' relay, what are its $n$ nearest neighbors?
+We frequently found ourselves in situations where exitmap discovered a malicious
+exit relay and we were trying to find similar, potentially associated relays.
+This involved extensive manual work, which we soon started to automate.  In
+particular, we needed an algorithm for nearest-neighbor search: given a ``seed''
+relay, what are its $n$ most similar neighbors?  We define similarity as
+redundancy in \emph{relay configuration}, i.e., similar relays share parts of
+their configuration file such as ports, IP addresses, exit policies, or uptimes.
+As a result, we find nearest neighbors by coming up with an algorithm that finds
+configuration similarities.
 
 A naive implementation would compare the seed relay to all other relays in the
-consensus, which scales linearly.  We can do better by using metric trees, which
-guarantee $\mathcal{O}(\textrm{log} n)$ lookup.  Metric trees are a type of data
-structure to index data in metric spaces.  Metric trees require a distance
-metric in the mathematical sense, i.e., a number of conditions to be met (see
-Appendix~\ref{sec:metric}), which are not always satisfied by ad-hoc metrics.
-% In particular, the triangle inequality\footnote{The triangle inequality, $d(x,
-% z) \le d(x, y) + d(y, z)$, states that the distance between two points is at
-% least equal to a ``detour'' over a third point.} can be difficult to meet when
-% working in non-Euclidean space.
+consensus, which scales linearly.  We can do better by using \emph{metric trees}
+because they guarantee $\mathcal{O}(\textrm{log}\,n)$ lookup, at the cost of
+building a tree first.  Metric trees are a type of data structure to index data
+in metric spaces and they require a distance metric in the mathematical sense,
+i.e., the following four conditions must be met for three points $x$, $y$, and
+$z$:
+\begin{enumerate}
+	\item $d(x, y) \geq 0$
+	\item $d(x, y) = 0$ iff $x = y$
+	\item $d(x, y) = d(y, x)$
+	\item $d(x, z) \leq d(x, y) + d(y, z)$
+\end{enumerate}
 
-\mynote{Explain more rigorously.}
-
-We use the Levenshtein distance as distance metric.  It operates on strings and
-determines the minimum amount of modifications---insert, delete, and
+We use the Levenshtein distance as distance metric.  It takes as input two
+strings and determines the minimum amount of modifications---insert, delete, and
 modify---that are necessary to turn string $s_{1}$ into $s_{2}$.  The
-Levenshtein distance can handle strings of different length, and satisfies the
-triangle inequality, i.e., we are free to use it in a metric tree.
+Levenshtein distance can handle strings of different length and satisfies the
+triangle inequality (number four in the above enumeration), so we are free to
+use it in a metric tree.
 
-As concrete metric tree implementation, we use the vantage point tree
-(vp-tree)~\cite{Yianilos1993a}.  It recursively divides the given data into two
-partitions; one that is close to the seed point according to a threshold,
-and one that is not.  The vp-tree must first be built for the given data, and it
-is then ready to perform nearest neighbor searches.
-
-\mynote{Talk about how long it takes to build the tree.}
-
-In our implementation, building a vp-tree for 6,235 relays takes approximately
-10 seconds.\footnote{Again, measured on a single Intel Core i7 2.9 GHz CPU.}
+Metric trees are only a concept.  As concrete implementation, we use the vantage
+point tree (vp-tree)~\cite{Yianilos1993a}.  It recursively divides the given
+data into two partitions; one that is close to the seed point according to a
+threshold, and one that is not.  The vp-tree must first be built for the given
+data, and it is then ready to perform nearest neighbor searches.  In our
+implementation, building a vp-tree for 6,235 relays takes approximately 10
+seconds.\footnote{Again, measured on a single Intel Core i7 2.9 GHz CPU.}
 Subsequent nearest-neighbor lookups finish almost instantly.
 
 \mynote{Still need to compare this to naive $n^{2}$ search.}
