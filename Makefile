@@ -12,3 +12,7 @@ cleanall: clean
 
 ps: pdf
 	GS_OPTIONS=-dPDFSETTINGS=/prepress pdftops -level1 $(TARGET).pdf
+
+embed: paper.pdf
+	gs -o paper-embedded.pdf -sDEVICE=pdfwrite -dPDFSETTINGS=/prepress paper.pdf
+	@echo "\nWrote paper with embedded fonts to: paper-embedded.pdf\n"
