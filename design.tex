@@ -1,9 +1,8 @@
-\section{Design}
+\section{Data and design}
 \label{sec:design}
-We begin by presenting methods on detecting Sybil relays in the Tor network.
-These methods are implemented in our tool sybilhunter, whose design philosophy
-we will discuss as well.  Sybilhunter takes as input archived Tor network data
-and then attempts to expose Sybil groups, as illustrated in
+We now discuss how we detect Sybils in the Tor network.  Our methods are
+implemented in our tool sybilhunter, which takes as input archived Tor network
+data and then attempts to expose Sybil groups, as illustrated in
 Figure~\ref{fig:system}.  While developing sybilhunter, we faced numerous design
 decisions that we tackled by drawing on the experience we gained by manually
 analyzing numerous Sybil relay groups.  We iteratively improved sybilhunter when
@@ -26,11 +25,12 @@ Sybilhunter is designed to 1) run over historical network data, dating back to
 2007; 2) run over online data, to detect new Sybils as they join the network;
 and 3) find relays that might be associated with previously discovered,
 malicious relays.  Generally speaking, sybilhunter seeks to expose relays that
-are similar in their \emph{behavior} (\S~\ref{sec:churn-time-series},
-\S~\ref{sec:uptime-matrix}, and \S~\ref{sec:fingerprint-analysis}) and
-\emph{appearance} (\S~\ref{sec:nearest-neighbor}).  In addition to our analysis
-methods, the following sections discuss our datasets (\S~\ref{sec:datasets}) and
-our threat model (\S~\ref{sec:threat_model}).
+are similar in their \emph{behavior} and \emph{appearance}.
+
+In this section, we first characterize our datasets~(\S~\ref{sec:datasets}) and
+present our threat model~(\S~\ref{sec:threat_model}).  We then discuss our
+analysis techniques~(\S~\ref{sec:techniques}) and how the Sybils we
+discovered are removed from the Tor network~(\S~\ref{sec:blocking-sybils}).
 
 \subsection{Datasets}
 \label{sec:datasets}
@@ -181,26 +181,35 @@ Section~\ref{sec:nearest-neighbor}.
 Recall that sybilhunter can process \emph{past data} just as \emph{future data}.
 Future data, however, can be manipulated by adversaries that seek to evade our
 system and the powerful nature of Sybil attacks~\cite{Douceur2002a} limits our
-defenses.  This is reflected in our adversarial assumptions.  We assume our
-adversaries to:
+defenses.  This is reflected in our adversarial assumptions.  We assume that our
+adversaries \emph{do}:
 \begin{itemize}
 	\item Run more than one Tor relay.
 
+	\item Have redundancy in their behavior or appearance, e.g., similar
+		configuration.
+\end{itemize}
+
+Our adversaries further \emph{can}:
+\begin{itemize}
 	\item Add Tor relays all at once or slowly over time.
 
 	\item Run active or passive attacks.
 
 	\item Make a limited effort to stay under the radar by diversifying
 		different parts of their relay configuration.
-
-	\item Have some redundancy in their behavior or appearance, e.g., similar
-		configuration.
 \end{itemize}
 
-Note that our methods fail if Sybils exhibit no redundancy.  In a way, our
-methods exploit our adversaries' 
+% TODO (23 Nov 2015, 11:01am): Maybe elaborate that our methods fail if Sybils
+% exhibit no redundancy.
 
-\subsection{Network churn time series}
+\subsection{Analysis techniques}
+\label{sec:techniques}
+We now turn to presenting techniques that can expose Sybils in our datasets
+(\S~\ref{sec:datasets}) under our given threat model
+(\S~\ref{sec:threat_model}).
+
+\subsubsection{Network churn time series}
 \label{sec:churn-time-series}
 The churn rate of a distributed system is the rate of joining and leaving
 network participants---relays in the Tor network.  An unexpectedly high churn
@@ -235,7 +244,7 @@ relays.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.47\textwidth]{diagrams/flat-hill.pdf}
+	\includegraphics[width=\linewidth]{diagrams/flat-hill.pdf}
 	\caption{Flat hill in 2009.  Smoothed using moving average with a window
 	size of 12.}
 	\label{fig:flat-hill}
@@ -243,7 +252,7 @@ relays.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.47\textwidth]{diagrams/sudden-spike.pdf}
+	\includegraphics[width=\linewidth]{diagrams/sudden-spike.pdf}
 	\caption{Sudden spike in 2010.  Smoothed using moving average with a window
 	size of 12.}
 	\label{fig:sudden-spike}
@@ -294,7 +303,7 @@ manually defined threshold, an alert is raised.
 \mynote{We could plot the number of alerts we would get for a sequence of
 thresholds.}
 
-\subsection{Uptime matrix}
+\subsubsection{Uptime matrix}
 \label{sec:uptime-matrix}
 An unexpectedly high churn rate can indicate a significant network event, but it
 does not reveal \emph{which relays} are responsible for this event.  It captures
@@ -449,7 +458,7 @@ Section~\ref{sec:fingerprint-anomalies} for examples.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.48\textwidth]{diagrams/2011-09-uptimes-truncated.jpg}
+	\includegraphics[width=\linewidth]{diagrams/2011-09-uptimes-truncated.jpg}
 	\caption{The uptime matrix for a subset of all Tor relays in September 2011.
 		Every row in the image represents one consensus, and every column
 		represents one relay.  As a result, every pixel denotes the uptime
@@ -464,7 +473,7 @@ between two subsequent uptime sequences.  If the distance is under our
 threshold, we mark both uptime sequences as red, to make highlight them in
 manual analysis.
 
-\subsection{Fingerprint analysis}
+\subsubsection{Fingerprint analysis}
 \label{sec:fingerprint-analysis}
 The information a Tor client needs to connect to an onion service is saved in a
 distributed hash table (DHT) that is formed consists of a subset of all Tor
@@ -487,7 +496,7 @@ lookup table that maps a relay's IP addresses to a list of all fingerprints we
 have seen it use.  We order the lookup table by the relays that changed the
 fingerprints the most, and output the results.
 
-\subsection{Nearest-neighbor search}
+\subsubsection{Nearest-neighbor search}
 \label{sec:nearest-neighbor}
 We frequently found ourselves in situations where exitmap discovered a malicious
 exit relay and we were trying to find similar, potentially associated relays.
@@ -525,27 +534,13 @@ point tree (vp-tree)~\cite{Yianilos1993a}.  It recursively divides the given
 data into two partitions; one that is close to the seed point according to a
 threshold, and one that is not.  The vp-tree must first be built for the given
 data, and it is then ready to perform nearest neighbor searches.  In our
-implementation, building a vp-tree for 6,235 relays takes approximately 10
+implementation, building a vp-tree for 6,235 relays takes approximately 15
 seconds.\footnote{Again, measured on a single Intel Core i7 2.9 GHz CPU.}
 Subsequent nearest-neighbor lookups finish almost instantly.
 
-\mynote{Still need to compare this to naive $n^{2}$ search.}
+% TODO (23 Nov 2015, 11:04am): \mynote{Still need to compare this to naive $n^{2}$ search.}
 
-\subsection{Blocking Sybils}
-Once we isolated a Sybil group, and concluded that it appears to be harmful, we
-reported it to The Tor Project.  There are currently two ways for directory
-authorities to block relays, controlled by the options \texttt{AuthDirReject}
-and \texttt{AuthDirInvalid}.  The former removes a relay from the consensus.
-The latter takes away a relay's \texttt{Valid} flag.  While the relay is still
-listed in the consensus, clients will not consider it for path selection.
-
-The majority of directory authorities, i.e., four out of eight, must agree on
-either \texttt{AuthDirReject} or \texttt{AuthDirInvalid} be set for a relay.
-Only then will the block become active.  This mechanism is meant to distribute
-the power of removing relays into the hands of a diverse set of people.  We
-elaborate on our experience with this process in Section~\ref{sec:operational}.
-
-\subsection{Meaningful results}
+\subsubsection{Meaningful results}
 Systems that employ complex and opaque analysis techniques to expose security
 incidents frequently suffer from what Sommer and Paxson call the \emph{semantic
 gap}~\cite[\S III.C]{Sommer2010a}, i.e., a system's output is difficult to act
@@ -553,17 +548,17 @@ upon as its meaning is unclear.  Our tools automate the detection of Sybils,
 but the process of blocking them involves human interaction, which is why we
 took special care to consider the semantic gap.
 
-We avoid the use of opaque classification methods as their output (often a
-distance in high-dimensional vector space) is difficult to interpret.  Instead,
-we rely on straightforward metrics such as the Levenshtein distance.
-Figure~\ref{fig:visualization} further illustrates a visualization that we
-developed for exploratory analysis, which is meant to complement automated
-analysis.  The graph shows the similarities (edges) between four Tor relays
-(vertices).
+We avoid the use of opaque classification methods as their output (frequently
+distances in high-dimensional vector space) is difficult to interpret.  Instead,
+we rely on the Levenshtein distance because its output is easy to understand and
+retrace.  Figure~\ref{fig:visualization} further illustrates a visualization
+that we developed for exploratory analysis, which is meant to complement
+automated analysis.  The graph shows the similarities (edges) between four Tor
+relays (vertices).
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.42\textwidth]{diagrams/visualization.pdf}
+	\includegraphics[width=\linewidth]{diagrams/visualization.pdf}
     \caption{Visualization of a Sybil cluster.  Vertices represent Tor relays
     and edges show the similarities between them.}
 	\label{fig:visualization}
@@ -572,3 +567,18 @@ analysis.  The graph shows the similarities (edges) between four Tor relays
 Finally, according to the UNIX tool design philosophy~\cite{Pike1983a},
 sybilhunter can produce CSV-formatted text output that is easy to pipe into
 command line tools for further analysis.
+
+\subsection{Blocking Sybils}
+\label{sec:blocking-sybils}
+Once we discovered a seemingly harmful Sybil group, we reported it to The Tor
+Project.  There are currently two ways for directory authorities to remove
+relays, controlled by the options \texttt{AuthDirReject} and
+\texttt{AuthDirInvalid}.  The former removes a relay from the consensus and the
+latter takes away a relay's \texttt{Valid} flag.  While the relay is still
+listed in the consensus, clients will not consider it for path selection.
+
+The majority of directory authorities, i.e., four out of eight, must agree on
+either \texttt{AuthDirReject} or \texttt{AuthDirInvalid} to be set for a relay.
+Only then will the block become active.  This mechanism is meant to distribute
+the power of removing relays into the hands of a diverse set of people.  We
+elaborate on our experience with this process in Section~\ref{sec:operational}.

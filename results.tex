@@ -10,7 +10,6 @@ Finally, we evaluate our nearest-neighbor search (\S~\ref{sec:accuracy}) and the
 computational performance of all our analysis techniques
 (\S~\ref{sec:performance}).
 
-
 \subsection{Churn rate analysis}
 \label{sec:churn}
 We determined the churn rates of two subsequent consensuses for all 69,133
@@ -18,12 +17,13 @@ consensuses.  There are 158 gaps in the archived data, so we ended up with
 $68,975 \cdot 2 = 137,950$ churn values for both time series.
 Figure~\ref{fig:churn-density} illustrates a density plot that shows the
 distribution of all these churn values, 99.97\% of which are in the interval
-$[0, 0.1]$.  Table~\ref{tab:churn-dist} gives an overview of our time series
-statistics.
+$[0, 0.1]$.  The diagram further features 37 vertical dotted lines that mark
+outliers above 0.1.  Table~\ref{tab:churn-dist} gives an overview of our time
+series statistics.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.47\textwidth]{diagrams/churn-density.pdf}
+	\includegraphics[width=\linewidth]{diagrams/churn-density.pdf}
 	\caption{Density of all churn values for new and gone relays.  For both
 	time series, 37 churn rates over eight years exceeded 0.1.  The dotted
 	vertical lines mark all outliers.}
@@ -43,29 +43,24 @@ statistics.
 	\label{tab:churn-dist}
 \end{table}
 
-Figure~\ref{fig:churn-density} further features 37 vertical dotted lines that
-mark outliers above 0.1.  We manually inspected these outliers as well as the
-churn rate time series, and now turn our attention to the interesting
-occurrences we discovered.  Figure~\ref{fig:2008-08} illustrates the churn rates
-for August 2008.  On August 19, 822 relays left the network, resulting in a
-sudden spike of the churn rate, and a trend increase in the time series.
+Figure~\ref{fig:2008-08} illustrates the churn rates for August 2008, featuring
+our biggest anomaly.  On August 19, 822 relays left the network, resulting in a
+sudden spike of the churn rate, and a trend increase in the time series.  The
+spike was caused by the switch from consensus method three to four, which
+happened on August 19, 2008.  The changelog says that in consensus method four,
+routers that don't have the \texttt{Running} flag are no longer listed in the
+consensus.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.47\textwidth]{diagrams/2008-08.pdf}
+	\includegraphics[width=\linewidth]{diagrams/2008-08.pdf}
 	\caption{On August 19, 822 relays suddenly left the Tor network, resulting
-	in a churn rate spike, and a time series increase.}
+	in a churn rate spike, and a time series increase.  The event was caused by
+	the switch from consensus method three to four.}
 	\label{fig:2008-08}
 \end{figure}
 
-spike on 2008-08-19 was caused by consensus method switch.
-\begin{quote}
-It *could* be related to the switch from consensus method 3 to 4 which happened
-on on 2008-08-19:
-
-        * If consensus-method 4 or later is in use, then routers that
-          do not have the Running flag are not listed at all.
-\end{quote}
+\mynote{Still need to discuss other outliers.}
 
 \subsection{Uptime analysis}
 \label{sec:uptime}
@@ -81,12 +76,12 @@ documented by The Tor Project~\cite{progressreport}, started 512 Tor relays on
 PlanetLab for research on scalability.  Our manual analysis could verify this.
 The relays were easy to identify because their nicknames suggested that they
 were hosted on PlanetLab, containing strings such as ``planetlab,'' ``planet,''
-and ``plab.''  Note the small height of the Sybil block, indicating the the
+and ``plab.''  Note the small height of the Sybil block, indicating that the
 relays were not online for a long time.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.47\textwidth]{diagrams/planetlab-uptimes.jpg}
+	\includegraphics[width=\linewidth]{diagrams/planetlab-uptimes.jpg}
 	\caption{In June 2010, a researcher started 512 Tor relays on PlanetLab for,
 		as The Tor Project documented, ``their research into cloud computing and
 		scaling effects''~\cite{progressreport}.  As illustrated by the easily
@@ -104,7 +99,7 @@ characters.  In April 2013, the relays finally disappeared.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.47\textwidth]{diagrams/2012-08.jpg}
+	\includegraphics[width=\linewidth]{diagrams/2012-08.jpg}
 	\caption{August 2012 featured a curious ``step pattern,'' caused by
 	approximately 100 Sybils.  Out of 24 hours, the relays were online for only
 	nine hours.}
@@ -122,7 +117,7 @@ relay fingerprints.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.47\textwidth]{diagrams/heartbleed-uptimes.jpg}
+	\includegraphics[width=\linewidth]{diagrams/heartbleed-uptimes.jpg}
 	\caption{April 2014, the month the Heartbleed bug was discovered.
 		The large block in the middle of the diagram happened because The
 		Tor Project eventually rejected a large number of relays that did not
@@ -138,7 +133,7 @@ hours after the appeared.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.47\textwidth]{diagrams/lizard-uptimes.jpg}
+	\includegraphics[width=\linewidth]{diagrams/lizard-uptimes.jpg}
 	\caption{December 2014, when a group of people started several hundred Tor
 	relays in the Google cloud.  The relays were only online for a small number
 	of hours because they were promptly rejected by The Tor Project.}
@@ -152,13 +147,14 @@ We determined how often all Tor relays changed their fingerprint from 2007 to
 (y-axis) we have observed for the 1,000 Tor relays (x-axis) that changed their
 fingerprint the most.  All these relays changed their fingerprint at least ten
 times.  Twenty one relays changed their fingerprint more than 100 times, and the
-relay at right end of the distribution changed its fingerprint 936 times.  This
-relay's nickname was ``openwrt,'' suggesting that it was a home router that was
-rebooted regularly.  It was running from August 2010 to December 2010.
+relay at the very right end of the distribution changed its fingerprint 936
+times.  This relay's nickname was ``openwrt,'' suggesting that it was a home
+router that was rebooted regularly.  It was running from August 2010 to December
+2010.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.47\textwidth]{diagrams/fingerprints.pdf}
+	\includegraphics[width=\linewidth]{diagrams/fingerprints.pdf}
 	\caption{The amount of observed fingerprints for the 1,000 relays that
 	changed their fingerprints the most.  Note the curious plateau in the shaded
 	area between index 707 and 803---a Sybil group that changed their
@@ -170,17 +166,19 @@ Figure~\ref{fig:fingerprints} further contains a peculiar plateau, shown in the
 shaded area between index 707 and 803.  This plateau was caused by a group of
 Sybils, hosted in Amazon EC2, that changed their fingerprint exactly 24 times.
 
-% Many relays in Riseup's IP address space.
-199.254.238.0/24
-belonged to legacy VPN service, VPN users might have run Tor relays there.
-IP addresses were also not permanent, which might have caused the churn.
-
+We also found that many IP addresses in the range 199.254.238.0/24 changed their
+fingerprint frequently.  We contacted the owner of the address block and were
+told that the block used to host VPN services.  Apparently, several people
+started Tor relays and since the VPN service would not assign permanent IP
+addresses, the Tor relays would periodically change their address, causing the
+churn we observe.
 
 \subsection{Sybil characterization}
 \label{sec:sybil_groups}
 Table~\ref{tab:sybils} contains all the Sybil groups we identified.  For every
 group, we document when it first appeared in the Tor network, its ``name,''
-size, and a description of its characteristics.
+size, and a description of its characteristics.  In addition, we now discuss the
+most interesting Sybil groups in greater detail.
 
 \begin{table*}[t]
 \centering
@@ -246,14 +244,13 @@ that they are powered off regularly---as it often is the case for desktop PCs.
 To get a better understanding of the amount of ``default'' relays over time, we
 analyzed all consensuses, extracting the number of relays whose nickname was
 ``default,'' whose onion routing port was 443, and whose directory port was
-9001.  We further smoothed the time series using a simple moving average with
-window size X to highlight the underlying trend.  The resulting time series is
-shown in Figure~\ref{fig:default-over-time}.
+9001.  We did this for the first consensus every day and plot the result in
+Figure~\ref{fig:default-over-time}.
 
 The above suggests that some of these relays are running without the owner's
 knowledge.  The relays don't fit the pattern of Sefnit (a.k.a.
-Mevade)~\cite{sefnit} and SKynet~{skynet}, two pieces of malware that use an
-onion service as command and control server.  Nevertheless, we believe that
+Mevade)~\cite{sefnit} and Skynet~\cite{skynet}, two pieces of malware that use
+an onion service as command and control server.  Nevertheless, we believe that
 these could could be part of a botnet.
 
 \subsubsection{LizardNSA}
@@ -290,11 +287,10 @@ online for three days and then removed by The Tor Project, as mentioned in a
 blog post~\cite{planetlab}.  The blog post further says that the relays were run
 by a researchers.
 
-\subsubsection{Bitcoin}
-The ones that are stealing bitcoins.
-
-Look at blockchain and figure out how much they stole.
-
+% \subsubsection{Bitcoin}
+% The ones that are stealing bitcoins.
+% 
+% Look at blockchain and figure out how much they stole.
 
 \subsection{Accuracy of nearest-neighbor search}
 \label{sec:accuracy}
@@ -392,5 +388,5 @@ every network consensus.  Nearest-neighbour search takes approximately 15
 seconds, most of which is spent building the vantage point tree.  We used
 nearest-neighbour search for manual analysis, but it could be used
 automatically.  Fingerprint and uptime analysis for one month work of consensus
-files both take approximately one minute and can easily be run daily.  Finally,
-computing a similarity matrix takes \mynote{XXX}.
+files both take approximately one minute and can easily be run daily.
+%Finally, computing a similarity matrix takes \mynote{XXX}.

@@ -62,11 +62,11 @@ As of November 2015, the Tor network employs a number of implicit and explicit
 Sybil defenses.  First, directory authorities accept at most two relays per IP
 address~\cite{Bauer2007b} to prevent low-resource Sybil
 attacks~\cite{Bauer2007a}.  Second, The Tor Project has gradually increased the
-minimal time until relays obtain the Stable (seven days) and the HSDir (96
-hours) flag to increase the cost of Sybil relays and to give Tor developers more
-time to discover suspicious relays before they are able to run an attack.
-Finally, operating a Tor relay causes recurring resource costs---most notably
-bandwidth and CPU---which can further limit an adversary.
+minimal time until relays obtain the \texttt{Stable} (seven days) and the
+\texttt{HSDir} (96 hours) flag to increase the cost of Sybil relays and to give
+Tor developers more time to discover suspicious relays before they are able to
+run an attack.  Finally, operating a Tor relay causes recurring resource
+costs---most notably bandwidth and CPU---which can further limit an adversary.
 
 % Why previously proposed solutions don't work.
 It is tempting to look for strong defenses in the substantial amount of previous
