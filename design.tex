@@ -146,24 +146,47 @@ Project.
 \begin{table}[t]
 \centering
 \begin{tabular}{l c p{4cm}}
-\textbf{Discovery} & \textbf{\# of relays} & \textbf{Incident} \\
+\textbf{Discovery} & \textbf{\# of relays} & \textbf{Attack description} \\
 \hline
 % Message-ID: <20151117150055.GA25187@nymity.ch>
 2015-11-17 & 8 & Downgrade TLS and replace onion domains. \\
 % Message-ID: <20151116164403.GL10892@nymity.ch>
 2015-11-16 & 1 & SSLStrip attack. \\
-% Message-ID: <20150926174033.GB27610@nymity.ch>
-2015-09-26 & 6 & Blocking STARTTLS over SMTP. \\
+% Message-ID: <20150908174557.GG8901@nymity.ch>
+2015-09-08 & 1 & Injects iframe into relayed HTML. \\
 % Message-ID: <20150804202838.GA4774@nymity.ch>
-2015-08-04 & 4 & Onion service impersonation by rewriting onion domains. \\
+2015-08-04 & 4\dagger & Onion service impersonation by rewriting onion domains. \\
 % Message-ID: <20150630022923.GA2340@nymity.ch>
-2015-06-29 & 55 & Onion service impersonation by rewriting onion domains. \\
+2015-06-29 & 55\dagger & Onion service impersonation by rewriting onion domains. \\
 % Message-ID: <20150423004031.GA11395@nymity.ch>
-2015-04-22 & 70 & Onion service impersonation by rewriting onion domains. \\
+2015-04-22 & 70\dagger & Onion service impersonation by rewriting onion domains. \\
 % Message-ID: <20150311125831.GD23215@nymity.ch>
 2015-03-11 & 1 & Injected iframe into relayed HTML. \\
+% Message-ID: <20150311131506.GE23215@nymity.ch>
+2015-03-11 & 18\ddagger & Bitcoin site MitM. \\
+2015-02-11 & 17\ddagger & Bitcoin site MitM. \\
+% Message-ID: <20150210154109.GD10777@nymity.ch>
+2015-02-10 & 1 & Injects advertisement into HTML. \\
+2015-01-10 & 1 & Incorrect DNS resolution. \\
+% Message-ID: <20150109195428.GA29115@nymity.ch>
+2015-01-09 & 23\ddagger & Bitcoin site MitM. \\
+% Message-ID: <20141025182433.GA23244@nymity.ch>
+2014-10-25 & 1 & Running sslstrip. \\
+% Message-ID: <20141021133016.GA11247@nymity.ch>
+2014-10-21 & 1 & Running sslstrip. \\
+% Message-ID: <20141021133016.GA11247@nymity.ch>
+2014-10-21 & 1 & Injecting JavaScript into HTML. \\
+% Message-ID: <20140920132357.GC8751@nymity.ch>
+2014-09-20 & 1 & Routes traffic back into the Tor network. \\
+% Message-ID: <20140831153809.GA1799@nymity.ch>
+2014-08-31 & 1 & Injecting JavaScript into HTML. \\
+% Message-ID: <20140811014615.GB23748@nymity.ch>
+2014-08-10 & 1 & Injecting JavaScript into HTML. \\
 \end{tabular}
-\caption{Characterization of the bad exit relays we collected.}
+\caption{Overview of all 205 bad exit relays we discovered between August 2014
+	and November 2015.  We believe that single relays were isolated incidents
+	and multiple relays were Sybil clusters.  Furthermore, Sybil groups marked
+	with a $\dagger$ or a $\ddagger$ were run by the same attacker.}
 \label{tab:exitmap-dataset}
 \end{table}
 
@@ -446,8 +469,8 @@ generate for a given set of consensuses.  The visualization is a bitmap whose
 rows denote hours, and whose columns denote relays.  Every pixel in the image
 represents the uptime status of a given relay.  If the pixel is black, the relay
 is online, and if it is white, it is offline.  Note that this type of
-visualization was first proposed by Fifield on the Tor bug
-tracker~\cite{Fifield2014a}.  Similar to Fifield, we sort columns to group
+visualization was first proposed by Ensafi and subsequently implemented by
+Fifield~\cite{Fifield2014a}.  Similar to Fifield, we sort columns to group
 similar uptime patterns together.  Our first sorting criteria is the amount of
 hours a relay was online, and our second criteria is the median value of the
 online sequence.  Figure~\ref{fig:uptime-matrix} gives an example, illustrating
@@ -580,5 +603,4 @@ listed in the consensus, clients will not consider it for path selection.
 The majority of directory authorities, i.e., four out of eight, must agree on
 either \texttt{AuthDirReject} or \texttt{AuthDirInvalid} to be set for a relay.
 Only then will the block become active.  This mechanism is meant to distribute
-the power of removing relays into the hands of a diverse set of people.  We
-elaborate on our experience with this process in Section~\ref{sec:operational}.
+the power of removing relays into the hands of a diverse set of people.
