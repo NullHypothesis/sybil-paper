@@ -1,21 +1,35 @@
 \section{Related work}
 \label{sec:related_work}
-The concept of a Sybil attack was coined by Douceur in 2002~\cite{Douceur2002a}.
-In his seminal work, Douceur analytically showed that without a central
-verification authority, Sybil attacks are always possible.  The attack can be
-mitigated, however, by making assumptions on the attacker's resources.  These
-assumptions became the focus of subsequent work, in which researchers tried to
-find resources that are difficult for an attacker to scale.
+% Why previously proposed solutions don't work.
+It is tempting to look for defenses in the substantial amount of previous work
+that proposed Sybil mitigation techniques.  In his seminal 2002
+paper~\cite{Douceur2002a}, Douceur formally showed that the only method
+guaranteed to keep out Sybils is a \emph{central authority} that verifies new
+nodes as they join the distributed system.  This approach conflicts with Tor's
+design philosophy because it seeks to eliminate central points of control.  In
+addition, a major factor contributing to Tor's growth is the low barrier of
+entry, allowing operators to set up relays quickly and anonymously.  A
+controlling authority would raise that barrier might thwart Tor's growth.
+Barring a central authority, researchers have proposed techniques that build on
+a resource that is difficult for an attacker to scale.  Two categories of
+Sybil-resistant schemes turned out to be particularly popular: schemes that
+build on \emph{social} and \emph{resource} constraints.  
 
-Two categories of Sybil-resistant schemes turned out to be particularly popular:
-schemes that build on \emph{social} and \emph{resource} constraints.  Social
-constraints are based on the insight that it is difficult for an attacker to
-build trust relationships with honest users.  Past work exploited this fact in
-systems such as SybilGuard~\cite{Yu2006a}, SybilLimit~\cite{Yu2008a}, and
-SybilInfer~\cite{Danezis2009a}.  Resource constraints were based on
-computational puzzles~\cite{Borisov2006a,Li2012a}.  For an overview of Sybil
-defenses, refer to Levine, Shields, and Margolin's technical
-report~\cite{Levine2006a}.  Related to the Tor network, Margolin and
+Social constraints are based on the insight that it is difficult for an attacker
+to build trust relationships with honest users.  Past work exploited this fact
+in systems such as SybilGuard~\cite{Yu2006a}, SybilLimit~\cite{Yu2008a}, and
+SybilInfer~\cite{Danezis2009a}.  Social graph-based defenses don't work in our
+setting because there is no trust relationship between Tor relays.\footnote{To
+clarify, relay operators are encouraged to set the \texttt{MyFamily} option
+for relays under their control, but this type of trust relationship does not
+span to relays run by others.}
+
+Computational resource constraints can be useful if an attacker that seeks to
+operate 100 Sybils suddenly needs 100 times the computational resources she
+would need for a single virtual identity.  Previous work used computational
+puzzles for that purpose~\cite{Borisov2006a,Li2012a}.  However, requiring relay
+operators to complete proof-of-works is pointless as running a relay already
+involves computational work, i.e., relaying data.  Still, Margolin and
 Levine~\cite{Margolin2008a} evaluated a recurring fee onion routing protocol in
 which network participants pay a small amount of money for circuit creation.
 
@@ -26,8 +40,5 @@ found several thousand Sybil accounts on Twitter to dilute political
 speech~\cite{Thomas2012a}, and much work has focused on detecting Sybils that
 are used to send spam~\cite{Gao2010a}.
 
-The rest of our work will show that previous work is difficult to apply; the
-lack of trust relationships between relays frustrates social graph-based
-methods and resource constraints are inherent to running a Tor relay, and hence
-useless.  We draw, however, inspiration from previous work on how to detect
-Sybils~\cite{Liu2015a}.
+For a broader overview of Sybil defenses, refer to Levine, Shields, and
+Margolin's technical report~\cite{Levine2006a}.

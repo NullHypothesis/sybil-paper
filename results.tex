@@ -185,41 +185,66 @@ most interesting Sybil groups in greater detail.
 \begin{tabular}{l c c p{10cm}}
 \textbf{First seen} & \textbf{Group ID} & \textbf{\# of relays} & \textbf{Characteristics} \\
 \hline
-\ldots & \ldots & 6 & Disable STARTTLS for SMTP. \\
-2015-07-10 & DenkoNet & 58 & Hosted on Amazon AWS.  Only online for one consensus. \\
-2015-07-02 & cloudvps & 55 & \ldots \\
-2015-06-29 & onion rewrite & 55 & Transparent onion URL rewriting. \\
-2015-06-17 & 1jabberat & \ldots & \ldots \\
+2015-11-17 & onion rewrite$\dagger$ & 8 & Stripped TLS and replaced onion
+domains with impersonation. \\
+
+2015-07-10 & DenkoNet & 58 & Hosted on Amazon AWS and only present in a single
+consensus.  No relay had the \texttt{Exit} flag. \\
+
+2015-07-02 & cloudvps & 55 & All relays only had the \texttt{Running} and
+\texttt{Valid} flag.  As their name suggests, the relays were hosted by
+the Dutch hoster ``CloudVPS.'' \\
+
+2015-06-29 & onion rewrite$\dagger$ & 55 & Replaced onion domains with
+impersonation. \\
+
+2015-06-17 & 1jabberat & 12 & \ldots \\
+
 2015-06-05 & hsdirscanner2 & 105 & Scanning HSDirs. \\
+
 2015-06-03 & abcd & 28 & Changing fingerprints. \\
+
 2015-05-29 & facebook hsdirs & 6 & Became HSDirs responsible for facebook.  \\
+
 2015-05-20 & hsdirscanner1 & 102 & Scanning HSDirs. \\
+
 2015-04-22 & sigaint & 83 & Targeting (at least) sigaint.org. \\
+
 2015-03-11 & bitcoin-redirect & 24 & Attacking Bitcoin sites by redirecting to own web server. \\
-\ldots & default & many & Likely a Windows-powered botnet.  The group
+
+2015-08 & default & many & Likely a Windows-powered botnet.  The group
 features wide, geographical distribution, which is uncommon for typical Tor
-relays. \\
+relays. See Section~\ref{sec:default-sybils} for more details. \\
 % Shared: nickname, IP address, port, platform, version.
+
 2014-12-30 & Anonpoke & 284 & \ldots\\
+
 2014-12-26 & FuslVZTOR & 246 & The relays showed up only hours after the
 LizardNSA incident. \\
-2014-12-26 & LizardNSA & 3,347 & A hacker group publicly claimed to be
-responsible for the attack.  All relays were hosted in the Google cloud and The
+
+2014-12-26 & LizardNSA & 3,347 & A group publicly claimed to be responsible for
+the attack~\cite{lizards}.  All relays were hosted in the Google cloud and The
 Tor Project removed them within hours. \\
+
 2013-02-03 & AmazonEC2 & \ldots & Changed their fingerprint exactly 24 times. \\
+
 2014-01-04 & fdcserver & \ldots & \ldots \\
+
 2010-10-05 & trotsky & \ldots & \ldots \\
+
 2010-06-26 & planetlab & 512 & According to a report from The Tor
 Project~\cite{progressreport}, a researcher started these relays to learn more
 about scalability effects.  The relays were online for approximately two days. \\
+
 2008-09-26 & torism & 10 & \ldots \\
 \end{tabular}
-\caption{Sybil groups identified by our system.  Our raw data is available
+\caption{All Sybil groups we discovered.  Our raw data is available
 online. \emph{URL redacted for anonymization.}}
 \label{tab:sybils}
 \end{table*}
 
 \subsubsection{default}
+\label{sec:default-sybils}
 This Sybil group, named after the shared nickname ``default,'' has been around
 since 2011 (see Figure~\ref{fig:default-over-time}) and consists of
 Windows-powered relays only.  All members run Tor in version 0.2.4.X, many
@@ -235,7 +260,7 @@ that they are powered off regularly---as it often is the case for desktop PCs.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.47\textwidth]{diagrams/default-over-time}
+	\includegraphics[width=\linewidth]{diagrams/default-over-time}
 	\caption{The amount of relays that we deem part of the Sybil group
 	``default'' over time.  The relays surfaced in Sep. 2011.}
 	\label{fig:default-over-time}
@@ -294,6 +319,7 @@ by a researchers.
 
 \subsection{Accuracy of nearest-neighbor search}
 \label{sec:accuracy}
+\mynote{This section is still very much work-in-progress.}
 A proper evaluation of our algorithm's classification performance requires
 ground truth, i.e., Sybil relays that are \emph{known} to belong together.  All
 we have, however, are Sybils that we \emph{believe} belong together.  We can use
@@ -349,8 +375,8 @@ algorithm's classification performance.  Most value pairs were either $(1,1)$
 	\label{fig:precision-recall}
 \end{figure}
 
-We manually investigated some classification results and found that
-\mynote{explain}.
+% We manually investigated some classification results and found that
+% \mynote{explain}.
 
 \subsection{Computational cost}
 \label{sec:performance}
@@ -367,11 +393,11 @@ performance bottleneck.
 	\begin{tabular}{lccc}
 	\textbf{Method} & \textbf{Invocation} & \textbf{Analysis window} & \textbf{Run time} \\
 	\hline
-	Network churn & Hourly & One hour & $\sim$0.16s \\
-	Nearest-neighbor & Daily & --- & $\sim$15s \\
+	Network churn & Hourly & Two consensuses & $\sim$0.16s \\
+	Nearest-neighbor & Daily & One consensus & $\sim$15s \\
 	Fingerprint analysis & Daily & One month & $\sim$55s \\
 	Uptime matrix & Daily & One month & $\sim$67s \\
-	Similarity matrix & Daily & --- & XXX \\
+	Similarity matrix & Daily & One consensus & XXX \\
 	\end{tabular}
 	\caption{The computational cost of our analysis techniques, measured in
 	execution time.  Network churn analysis is very fast and can easily be run

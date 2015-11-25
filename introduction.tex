@@ -4,13 +4,14 @@
 % Short introduction to Sybil attacks.
 Distributed systems are believed to be more robust than their centralized
 counterparts against attacks such as coercion, denial of service, and
-surveillance.  The Tor network is no exception. 
-However, the absence of a central, controlling authority facilitates
-\emph{Sybil attacks}.  Sybil attacks---introduced by Douceur in
-2002~\cite{Douceur2002a}---are defined as one physical entity controlling many
-virtual identities in a distributed system.  The attack is problematic because
-many distributed systems make assumptions on the maximum number of malicious
-nodes they can endure.
+surveillance.  The Tor network is no exception.  However, the absence of a
+central, controlling authority facilitates \emph{Sybil attacks}.  Sybil
+attacks---introduced by Douceur in 2002~\cite{Douceur2002a}---are defined as one
+physical entity controlling many virtual identities in a distributed system.
+The attack is problematic because many distributed systems make assumptions on
+the maximum number of malicious nodes they can endure.  Indeed, the attack is
+not only of academic interest.  In 2014, researchers added Sybils to the Tor
+network to speed up a traffic confirmation attack~\cite{cmucert}.
 
 % How do Sybil attacks relate to Tor? -- DHT manipulation.
 An attacker's motivation for performing a Sybil attack differs from system to
@@ -67,32 +68,6 @@ minimal time until relays obtain the \texttt{Stable} (seven days) and the
 Tor developers more time to discover suspicious relays before they are able to
 run an attack.  Finally, operating a Tor relay causes recurring resource
 costs---most notably bandwidth and CPU---which can further limit an adversary.
-
-% Why previously proposed solutions don't work.
-It is tempting to look for strong defenses in the substantial amount of previous
-work that proposed Sybil mitigation techniques.  In his seminal 2002
-paper~\cite{Douceur2002a}, Douceur formally showed that the only method
-guaranteed to keep out Sybils is a \emph{central authority} that verifies new
-nodes as they join the distributed system.  This approach conflicts with Tor's
-design philosophy because it seeks to eliminate central points of control.  In
-addition, a major factor contributing to Tor's growth is the low barrier of
-entry, allowing operators to set up relays quickly and anonymously.  A
-controlling authority would raise that barrier.  Barring a central authority,
-researchers have proposed techniques that build on a resource that is difficult
-for an attacker to scale.  Past work has focused extensively on
-\emph{computational resources} and \emph{edges in social graphs}.
-
-Computational resources can be useful if an attacker that seeks to
-operate 100 Sybils suddenly needs 100 times the computational resources she
-would need for a single virtual identity.  Social graph-based Sybil detection
-techniques assume that it is difficult for Sybils to establish a large number of
-connections with non-Sybils.  Unfortunately, both resources do not apply to the
-Tor network. Requiring relay operators to complete proof-of-works is pointless
-as running a relay already involves computational work.  Social graph-based
-defenses do not apply because there is no trust relationship between Tor
-relays.\footnote{To clarify, relay operators are encouraged to set the
-\texttt{MyFamily} option for relays under their control, but this type of
-trust relationship does not span to relays run by others.}
 
 % Our contributions.
 Given the nonapplicability of existing approaches, we focus on techniques to

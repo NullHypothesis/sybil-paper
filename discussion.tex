@@ -1,33 +1,23 @@
 \section{Discussion}
 \label{sec:discussion}
-Having presented and evaluated our techniques, we will discuss our operational
-experience~(\S~\ref{sec:operational}) and the balance between transparency and
-secrecy~(\S~\ref{sec:secrecy}); we reiterate our work's
-shortcomings~(\S~\ref{sec:limitations}); and discuss the role played by cloud
+Having presented and evaluated our techniques, we will now discuss the
+transparency and secrecy tradeoff~(\S~\ref{sec:secrecy}), we reiterate our
+work's limitations~(\S~\ref{sec:limitations}), and we discuss the role of cloud
 providers in Sybil attacks~(\S~\ref{sec:cloud}).
-
-\subsection{Operational experience}
-\label{sec:operational}
-
-\mynote{Mention since when we are running our systems and what it was like.}
-
-\mynote{Root cause analysis difficult.  Especially if relays behave exactly like
-benign relays would.  Weighing up up pros vs. cons when considering to reject a
-relay is necessary.}
 
 \subsection{Balancing transparency and secrecy}
 \label{sec:secrecy}
 During the development of sybilhunter, we pondered what a reasonable balance
-between transparency and secrecy could look like.  On the one hand, we want our
-system design to be open to stimulate scientific progress.  On the other hand,
-a freely available implementation helps attackers evade the system because they
-can first test their attacks in an offline setting.
+between transparency and secrecy should look like.  On the one hand, we want our
+system design and code to be open, to stimulate scientific progress.  On the
+other hand, a freely available implementation helps attackers evade our system
+because they can first test and refine their attacks offline.
 
 It seems difficult to achieve a setting analogous to Kerckhoffs' principle in
-cryptography, which states that a system must be secure even everything about
-it, except the key, is known.  There is no key in our setting.  We can, however,
-divide our system into the \emph{open} analysis framework and its \emph{secret}
-parameters.  It is the analysis framework that is of primary interest to other
+cryptography, stating that a system must be secure even if everything except the
+key is known about it.  There is no key in our setting.  We can, however, divide
+our system into the \emph{open} analysis framework and its \emph{secret}
+parameters.  After all, the analysis framework is of primary interest to other
 researchers, whereas its parameters are mere operational details.
 
 Note that the authors of exitmap follow a similar philosophy by making available
@@ -38,14 +28,28 @@ probed.
 
 \subsection{Limitations}
 \label{sec:limitations}
+% We cannot detect all Sybils.  We can only make an effort.
 We mentioned in Section~\ref{sec:threat_model} that we are unable to prevent all
 Sybil attacks.  An adversary unconstrained by time and money will always be able
-to inject Sybils by eliminating redundancy in how her Sybils look and behave.
-This is already known since Douceur showed in 2002 that the only way to prevent
-Sybil attacks is a central authority that verifies network
+to add Sybils and eliminate redundancy in her Sybils' appearance and behavior.
+This is known since Douceur showed in 2002 that the only way to prevent Sybil
+attacks is a central authority that verifies network
 participants~\cite{Douceur2002a}.  A central authority is unlikely to be viable
 for the Tor network.  It would be in conflict with Tor's goal of distributing
-trust and alienate relay operators.
+trust and alienate relay operators.  As a result, detecting Sybils in the Tor
+network is limited to making a best effort.
+
+% We cannot determine the purpose of a Sybil cluster.
+Finally, our approach is unable to determine the \emph{purpose} of a Sybil
+attack.  In some cases, the purpose is obvious; for example, if a Sybil cluster
+has the \texttt{Exit} flag and tampers with traffic, or if a cluster has the
+\texttt{HSDir} flag and shares an unusually long fingerprint prefix.  In many
+other cases, however, we rely on additional information to decide if a Sybil
+cluster should be removed.  For example, Sybils being hosted in ``bulletproof''
+ASes~\cite{Konte2015a}, showing signs of not running the tor reference
+implementation, or spoofing information in their router descriptor could all
+suggest malicious intent.  In the end, Sybil clusters have to be evaluated case
+by case, and the benefits and disadvantages of blocking it have to be evaluated.
 
 % We will now explore how costly a Sybil attack is in practice.  First, an
 % adversary needs a number of systems to run Tor relays on.  These systems should
@@ -57,19 +61,18 @@ trust and alienate relay operators.
 
 \subsection{Use and abuse of cloud providers}
 \label{sec:cloud}
-Table~\ref{tab:sybils} contains several cloud-hosted Sybil clusters.
-Presumably, cloud-hosted relays are attractive to attackers because they
+Some of the Sybil groups listed in Table~\ref{tab:sybils} were hosted in the
+cloud.  Presumably, cloud-hosted relays are attractive to attackers because they
 provide cheap, disposable, and hourly-billed platforms.  But does the bandwidth
-contributed by cloud-hosted relays make up for the abuse?  We will now discuss
-this question.
+contributed by cloud-hosted relays make up for the abuse?
 
-First, we calculated the amount of bandwidth contributed by Tor relays that
-were located in the netblocks of three major cloud providers, Amazon
-AWS~\cite{amazonaws}, Google Cloud Platform~\cite{googlecloud}, and Microsoft
-Azure~\cite{azure}.  Note that the netblocks published by these cloud providers
-can change over time, and are not archived.  As a result, we could have missed
-netblocks, which means that our calculations can only provide a \emph{lower
-bound} of cloud-hosted bandwidth.
+To answer this question, we first calculated the amount of bandwidth contributed
+by Tor relays that were located in the netblocks of three major cloud providers,
+Amazon AWS~\cite{amazonaws}, Google Cloud Platform~\cite{googlecloud}, and
+Microsoft Azure~\cite{azure}.  Note that the netblocks published by these cloud
+providers can change over time, and are not archived.  As a result, we could
+have missed netblocks, which means that our calculations can only provide a
+lower bound of cloud-hosted bandwidth.
 
 Since we do not have access to archived netblocks, we limit our analysis to
 July 2015.  Having obtained cloud-hosted netblocks, we then iterated over all
@@ -118,7 +121,7 @@ free usage tier of more bridge operators runs out.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.48\textwidth]{diagrams/torcloud.pdf}
+	\includegraphics[width=\linewidth]{diagrams/torcloud.pdf}
 	\caption{The amount of TorCloud~\cite{torcloud} bridges over time.  The
 	numbers are decreasing and the TorCloud system has ended in May 2015.}
 	\label{fig:cloudbridges}
