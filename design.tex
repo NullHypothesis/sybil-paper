@@ -56,7 +56,7 @@ why we only analyse the following two:
 		hours, or sooner, depending on certain conditions.  Note that some
 		information in router descriptors is not verified by directory
 		authorities.  As a result, relays are able to spoof information such as
-		their operating system, Tor version, and Uptime.
+		their operating system, Tor version, and uptime.
 
 	\item[Consensuses] Every hour, directory authorities vote on the state of
 		the network, producing the consensus, which is a list of all running Tor
@@ -86,8 +86,8 @@ benchmarks, our parser can process approximately 27 consensuses per
 second.\footnote{Measured on an Intel Core i7 2.9 GHz CPU.  We placed our
 datasets on a solid state drive to remove the I/O bottleneck.}  Stem, for
 comparison, averages at around 1.8 consensuses per second.  Note, however, that
-Stem parses some more fields than our parser, which means that our results is an
-overestimation.
+Stem parses some more fields than our parser, which means that our results are
+an overestimation.
 
 \begin{table}[t]
 \centering
@@ -149,7 +149,7 @@ Project.
 \textbf{Discovery} & \textbf{\# of relays} & \textbf{Attack description} \\
 \hline
 % Message-ID: <20151117150055.GA25187@nymity.ch>
-2015-11-17 & 8 & Downgrade TLS and replace onion domains. \\
+2015-11-17 & 8$\dagger$ & Downgrade TLS and replace onion domains. \\
 % Message-ID: <20151116164403.GL10892@nymity.ch>
 2015-11-16 & 1 & SSLStrip attack. \\
 % Message-ID: <20150908174557.GG8901@nymity.ch>
@@ -249,7 +249,7 @@ years, all of which seemed true positives, i.e., they should be of interest to
 directory authority operators.  The script did not raise false positives because
 the median number of new fingerprints in a consensus is only six---significantly
 below the conservative threshold of 49.  The script's conservative threshold
-probably causes false negatives, but we cannot determine the false positive rate
+probably causes false negatives, but we cannot determine the false negative rate
 because we lack ground truth.  In addition, The Tor Project's script can be
 defeated by a ``trickling'' attack in which Sybils are slowly added over time.
 We now extend The Tor Project's approach to make it more robust against these
@@ -268,16 +268,16 @@ relays.
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/flat-hill.pdf}
-	\caption{Flat hill in 2009.  Smoothed using moving average with a window
-	size of 12.}
+	\caption{A flat hill in 2009.  The time series was smoothed using a moving
+	average with a window size of 12 hours.}
 	\label{fig:flat-hill}
 \end{figure}
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/sudden-spike.pdf}
-	\caption{Sudden spike in 2010.  Smoothed using moving average with a window
-	size of 12.}
+	\caption{A sudden spike in 2010.  The time series was smoothed using a
+	moving average with a window size of 12 hours.}
 	\label{fig:sudden-spike}
 \end{figure}
 
@@ -290,7 +290,7 @@ changes.  To address this issue, we split the formula in two parts and create a
 time series for new relays ($\sigma_{n}$) as well as for gone relays
 ($\sigma_{g}$).  $C_{t}$ is the network consensus at time $t$, and $\setminus$
 denotes the complement between two consensuses, i.e., the number of relays that
-is in one consensus, but not the other.  We now defined $\sigma_{n}$ and
+is in one consensus, but not the other.  We now define $\sigma_{n}$ and
 $\sigma_{g}$ as:
 
 \begin{equation}
@@ -493,16 +493,16 @@ Section~\ref{sec:fingerprint-anomalies} for examples.
 
 Once the columns are sorted, we run our algorithm to determine the distance
 between two subsequent uptime sequences.  If the distance is under our
-threshold, we mark both uptime sequences as red, to make highlight them in
-manual analysis.
+threshold, we mark both uptime sequences as red, to highlight them in manual
+analysis.
 
 \subsubsection{Fingerprint analysis}
 \label{sec:fingerprint-analysis}
-The information a Tor client needs to connect to an onion service is saved in a
-distributed hash table (DHT) that is formed consists of a subset of all Tor
+The information a Tor client needs to connect to an onion service is stored in a
+distributed hash table (DHT) that consists of a subset of all Tor
 relays, the onion service directories (HSDirs).  A daily-changing set of six
 HSDirs are responsible for a given onion service and are asked by Tor clients
-for information about the onion service they want to connect to.  A HSDir
+for information about the onion service they want to connect to.  An HSDir
 becomes responsible for an onion service when its fingerprint is close to the
 descriptor ID that is derived from the onion service's public key, a time stamp,
 and additional information.
@@ -598,9 +598,10 @@ Project.  There are currently two ways for directory authorities to remove
 relays, controlled by the options \texttt{AuthDirReject} and
 \texttt{AuthDirInvalid}.  The former removes a relay from the consensus and the
 latter takes away a relay's \texttt{Valid} flag.  While the relay is still
-listed in the consensus, clients will not consider it for path selection.
+listed in the consensus, clients will not consider it for their first or last
+hop in a circuit.
 
-The majority of directory authorities, i.e., four out of eight, must agree on
+The majority of directory authorities, i.e., five out of eight, must agree on
 either \texttt{AuthDirReject} or \texttt{AuthDirInvalid} to be set for a relay.
 Only then will the block become active.  This mechanism is meant to distribute
 the power of removing relays into the hands of a diverse set of people.

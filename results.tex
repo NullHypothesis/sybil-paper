@@ -13,13 +13,13 @@ computational performance of all our analysis techniques
 \subsection{Churn rate analysis}
 \label{sec:churn}
 We determined the churn rates of two subsequent consensuses for all 69,133
-consensuses.  There are 158 gaps in the archived data, so we ended up with
-$68,975 \cdot 2 = 137,950$ churn values for both time series.
-Figure~\ref{fig:churn-density} illustrates a density plot that shows the
-distribution of all these churn values, 99.97\% of which are in the interval
-$[0, 0.1]$.  The diagram further features 37 vertical dotted lines that mark
-outliers above 0.1.  Table~\ref{tab:churn-dist} gives an overview of our time
-series statistics.
+consensuses that cover Oct 2007 to August 2015.  There are 158 gaps in the
+archived data, so we ended up with $68,975 \cdot 2 = 137,950$ churn values for
+both time series.  Figure~\ref{fig:churn-density} illustrates a density plot
+that shows the distribution of all these churn values, 99.97\% of which are in
+the interval $[0, 0.1]$.  The diagram further features 37 vertical dotted lines
+that mark outliers above 0.1.  Table~\ref{tab:churn-dist} gives an overview of
+our time series statistics.
 
 \begin{figure}[t]
 	\centering
@@ -247,8 +247,7 @@ online. \emph{URL redacted for anonymization.}}
 \label{sec:default-sybils}
 This Sybil group, named after the shared nickname ``default,'' has been around
 since 2011 (see Figure~\ref{fig:default-over-time}) and consists of
-Windows-powered relays only.  All members run Tor in version 0.2.4.X, many
-releases are older than Sep. 2014.  We extracted relays by filtering consensuses
+Windows-powered relays only.  We extracted relays by filtering consensuses
 for nicknames that are set to ``default,'' onion routing ports set to 443, and
 directory ports set to 9030.  The group features high IP address churn.  For
 Oct. 2015, we found ``default'' relays in 73 countries, with the top three
@@ -276,7 +275,7 @@ The above suggests that some of these relays are running without the owner's
 knowledge.  The relays don't fit the pattern of Sefnit (a.k.a.
 Mevade)~\cite{sefnit} and Skynet~\cite{skynet}, two pieces of malware that use
 an onion service as command and control server.  Nevertheless, we believe that
-these could could be part of a botnet.
+these are part of a botnet.
 
 \subsubsection{LizardNSA}
 All relays were hosted in the Google Cloud, and only online for nine hours,
@@ -297,20 +296,21 @@ in parallel to the LizardNSA attack, there is no reason to believe that both
 incidents are related.
 
 \subsubsection{Anonpoke}
-The relays were online for four hours until they were rejected.  All relays were
-hosted by a VPS provider in the US, with the curious exception of a single relay
-that was hosted in the UK, and running a different Tor version.  The relays
-advertized the default bandwidth of 1 GiB/s on port 9001 and 9030.  All relays
-were middle relays and running as directory mirror.  All Sybils were configured
-to be an onion service directory, but did not manage to get the flag in time.
+All relays shared the nickname ``Anonpoke'' and were online for four hours until
+they were rejected.  All relays were hosted by a VPS provider in the US, with
+the curious exception of a single relay that was hosted in the UK, and running a
+different Tor version.  The relays advertized the default bandwidth of 1 GiB/s
+on port 9001 and 9030.  All relays were middle relays and running as directory
+mirror.  All Sybils were configured to be an onion service directory, but did
+not manage to get the flag in time.
 
 \subsubsection{PlanetLab}
 A set of relays that used a variation of the strings ``planet'', ``plab'',
 ``pl'', and ``planetlab'' as their nickname.  The relays' exit policy allowed
 ports 6660--6667, but they did not get the \texttt{Exit} flag.  The Sybils were
 online for three days and then removed by The Tor Project, as mentioned in a
-blog post~\cite{planetlab}.  The blog post further says that the relays were run
-by a researchers.
+blog post~\cite{progressreport}.  The blog post further says that the relays
+were run by a researchers.
 
 % \subsubsection{Bitcoin}
 % The ones that are stealing bitcoins.
@@ -325,7 +325,7 @@ ground truth, i.e., Sybil relays that are \emph{known} to belong together.  All
 we have, however, are Sybils that we \emph{believe} belong together.  We can use
 this dataset as ground truth, but the resulting performance scores are likely an
 overestimate of our algorithm's true performance because we manually tuned it to
-consider the features that we believe our powerful Sybil predictors.
+consider the features that we believe to be strong predictors.
 
 % We can (ab)use MyFamily data as ground truth.
 In addition to our Sybil dataset, relay families can serve as ground truth.  A
@@ -412,7 +412,7 @@ it takes to compute its output.  The calculation of network churn is very
 fast---it takes as input only two consensus files---and can easily be done for
 every network consensus.  Nearest-neighbour search takes approximately 15
 seconds, most of which is spent building the vantage point tree.  We used
-nearest-neighbour search for manual analysis, but it could be used
+nearest-neighbour search for manual analysis, but it can also be used
 automatically.  Fingerprint and uptime analysis for one month work of consensus
 files both take approximately one minute and can easily be run daily.
 %Finally, computing a similarity matrix takes \mynote{XXX}.

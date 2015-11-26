@@ -6,7 +6,7 @@ Distributed systems are believed to be more robust than their centralized
 counterparts against attacks such as coercion, denial of service, and
 surveillance.  The Tor network is no exception.  However, the absence of a
 central, controlling authority facilitates \emph{Sybil attacks}.  Sybil
-attacks---introduced by Douceur in 2002~\cite{Douceur2002a}---are defined as one
+attacks---coined by Douceur in 2002~\cite{Douceur2002a}---are defined as one
 physical entity controlling many virtual identities in a distributed system.
 The attack is problematic because many distributed systems make assumptions on
 the maximum number of malicious nodes they can endure.  Indeed, the attack is
@@ -54,16 +54,18 @@ it is increasingly able to:
 Instead of being a direct means to an end, Sybil relays can be a \emph{side
 effect} of another issue.  In Section~\ref{sec:sybil_groups}, we provide
 evidence for what appears to be a botnet whose zombies are running Tor relays.
-Similarly, in August 2013, attackers infected computers with malware that used a
-Tor onion service as command and control server~\cite{Hopper2014a}.  In this
-case, however, the infected machines were Tor clients, and not relays.
+In this case, the relay operators are probably not aware of the relays they are
+running.
 
 % Existing Sybil defense mechanisms.
 As of November 2015, the Tor network employs a number of implicit and explicit
 Sybil defenses.  First, directory authorities accept at most two relays per IP
 address~\cite{Bauer2007b} to prevent low-resource Sybil
-attacks~\cite{Bauer2007a}.  Second, The Tor Project has gradually increased the
-minimal time until relays obtain the \texttt{Stable} (seven days) and the
+attacks~\cite{Bauer2007a}.  Similarly, the path selection
+algorithm~\cite{path-spec} contains heuristics to avoid relays that could be
+controlled by the same operator, e.g., Tor clients never select two relays in
+the same /16 network.  Second, The Tor Project has gradually increased the
+minimal time until relays obtain the \texttt{Stable} flag (seven days) and the
 \texttt{HSDir} (96 hours) flag to increase the cost of Sybil relays and to give
 Tor developers more time to discover suspicious relays before they are able to
 run an attack.  Finally, operating a Tor relay causes recurring resource
