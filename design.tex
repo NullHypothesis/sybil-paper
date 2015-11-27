@@ -1,8 +1,8 @@
 \section{Data and design}
 \label{sec:design}
-We now discuss how we detect Sybils in the Tor network.  Our methods are
-implemented in our tool sybilhunter, which takes as input archived Tor network
-data and then attempts to expose Sybil groups, as illustrated in
+We now discuss how we detect Sybils in the Tor network.  Our detection methods
+are implemented in a tool, sybilhunter, which takes as input archived Tor
+network data and then attempts to expose Sybil groups, as illustrated in
 Figure~\ref{fig:system}.  While developing sybilhunter, we faced numerous design
 decisions that we tackled by drawing on the experience we gained by manually
 analyzing numerous Sybil relay groups.  We iteratively improved sybilhunter when
@@ -83,11 +83,11 @@ implemented a new parser in the Go programming language~\cite{zoossh}.  Our
 parser consists of approximately 2,000 lines of code (and 1,000 additional lines
 for tests) and supports both strict and lazy parsing.  According to our
 benchmarks, our parser can process approximately 27 consensuses per
-second.\footnote{Measured on an Intel Core i7 2.9 GHz CPU.  We placed our
-datasets on a solid state drive to remove the I/O bottleneck.}  Stem, for
-comparison, averages at around 1.8 consensuses per second.  Note, however, that
-Stem parses some more fields than our parser, which means that our results are
-an overestimation.
+second.\footnote{Measured on an Intel Core i7 2.9 GHz CPU, a consumer-grade CPU.
+We placed our datasets on a solid state drive to remove the I/O bottleneck.}
+Stem, for comparison, averages at around 1.8 consensuses per second.  Note,
+however, that Stem parses some more fields than our parser, which means that our
+results are an overestimation.
 
 \begin{table}[t]
 \centering
