@@ -3,21 +3,20 @@
 We now discuss how we detect Sybils in the Tor network.  Our detection methods
 are implemented in a tool, sybilhunter, which takes as input archived Tor
 network data and then attempts to expose Sybil groups, as illustrated in
-Figure~\ref{fig:system}.  While developing sybilhunter, we faced numerous design
+Figure~\ref{fig:system}.  While developing sybilhunter, we faced many design
 decisions that we tackled by drawing on the experience we gained by manually
 analyzing numerous Sybil relay groups.  We iteratively improved sybilhunter when
-we experienced operational shortcomings.  We further augment our design with
-ideas from related work, e.g., Cao et al. observed that Sybil groups share
-properties and frequently change at the same time~\cite{Cao2014a}.
+we experienced operational shortcomings and augmented our design with ideas from
+related work, e.g., Cao et al. observed that Sybil groups share properties and
+frequently change at the same time~\cite{Cao2014a}.
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=0.4\textwidth]{diagrams/system_architecture.pdf}
-	\caption{Our system architecture.  Two different datasets serve as input
-		to sybilhunter, our Sybil detection tool; 1) archived consensuses and
-		server descriptors, and 2) malicious relays that we gather by running
-		exitmap~\cite{Winter2014a}.  Sybilhunter then attempts to extract Sybil
-		groups from the given data.}
+	\caption{Our system architecture.  Two datasets serve as input to
+		sybilhunter: archived consensuses and server descriptors, and malicious
+		relays that we gather by running exitmap~\cite{Winter2014a}.
+		Sybilhunter then attempts to extract Sybil groups from the given data.}
 	\label{fig:system}
 \end{figure}
 
@@ -30,15 +29,14 @@ are similar in their \emph{behavior} and \emph{appearance}.
 In this section, we first characterize our datasets~(\S~\ref{sec:datasets}) and
 present our threat model~(\S~\ref{sec:threat_model}).  We then discuss our
 analysis techniques~(\S~\ref{sec:techniques}) and how the Sybils we
-discovered are removed from the Tor network~(\S~\ref{sec:blocking-sybils}).
+discovered were removed from the Tor network~(\S~\ref{sec:blocking-sybils}).
 
 \subsection{Datasets}
 \label{sec:datasets}
-We employ two types of datasets, both of which are illustrated in
-Figure~\ref{fig:system}.  We mine \emph{archived consensuses and router
-descriptors} for relay clusters, and we use the \emph{output of the exitmap
-scanner}---in combination with archived data---to find associated, malicious
-relays.
+We employ two datasets, both illustrated in Figure~\ref{fig:system}.  We mine
+archived consensuses and router descriptors for relay clusters and we use the
+output of the exitmap scanner---in combination with archived data---to find
+associated, malicious relays.
 
 \subsubsection{Consensuses and router descriptors}
 The consensus and router descriptor dataset comes from
@@ -48,6 +46,14 @@ status votes.  Some of the archived data dates back to as early as 2004,
 allowing us to restore arbitrary Tor network states in the last ten years.  Not
 all of CollecTor's archived data is relevant for our hunt for Sybils, which is
 why we only analyse the following two:
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.3\textwidth]{diagrams/data_sets.pdf}
+	\caption{Our dataset contains consensuses (produced by directory
+		authorities) and router descriptors (produced by relays).}
+	\label{fig:datasets}
+\end{figure}
 
 \begin{description}
 	\item[Descriptors] Tor relays and bridges periodically upload router
@@ -65,41 +71,33 @@ why we only analyse the following two:
 		Figure~\ref{fig:datasets}.
 \end{description}
 
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=0.3\textwidth]{diagrams/data_sets.pdf}
-	\caption{Our dataset contains consensuses (produced by directory
-		authorities) and router descriptors (produced by relays).}
-	\label{fig:datasets}
-\end{figure}
-
 Table~\ref{tab:collector-dataset} gives an overview of the size of our dataset.
 We found it challenging to process such large amounts of data.  We started by
 using the Python parsing library Stem~\cite{stem}, which is maintained by The
 Tor Project.  The size of the datasets and the amount of files turned out to be
-difficult to handle for Stem because it was implemented in an interpreted,
-dynamic language.  To be able to process our dataset more efficiently, we
-implemented a new parser in the Go programming language~\cite{zoossh}.  Our
-parser consists of approximately 2,000 lines of code (and 1,000 additional lines
-for tests) and supports both strict and lazy parsing.  According to our
-benchmarks, our parser can process approximately 27 consensuses per
-second.\footnote{Measured on an Intel Core i7 2.9 GHz CPU, a consumer-grade CPU.
-We placed our datasets on a solid state drive to remove the I/O bottleneck.}
-Stem, for comparison, averages at around 1.8 consensuses per second.  Note,
-however, that Stem parses some more fields than our parser, which means that our
-results are an overestimation.
+difficult to handle for Stem because of Python's interpreted and dynamic nature.
+To process our dataset more efficiently, we implemented a custom parser in the
+Go programming language~\cite{zoossh}.  Our parser consists of approximately
+2,000 lines of code (and 1,000 additional lines for tests) and supports both
+strict and lazy parsing.  According to our benchmarks, our parser can process
+approximately 27 consensuses per second, as measured on an Intel Core i7 2.9 GHz
+CPU, a consumer-grade CPU.  We placed our datasets on a solid state drive to
+eliminate the I/O bottleneck.  Stem, for comparison, averages at around 1.8
+consensuses per second.  Note, however, that Stem processes more fields than our
+parser, which makes it difficult to have a fair comparison.
 
 \begin{table}[t]
 \centering
 \begin{tabular}{l c c c}
-\textbf{Dataset} & \textbf{Files} & \textbf{Size} & \textbf{Time span} \\
+\textbf{Dataset} & \textbf{\# of files} & \textbf{Size} & \textbf{Time span} \\
 \hline
-% 47677982862 bytes.
-Consensuses & 67,671 & 44 GiB & 10/2007 -- 07/2015 \\
-% 48252370463 bytes.
-Descriptors & 30,759,243 & 44 GiB & 12/2005 -- 07/2015 \\
+% find . -type f | wc -l
+% du -b consensuses/
+Consensuses & 69,877 & 47 GiB & 10/2007 -- 10/2015 \\
+Descriptors & 32,376,097 & 47 GiB & 12/2005 -- 10/2015 \\
 \end{tabular}
-\caption{Overview of our consensus and server descriptor dataset.}
+\caption{An overview of our first dataset, consensuses and server descriptors
+since 2007 and 2005, respectively.}
 \label{tab:collector-dataset}
 \end{table}
 
@@ -118,30 +116,16 @@ is able to sustain the bandwidth it claims to handle in its router descriptor.
 \subsubsection{Malicious relays}
 We use a second, complementary dataset, shown in
 Table~\ref{tab:exitmap-dataset}, that consists of malicious exit relays we
-gathered by running Winter's exitmap~\cite[\S 3.1]{Winter2014a} over 15 months.
-Exitmap is a Python-based scanning framework for Tor exit relays.  Exitmap
-modules perform a network task that can then be run over all exit relays.  One
-use case is HTTPS MitM detection: A module can fetch the X.509 certificate of a
-web server over all exit relays and then compare the fingerprint to the
-expected, valid fingerprint.  In addition to the original modules that the
-exitmap's authors shared with us, we implemented modules to detect HTML
-tampering and TLS downgrading.  Our modules ran from August 2014 to November
-2015 and discovered 225 malicious exit relays, which we all reported to The Tor
-Project.
-
-\mynote{Verify numbers here.}
-% blockchain.info tampering
-% <20140811014615.GB23748@nymity.ch> 1
-% <20140920132357.GC8751@nymity.ch> 1
-% <20141021133016.GA11247@nymity.ch> 2
-% <20141025182433.GA23244@nymity.ch> 1
-% <20150109195428.GA29115@nymity.ch> 23
-% <20150210154109.GD10777@nymity.ch> 1
-% <20150804202838.GA4774@nymity.ch> 4
-% <20150630022923.GA2340@nymity.ch> 55
-% <20150605120807.GA20320@nymity.ch> 49
-% <20150423004031.GA11395@nymity.ch> 70
-% <20150311131506.GE23215@nymity.ch> 18
+gathered by running Winter's exitmap tool~\cite[\S 3.1]{Winter2014a} over 15
+months.  Exitmap is a Python-based scanning framework for Tor exit relays.
+Exitmap modules perform a network task that can then be run over all exit
+relays.  One use case is HTTPS MitM detection: A module can fetch the X.509
+certificate of a web server over all exit relays and then compare the
+fingerprint to the expected, valid fingerprint.  In addition to the original
+modules that the exitmap's authors shared with us, we implemented modules to
+detect HTML tampering and TLS downgrading.  Our modules ran from August 2014 to
+November 2015 and discovered 205 malicious exit relays, which we all reported to
+The Tor Project.
 
 \begin{table}[t]
 \centering
@@ -183,10 +167,11 @@ Project.
 % Message-ID: <20140811014615.GB23748@nymity.ch>
 2014-08-10 & 1 & Injecting JavaScript into HTML. \\
 \end{tabular}
-\caption{Overview of all 205 bad exit relays we discovered between August 2014
-	and November 2015.  We believe that single relays were isolated incidents
-	and multiple relays were Sybil clusters.  Furthermore, Sybil groups marked
-	with a $\dagger$ or a $\ddagger$ were run by the same attacker.}
+\caption{An overview of our second dataset, 205 bad exit relays we discovered
+	between Aug 2014 and Nov 2015.  We believe that all single relays in
+	the dataset were isolated incidents while multiple relays constituted Sybil
+	clusters.  Sybil groups marked with a $\dagger$ or a $\ddagger$ were run by
+	the same attacker.}
 \label{tab:exitmap-dataset}
 \end{table}
 
@@ -486,8 +471,8 @@ Section~\ref{sec:fingerprint-anomalies} for examples.
 		Every row in the image represents one consensus, and every column
 		represents one relay.  As a result, every pixel denotes the uptime
 		status of a given relay at a given hour.  Black pixels mean ``online,''
-		white pixels mean ``offline.''  Green rows denote missing consensuses
-		and red blocks denote possible Sybil groups.}
+		white pixels mean ``offline.''  Red blocks denote possible Sybil groups,
+		as identified by Algorithm~\ref{alg:uptime}.}
 	\label{fig:uptime-matrix}
 \end{figure}
 
@@ -523,13 +508,13 @@ fingerprints the most, and output the results.
 \label{sec:nearest-neighbor}
 We frequently found ourselves in situations where exitmap discovered a malicious
 exit relay and we were trying to find similar, potentially associated relays.
-This involved extensive manual work, which we soon started to automate.  In
-particular, we needed an algorithm for nearest-neighbor search: given a ``seed''
-relay, what are its $n$ most similar neighbors?  We define similarity as
-redundancy in \emph{relay configuration}, i.e., similar relays share parts of
-their configuration file such as ports, IP addresses, exit policies, or uptimes.
-As a result, we find nearest neighbors by coming up with an algorithm that finds
-configuration similarities.
+This involved extensive manual work, which we soon started to automate.  We
+needed an algorithm for nearest-neighbor search, i.e., given a ``seed'' relay,
+what are its $n$ most similar neighbors?  We define similarity as redundancy in
+\emph{relay configuration} because similar relays share parts of their
+configuration file such as ports, IP addresses, exit policies, or bandwidth.  As
+a result, we find nearest neighbors by coming up with an algorithm that compares
+the configuration of relays.
 
 A naive implementation would compare the seed relay to all other relays in the
 consensus, which scales linearly.  We can do better by using \emph{metric trees}
@@ -563,17 +548,17 @@ Subsequent nearest-neighbor lookups finish almost instantly.
 
 % TODO (23 Nov 2015, 11:04am): \mynote{Still need to compare this to naive $n^{2}$ search.}
 
-\subsubsection{Meaningful results}
-Systems that employ complex and opaque analysis techniques to expose security
-incidents frequently suffer from what Sommer and Paxson call the \emph{semantic
-gap}~\cite[\S III.C]{Sommer2010a}, i.e., a system's output is difficult to act
-upon as its meaning is unclear.  Our tools automate the detection of Sybils,
-but the process of blocking them involves human interaction, which is why we
-took special care to consider the semantic gap.
+\subsubsection{Meaningful and useful results}
+Systems that employ complex and opaque analysis techniques frequently suffer
+from what Sommer and Paxson call the \emph{semantic gap}~\cite[\S
+III.C]{Sommer2010a}, i.e., a system's output is difficult to act upon as its
+meaning is unclear.  Our tools automate the \emph{detection} of Sybils, but the
+process of \emph{blocking} them involves human interaction, which is why we took
+special care to address the semantic gap.
 
 We avoid the use of opaque classification methods as their output (frequently
 distances in high-dimensional vector space) is difficult to interpret.  Instead,
-we rely on the Levenshtein distance because its output is easy to understand and
+we use the Levenshtein distance because its output is easy to understand and
 retrace.  Figure~\ref{fig:visualization} further illustrates a visualization
 that we developed for exploratory analysis, which is meant to complement
 automated analysis.  The graph shows the similarities (edges) between four Tor
@@ -587,9 +572,28 @@ relays (vertices).
 	\label{fig:visualization}
 \end{figure}
 
-Finally, according to the UNIX tool design philosophy~\cite{Pike1983a},
-sybilhunter can produce CSV-formatted text output that is easy to pipe into
-command line tools for further analysis.
+We further reduce manual work by producing output that directory authority
+operators can readily use to block Sybils, by simply pasting it into their
+configuration files, for example:
+
+{\footnotesize
+\begin{verbatim}
+# Reported-by: sybilhunter
+# Date: Tue, 17 Nov 2015 10:07:27 -0000
+# Reason: Sybil group that runs HTTPS MitM attacks.
+# Fingerprints: B9D8842C3F0882BD7DE3BC81E6D8AEB5900C237D
+#               83F2EEA05441D2BFA08BBDDD16AC19F79F162E42
+#               A13BDD3858E0EBFB99F5F2D4C8866B69232CB5C2
+AuthDirInvalid 12.34.56.78
+AuthDirInvalid 1.23.4.56
+AuthDirInvalid 123.4.56.7
+\end{verbatim}
+}
+
+\noindent Finally, according to the Unix tool design
+philosophy~\cite{Pike1983a}, sybilhunter can produce CSV-formatted text output
+that is easy to pipe into command line tools for further analysis using tools
+such as cut, grep, and awk.
 
 \subsection{Blocking Sybils}
 \label{sec:blocking-sybils}

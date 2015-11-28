@@ -18,7 +18,7 @@ An attacker's motivation for performing a Sybil attack differs from system to
 system.  In the case of Tor, attackers are frequently motivated by manipulating
 Tor's distributed hash table (DHT)~\cite{rendspec} that is used to implement
 onion services.  Tor clients need an onion service descriptor to learn how to
-connect to a given onion service such as \url{3g2upl4pq6kufc4m.onion}, the
+connect to a given onion service such as 3g2upl4pq6kufc4m.onion, the
 DuckDuckGo search engine.  These descriptors are stored in Tor's DHT.  The DHT
 implementation suffers from a vulnerability that allows an attacker to predict
 at which position in the DHT a descriptor will be stored.  The attacker can then
@@ -79,13 +79,11 @@ to as early as 2007, to discover past attacks and anomalies.  Finally, we
 extensively characterize the Sybil groups we discover.  To sum up, we make
 the following contributions:
 \begin{itemize}
-	\item We consider Sybils in Tor and show how this problem differs from
-		related work.
-	\item We design and implement a platform to analyze past and future Tor
-		data.  Our approach does not require any modifications to the Tor
-		network.
-	\item We characterize past incidents and publish a dataset for future
-		research.
+	\item We design and implement a tool---sybilhunter---to analyze past and
+		future Tor data.  Our approach does not require any modifications to the
+		Tor network.
+	\item We expose and characterize Sybil clusters and publish a dataset to
+		stimulate future research.
 \end{itemize}
 
 % Structure of the paper.

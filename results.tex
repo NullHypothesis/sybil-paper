@@ -134,7 +134,7 @@ hours after the appeared.
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/lizard-uptimes.jpg}
-	\caption{December 2014, when a group of people started several hundred Tor
+	\caption{December 2014, when attackers started several hundred Tor
 	relays in the Google cloud.  The relays were only online for a small number
 	of hours because they were promptly rejected by The Tor Project.}
 	\label{fig:2014-12-lizard}
@@ -186,7 +186,7 @@ now give an overview of the more interesting groups we exposed.
 \begin{tabular}{l c c p{10cm}}
 \textbf{Discovery} & \textbf{Group ID} & \textbf{\# of relays} & \textbf{Characteristics} \\
 \hline
-2015-11-17 & rewrite$\dagger$ & 8 & Replaced onion domains with impersonation site (See \S~\ref{sec:rewrite-sybils}). \\
+2015-11-17 & rewrite$\dagger$ & 8 & Replaced onion domains with impersonation site. \\
 
 2015-07-10 & DenkoNet & 58 & Hosted on Amazon AWS and only present in a single
 consensus.  No relay had the \texttt{Exit} flag. \\
@@ -195,7 +195,7 @@ consensus.  No relay had the \texttt{Exit} flag. \\
 \texttt{Valid} flag.  As their name suggests, the relays were hosted by
 the Dutch hoster ``CloudVPS.'' \\
 
-2015-06-29 & rewrite$\dagger$ & 55 & Replaced onion domains with impersonation site (See \S~\ref{sec:rewrite-sybils}). \\
+2015-06-29 & rewrite$\dagger$ & 55 & Replaced onion domains with impersonation site. \\
 
 % 2015-06-17 & 1jabberat & 12 & \ldots \\
 
@@ -203,52 +203,45 @@ the Dutch hoster ``CloudVPS.'' \\
 their fingerprint regularly, presumably in an attempt to manipulate the
 distributed hash table. \\
 
-2015-04-22 & rewrite$\dagger$ & 70 & Replaced onion domains with impersonation site (See \S~\ref{sec:rewrite-sybils}). \\
+2015-04-22 & rewrite$\dagger$ & 70 & Replaced onion domains with impersonation site. \\
 
-2015-03-11 & redirect$\ddagger$ & 24 & Redirected users to impersonated site (See~\S~\ref{sec:redirect-sybils}). \\
-2015-02-11 & redirect$\ddagger$ & 17 & Redirected users to impersonated site (See~\S~\ref{sec:redirect-sybils}). \\
-2015-01-09 & redirect$\ddagger$ & 23 & Redirected users to impersonated site (See~\S~\ref{sec:redirect-sybils}). \\
+2015-03-11 & redirect$\ddagger$ & 24 & Redirected users to impersonated site. \\
+2015-02-11 & redirect$\ddagger$ & 17 & Redirected users to impersonated site. \\
+2015-01-09 & redirect$\ddagger$ & 23 & Redirected users to impersonated site. \\
 
 2015-08 & default & --- & Likely a Windows-powered botnet.  The group
 features wide, geographical distribution, which is uncommon for typical Tor
-relays. See Section~\ref{sec:default-sybils} for more details. \\
+relays. \\
 % Shared: nickname, IP address, port, platform, version.
 
 2014-12-30 & Anonpoke & 284 & The relays did not have the \texttt{Exit} flag and
-were removed from the network before they could get the \texttt{HSDir} flag.
-See Section~\ref{sec:anonpoke-sybils} for more details. \\
+were removed from the network before they could get the \texttt{HSDir} flag. \\
 
 2014-12-26 & FuslVZTOR & 246 & The relays showed up only hours after the
-LizardNSA incident.  See Section~\ref{sec:fuslvztor-sybils} for more details. \\
+LizardNSA incident. \\
 
 2014-12-26 & LizardNSA & 3,347 & A group publicly claimed to be responsible for
 the attack~\cite{lizards}.  All relays were hosted in the Google cloud and The
-Tor Project removed them within hours.  See Section~\ref{sec:lizardnsa-sybils}
-for more details. \\
+Tor Project removed them within hours. \\
 
 2013-02-03 & AmazonEC2 & 57 & The relays were likely part of a research
-project~\cite{Biryukov2013a}.  See Section~\ref{sec:amazon-sybils} for more
-details. \\
+project~\cite{Biryukov2013a}. \\
 
 2014-01-04 & FDCservers & 126 & Relays that were involved in an onion service
-deanonymization attack~\cite{cmucert}.  See Section~\ref{sec:fdcservers-sybils}
-for more details. \\
+deanonymization attack~\cite{cmucert}. \\
 
-2010-09-09 & trotsky & 219 & The relays could have been part of a botnet.  See
-Section~\ref{sec:trotsky-sybils} for more details. \\
+2010-09-09 & trotsky & 219 & The relays could have been part of a botnet. \\
 
 2010-06-26 & planetlab & 512 & According to a report from The Tor
 Project~\cite{progressreport}, a researcher started these relays to learn more
-about scalability effects.  See Section~\ref{sec:planetlab-sybils} for more
-details. \\
+about scalability effects. \\
 \end{tabular}
 \caption{The Sybil groups we discovered using sybilhunter and our custom exitmap
 modules.}
 \label{tab:sybils}
 \end{table*}
 
-\subsubsection{rewrite}
-\label{sec:rewrite-sybils}
+\sybilgroup{The ``rewrite'' Sybils}
 All relays had the \texttt{Exit} flag and replaced onion domains with an
 impersonation, presumably hosted by the attacker.  Interestingly, the
 impersonation domains shared a prefix with the original, e.g.,
@@ -263,19 +256,16 @@ in the onion domain, $2^{5 n - 1}$ operations are required on average.  For the
 seven-digit prefix above, this results in $2^{5 \cdot 7 - 1} = 2^{34}$
 operations.  The author of scallion~\cite{scallion}, a tool for generating
 vanity onion domains, determined that an nVidia Quadro K2000M, a mid-range
-laptop GPU, is able to generate 90 million hashes per second.  On such a GPU, a
+laptop GPU, is able to generate 90 million hashes per second.  On this GPU, a
 partial collision for a seven-digit prefix can be found in $2^{34} \cdot
 \frac{1}{90,000,000} \simeq 190$ seconds, i.e., in a little bit more than three
 minutes.
 
 We found that attacked onion domains contained Bitcoin wallet addresses that
 were replaced in the impersonation, presumably to hijack donations or payments.
-As a result, we believe that the attack was financially motivated.  The
-connection between this Sybil group and the one discussed in
-Section~\ref{sec:redirect-sybils} is not clear.
+As a result, we believe that the attack was financially motivated.
 
-\subsubsection{redirect}
-\label{sec:redirect-sybils}
+\sybilgroup{The ``redirect'' Sybils}
 The relays all had the \texttt{Exit} flag and tampered with HTTP redirects of
 exit traffic.  Some Bitcoin sites would redirect users from their HTTP version
 to the secure HTTPS version, to protect their users login credentials.  This
@@ -297,8 +287,7 @@ up in May 2014, with only two relays, but slowly grew over time, until it was
 finally discovered in Jan 2015.  We believe that they were run by the same
 attacker because of the way the attack was implemented.
 
-\subsubsection{default}
-\label{sec:default-sybils}
+\sybilgroup{The ``default'' Sybils}
 This Sybil group, named after the shared nickname ``default,'' has been around
 since 2011 (see Figure~\ref{fig:default-over-time}) and consists of
 Windows-powered relays only.  We extracted relays by filtering consensuses
@@ -314,8 +303,9 @@ that they are powered off regularly---as it often is the case for desktop PCs.
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/default-over-time}
-	\caption{The amount of relays that we deem part of the Sybil group
-	``default'' over time.  The relays surfaced in Sep. 2011.}
+	\caption{The amount of members of the ``default'' Sybil group over time.
+		The relays surfaced in Sep 2011 and occasionally amounted to several
+		hundred members online at the same time.}
 	\label{fig:default-over-time}
 \end{figure}
 
@@ -331,8 +321,7 @@ Mevade)~\cite{sefnit} and Skynet~\cite{skynet}, two pieces of malware that use
 an onion service as command and control server.  Nevertheless, we believe that
 these are part of a botnet.
 
-\subsubsection{trotsky}
-\label{sec:trotsky-sybils}
+\sybilgroup{The ``trotsky'' Sybils}
 Similar to the ``default'' cluster, the ``trotsky'' relays appear to be part of
 a botnet.  Most of the relays' IP addresses were located in Eastern Europe, in
 particular in Slovenia, Croatia, and Bosnia and Herzegovina.  The relays were
@@ -344,9 +333,7 @@ The first relays started appearing in Sep 2010.  Over time, there were two relay
 peaks, reaching 139 (Sep 23) and 219 (Oct 3) relays.  After that, only 1--3
 relays remained in the consensus.
 
-
-\subsubsection{Amazon EC2}
-\label{sec:amazon-sybils}
+\sybilgroup{The ``Amazon EC2'' Sybils}
 The relays all used randomly-generated nicknames, consisting of 16 letters and
 numbers; Tor in version 0.2.2.37; GNU/Linux; and IP addresses in Amazon's
 netblock.  Every IP address changed its fingerprint 24 times, but not randomly:
@@ -358,8 +345,7 @@ After 24 hours, most of the relays obtained the \texttt{HSDir} flag.
 We believe that this Sybil group was run by Biryukov, Pustogarov, and Weinmann
 for their paper ``Trawling for Tor Hidden Services''~\cite{Biryukov2013a}.
 
-\subsubsection{LizardNSA}
-\label{sec:lizardnsa-sybils}
+\sybilgroup{The ``LizardNSA'' Sybils}
 All relays were hosted in the Google Cloud, and only online for nine hours,
 until the directory authorities started rejecting them.  The majority of
 machines were middle relays (96\%), but the attackers also started some exit
@@ -369,8 +355,7 @@ all relays would have obtained the \texttt{HSDir} flag in time, they would have
 constituted almost 50\% of all onion service directories; the median number of
 onion service directories on Dec. 26 was 3,551.
 
-\subsubsection{FuslVZTOR}
-\label{sec:fuslvztor-sybils}
+\sybilgroup{The ``FuslVZTOR'' Sybils}
 All machines were middle relays and hosted in 212.38.181.0/24, a VPS provider's
 network in the UK.  The directory authorities started rejecting the relays five
 hours after they were first seen.  The relays advertized the default bandwidth
@@ -378,8 +363,7 @@ of 1 GiB/s and used seemingly randomly determined ports.  Other than happening
 in parallel to the LizardNSA attack, there is no reason to believe that both
 incidents are related.
 
-\subsubsection{Anonpoke}
-\label{sec:anonpoke-sybils}
+\sybilgroup{The ``Anonpoke'' Sybils}
 All relays shared the nickname ``Anonpoke'' and were online for four hours until
 they were rejected.  All relays were hosted by a VPS provider in the US,
 Rackspace, with the curious exception of a single relay that was hosted in the
@@ -388,8 +372,7 @@ bandwidth of 1 GiB/s on port 9001 and 9030.  All relays were middle relays and
 running as directory mirror.  All Sybils were configured to be an onion service
 directory, but did not manage to get the flag in time.
 
-\subsubsection{PlanetLab}
-\label{sec:planetlab-sybils}
+\sybilgroup{The ``PlanetLab'' Sybils}
 A set of relays that used a variation of the strings ``planet'', ``plab'',
 ``pl'', and ``planetlab'' as their nickname.  The relays' exit policy allowed
 ports 6660--6667, but they did not get the \texttt{Exit} flag.  The Sybils were
@@ -397,14 +380,13 @@ online for three days and then removed by The Tor Project, as mentioned in a
 blog post~\cite{progressreport}.  The blog post further says that the relays
 were run by a researchers.
 
-\subsubsection{FDCservers}
-\label{sec:fdcservers-sybils}
+\sybilgroup{The ``FDCservers'' Sybils}
 We believe that these Sybils were used in attempt to deanonymize onion services,
-summarized by The Tor Project in a blog post in July 2014~\cite{cmucert}.
-The relays were running FreeBSD, did not have a nickname, and were located in
+summarized by The Tor Project in a July 2014 blog post~\cite{cmucert}.  The
+relays were running FreeBSD, did not have a nickname, and were located in
 50.7.0.0/16 and 204.45.0.0/16.
 
-The relays were added to the network on .
+%The relays were added to the network on .
 
 On Jan 30, 2014, the attackers added 58 relays to the 63 existing ones, giving
 them control over a total of 121 relays.
