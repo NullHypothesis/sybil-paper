@@ -510,11 +510,10 @@ We frequently found ourselves in situations where exitmap discovered a malicious
 exit relay and we were trying to find similar, potentially associated relays.
 This involved extensive manual work, which we soon started to automate.  We
 needed an algorithm for nearest-neighbor search, i.e., given a ``seed'' relay,
-what are its $n$ most similar neighbors?  We define similarity as redundancy in
-\emph{relay configuration} because similar relays share parts of their
-configuration file such as ports, IP addresses, exit policies, or bandwidth.  As
-a result, we find nearest neighbors by coming up with an algorithm that compares
-the configuration of relays.
+what are its $n$ most similar neighbors?  We define similarity as
+\emph{redundancy in relay configuration} because similar relays share their
+configuration parameters file such as ports, IP addresses, exit policies, or
+bandwidth.  As a result, our algorithm works by comparing relay configurations.
 
 A naive implementation would compare the seed relay to all other relays in the
 consensus, which scales linearly.  We can do better by using \emph{metric trees}
@@ -590,7 +589,7 @@ AuthDirInvalid 123.4.56.7
 \end{verbatim}
 }
 
-\noindent Finally, according to the Unix tool design
+\noindent Finally, corresponding to the Unix tool design
 philosophy~\cite{Pike1983a}, sybilhunter can produce CSV-formatted text output
 that is easy to pipe into command line tools for further analysis using tools
 such as cut, grep, and awk.

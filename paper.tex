@@ -4,11 +4,11 @@
 \usepackage[big]{dgruyter_NEW}
 \usepackage[T1]{fontenc}
 \usepackage[scaled=0.8]{beramono}
-\usepackage[defaultsans,scale=0.9]{cantarell}
 \usepackage[linesnumbered,boxed]{algorithm2e}
 \usepackage{tikz}
 \usepackage{amsmath}
 \usepackage[mark,raisemark=-1cm]{gitinfo2}
+\usepackage{subfigure}
 
 \definecolor{darkblue}{rgb}{0,0,0.7}
 \hypersetup{
@@ -20,7 +20,6 @@
 
 \urlstyle{sf}
 
-\renewcommand*{\bibfont}{\small}
 \newcommand{\mynote}[1]{\noindent\textcolor{red}{\textbf{Note:} #1}}
 \newcommand{\sybilgroup}[1]{\noindent\textbf{\textsf{#1:}}}
 
@@ -28,7 +27,8 @@
 
 \begin{document}
 
-\author{Anonymous}
+\author*[1]{Anonymous}
+\affil[1]{Anonymous}
 
 \title{\huge Identifying and characterizing\\Sybils in the Tor network}
 
@@ -36,7 +36,7 @@
 
 \input{abstract}
 
-\keywords{Tor, Sybil attack}
+\keywords{Tor, Sybil attack, anonymity}
 
 \journalname{Proceedings on Privacy Enhancing Technologies}
 \DOI{Editor to enter DOI}

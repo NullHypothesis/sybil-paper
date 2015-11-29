@@ -13,7 +13,7 @@ computational performance of all our analysis techniques
 \subsection{Churn rate analysis}
 \label{sec:churn}
 We determined the churn rates of two subsequent consensuses for all 69,133
-consensuses that cover Oct 2007 to August 2015.  There are 158 gaps in the
+consensuses that cover Oct 2007 to Aug 2015.  There are 158 gaps in the
 archived data, so we ended up with $68,975 \cdot 2 = 137,950$ churn values for
 both time series.  Figure~\ref{fig:churn-density} illustrates a density plot
 that shows the distribution of all these churn values, 99.97\% of which are in
@@ -43,24 +43,24 @@ our time series statistics.
 	\label{tab:churn-dist}
 \end{table}
 
-Figure~\ref{fig:2008-08} illustrates the churn rates for August 2008, featuring
-our biggest anomaly.  On August 19, 822 relays left the network, resulting in a
+Figure~\ref{fig:2008-08} illustrates the churn rates for Aug 2008, featuring
+our biggest anomaly.  On Aug 19, 822 relays left the network, resulting in a
 sudden spike of the churn rate, and a trend increase in the time series.  The
 spike was caused by the switch from consensus method three to four, which
-happened on August 19, 2008.  The changelog says that in consensus method four,
+happened on Aug 19, 2008.  The changelog says that in consensus method four,
 routers that don't have the \texttt{Running} flag are no longer listed in the
 consensus.
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/2008-08.pdf}
-	\caption{On August 19, 822 relays suddenly left the Tor network, resulting
+	\caption{On Aug 19, 822 relays suddenly left the Tor network, resulting
 	in a churn rate spike, and a time series increase.  The event was caused by
 	the switch from consensus method three to four.}
 	\label{fig:2008-08}
 \end{figure}
 
-\mynote{Still need to discuss other outliers.}
+% \mynote{Still need to discuss other outliers.}
 
 \subsection{Uptime analysis}
 \label{sec:uptime}
@@ -70,7 +70,7 @@ onion service: \url{http://qviewr5ittnqdcvi.onion}.}
 We now discuss a subset of these images that
 contain particularly interesting patterns.
 
-Figure~\ref{fig:2010-06-planetlab} shows June 2010, featuring a clear ``Sybil
+Figure~\ref{fig:2010-06-planetlab} shows Jun 2010, featuring a clear ``Sybil
 block'' on the left side.  The Sybils belonged to a researcher who, as
 documented by The Tor Project~\cite{progressreport}, started 512 Tor relays on
 PlanetLab for research on scalability.  Our manual analysis could verify this.
@@ -82,7 +82,7 @@ relays were not online for a long time.
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/planetlab-uptimes.jpg}
-	\caption{In June 2010, a researcher started 512 Tor relays on PlanetLab for,
+	\caption{In Jun 2010, a researcher started 512 Tor relays on PlanetLab for,
 		as The Tor Project documented, ``their research into cloud computing and
 		scaling effects''~\cite{progressreport}.  As illustrated by the easily
 		visible red bar on the left, the relays were only online for a short
@@ -92,15 +92,15 @@ relays were not online for a long time.
 
 Figure~\ref{fig:2012-08-steppattern} features a curious ``step pattern'' for
 approximately 100 relays, all of which were located in Russia and Germany.  The
-relays appeared in December 2011, and started exhibiting the diurnal step
-pattern (nine hours uptime followed by 15 hours downtime) in March 2012.  All
+relays appeared in Dec 2011, and started exhibiting the diurnal step
+pattern (nine hours uptime followed by 15 hours downtime) in Mar 2012.  All
 relays had similar nicknames, consisting of eight seemingly randomly-generated
-characters.  In April 2013, the relays finally disappeared.
+characters.  In Apr 2013, the relays finally disappeared.
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/2012-08.jpg}
-	\caption{August 2012 featured a curious ``step pattern,'' caused by
+	\caption{Aug 2012 featured a curious ``step pattern,'' caused by
 	approximately 100 Sybils.  Out of 24 hours, the relays were online for only
 	nine hours.}
 	\label{fig:2012-08-steppattern}
@@ -118,7 +118,7 @@ relay fingerprints.
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/heartbleed-uptimes.jpg}
-	\caption{April 2014, the month the Heartbleed bug was discovered.
+	\caption{Apr 2014, the month the Heartbleed bug was discovered.
 		The large block in the middle of the diagram happened because The
 		Tor Project eventually rejected a large number of relays that did not
 		change their keypairs in time.}
@@ -127,14 +127,14 @@ relay fingerprints.
 
 Figure~\ref{fig:2014-12-lizard} illustrates the largest Sybil group to date,
 comprising 3,347 Tor relays that an attacker started in the Google cloud in
-December 2014.  Because of its magnitude, the attack was spotted almost
+Dec 2014.  Because of its magnitude, the attack was spotted almost
 instantly, and The Tor Project was quick to remove the offending relays nine
 hours after the appeared.
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/lizard-uptimes.jpg}
-	\caption{December 2014, when attackers started several hundred Tor
+	\caption{Dec 2014, when attackers started several hundred Tor
 	relays in the Google cloud.  The relays were only online for a small number
 	of hours because they were promptly rejected by The Tor Project.}
 	\label{fig:2014-12-lizard}
@@ -149,8 +149,7 @@ fingerprint the most.  All these relays changed their fingerprint at least ten
 times.  Twenty one relays changed their fingerprint more than 100 times, and the
 relay at the very right end of the distribution changed its fingerprint 936
 times.  This relay's nickname was ``openwrt,'' suggesting that it was a home
-router that was rebooted regularly.  It was running from August 2010 to December
-2010.
+router that was rebooted regularly.  It was running from Aug 2010 to Dec 2010.
 
 \begin{figure}[t]
 	\centering
@@ -186,7 +185,12 @@ now give an overview of the more interesting groups we exposed.
 \begin{tabular}{l c c p{10cm}}
 \textbf{Discovery} & \textbf{Group ID} & \textbf{\# of relays} & \textbf{Characteristics} \\
 \hline
+2015-11-28 & foo & 60 & not sure. \\
+
 2015-11-17 & rewrite$\dagger$ & 8 & Replaced onion domains with impersonation site. \\
+
+2015-10-30 & 11BX1371 & 142 & All relays were in two /24 networks and a single
+relay had the \texttt{Exit} flag.  \\
 
 2015-07-10 & DenkoNet & 58 & Hosted on Amazon AWS and only present in a single
 consensus.  No relay had the \texttt{Exit} flag. \\
@@ -245,7 +249,7 @@ modules.}
 All relays had the \texttt{Exit} flag and replaced onion domains with an
 impersonation, presumably hosted by the attacker.  Interestingly, the
 impersonation domains shared a prefix with the original, e.g.,
-\textbf{sigaint}bulkwy2vl.onion was replaced with
+\textbf{sigaint}evyh2rzvw.onion was replaced with
 \textbf{sigaint}z7qjj3val.onion.  The shared prefix means that the attacker was
 generating vanity domains by repeatedly generating public key pairs until the
 hash over the key resembled the desired prefix.  Onion domains are generated by
@@ -381,15 +385,22 @@ blog post~\cite{progressreport}.  The blog post further says that the relays
 were run by a researchers.
 
 \sybilgroup{The ``FDCservers'' Sybils}
-We believe that these Sybils were used in attempt to deanonymize onion services,
-summarized by The Tor Project in a July 2014 blog post~\cite{cmucert}.  The
-relays were running FreeBSD, did not have a nickname, and were located in
-50.7.0.0/16 and 204.45.0.0/16.
+These Sybils were used to deanonymize onion service users, as discussed by The
+Tor Project in a July 2014 blog post~\cite{cmucert}.  Supposedly, a research
+institute was executing a traffic confirmation attack by sending sequences of
+\texttt{RELAY\_EARLY} and \texttt{RELAY} cells as a signal down the circuit to
+the client, which the reference implementation never does.  The attacking relays
+were onion service directories and guards, allowing them to control both ends of
+the circuit for some Tor clients that were fetching onion service descriptors.
+All relays were running FreeBSD, used Tor in version 0.2.4.18-rc, had identical
+flags, mostly identical bandwidth values, and were located in 50.7.0.0/16 and
+204.45.0.0/16.  All of these shared configuration options made the relays easy
+to identify.
 
-%The relays were added to the network on .
-
-On Jan 30, 2014, the attackers added 58 relays to the 63 existing ones, giving
-them control over a total of 121 relays.
+The relays were added to the network in batches, starting on Dec 10, 2013 with
+29 relays.  On Jan 30, 2014, the attackers added 58 relays to the 63 existing
+ones, giving them control over 121 relays.  On Jul 8, 2014, The Tor Project
+blocked all 126 relays that were running at the time.
 
 % \subsubsection{Bitcoin}
 % The ones that are stealing bitcoins.
@@ -398,64 +409,78 @@ them control over a total of 121 relays.
 
 \subsection{Accuracy of nearest-neighbor search}
 \label{sec:accuracy}
-\mynote{This section is still very much work-in-progress.}
-A proper evaluation of our algorithm's classification performance requires
-ground truth, i.e., Sybil relays that are \emph{known} to belong together.  All
-we have, however, are Sybils that we \emph{believe} belong together.  We can use
-this dataset as ground truth, but the resulting performance scores are likely an
-overestimate of our algorithm's true performance because we manually tuned it to
-consider the features that we believe to be strong predictors.
+How good is our nearest-neighbor search at finding Sybils?  To answer this
+question, we now evaluate our algorithm's \emph{accuracy}, which we define as
+the fraction of neighbors it correctly labels as Sybils.  For example, if eight
+out of ten Sybils are correctly labeled as neighbors, the accuracy is 0.8.
 
-% We can (ab)use MyFamily data as ground truth.
-In addition to our Sybil dataset, relay families can serve as ground truth.  A
-relay family is a set of Tor relays that is controlled by one operator, and is
-configured to express this mutual relationship in the family members'
-configuration file.  In a way, relay families can be seen as benign Sybils.  Tor
-clients never use more than one member of a family in their path to prevent
-correlation attacks.  As of Nov.  2015, there are approximately \mynote{XXX}
-families in the network, ranging from only two relays to \mynote{XXX} relays.
-We can evaluate our algorithm by making it find the nearest neighbours of a
-family member, which, ideally, should be its family members.  Again, using
-families as ground truth is very likely to overestimate results because family
-operators frequently configure their relays almost identically.  At the time of
-this writing, a popular relay family uses the nicknames ``AccessNow000'' to
-``AccessNow009,'' uses adjacent IP addresses, and identical contact information.
-We expect the operators of malicious Sybils, however, to go out of their way to
-obscure the relationship between their relays.
+% We lack ground truth and a comprehensive data set.
+A proper evaluation requires ground truth, i.e., relays that are \emph{known} to
+be Sybils.  All we have, however, are relays that we \emph{believe} are Sybils.
+More importantly, the Sybils we found are not exhaustive, meaning that there are
+likely Sybil groups we did not detect.  Therefore, our evaluation is doomed to
+overestimate our algorithm's accuracy because we are unable to test it on the
+Sybils we did not discover.
+
+% Our two evaluation datasets.
+We evaluate our search algorithm on two datasets, the Sybil clusters that were
+bad exit relays (see Table~\ref{tab:exitmap-dataset}), and relay families.  We
+chose the bad exit Sybils because their identical active attacks give us
+confidence that they are, in fact, Sybils.  A relay family is a set of Tor
+relays that is controlled by one operator, and is configured to express this
+mutual relationship in the family members' configuration file.  In a way, relay
+families can be seen as benign Sybils.  Tor clients never use more than one
+member of a family in their path to prevent correlation attacks.  As of Nov.
+2015, there are approximately 350 families in the network whose size ranges from
+only two to 20 relays.  We can evaluate our algorithm by making it find the
+nearest neighbors of a family member, which, ideally, should be its family
+members.  Again, using families as ground truth is very likely to overestimate
+results because family operators frequently configure their relays almost
+identically.  At the time of this writing, a popular relay family uses the
+nicknames ``AccessNow000'' to ``AccessNow009,'' uses adjacent IP addresses, and
+identical contact information.  We expect the operators of malicious Sybils,
+however, to go out of their way to obscure the relationship between their
+relays.
 
 % Concrete MyFamily experiment.
-To evaluate our nearest-neighbour search, we used all relay families that were
-present in the first consensus that was published in Oct. 2015.  \mynote{Quick
-overview of how many families were present.} For every relay that had a mutual
-family relationship, we built a vantage point tree and then searched for its $n$
-nearest neighbours where $n$ is the amount of mutual family relationships.
-Basically, we evaluated how good our algorithm is at finding the relatives of a
-family member.  We determined the precision and recall, both in the interval
-$[0,1]$ and telling us how many of the nearest neighbours are family members
-(precision) and how many family members were in the nearest neighbours (recall).
-More formally, precision $\mathcal{P}$ is defined as
-$$\mathcal{P} = \frac{|\textrm{\footnotesize Correctly identified Sybils}|}
-{|\textrm{\footnotesize Uncorrectly identified Sybils}|}$$
-and recall $\mathcal{R}$ is defined as
-$$\mathcal{R} = \frac{|\textrm{\footnotesize Correctly identified Sybils}|}
-{|\textrm{\footnotesize Correctly identified Sybils} \cap \textrm{\footnotesize Unidentified Sybils}|}.$$
-For every family member in the consensus, we determined one precision and recall
-value, respectively.  All values are illustrated in
-Figure~\ref{fig:precision-recall}, showing precision on the x-axis and recall on
-the y-axis.  The more points in the top right corner, the better is our
-algorithm's classification performance.  Most value pairs were either $(1,1)$
-(XXX\%) or $(0,0)$ (YYY\%).
+To determine our algorithm's accuracy, we used all relay families that were
+present in the first consensus that was published in Oct. 2015.  For every relay
+that had at least one mutual family relationship, we built a vantage point tree and then
+searched for its $n$ nearest neighbors where $n$ is the amount of mutual family
+relationships.  Basically, we evaluated how good our algorithm is at finding the
+relatives of a family member.  For every relative in a family, we determined the
+accuracy, a value in $[0,1]$.  The result, a distribution of accuracy values, is
+shown in Figure~\ref{fig:family-accuracy}.
 
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=0.32\textwidth]{diagrams/precision-recall.pdf}
-	\caption{Precision and recall when our algorithm is applied on the relay
-		family dataset.}
-	\label{fig:precision-recall}
+% Concrete bad exit experiment.
+Next, we evaluate our algorithm with the bad exit Sybil groups from
+Table~\ref{tab:exitmap-dataset}.  Similar to the previous evaluation, we build a
+vantage point tree for every bad exit relay, and then use it to find its $n$
+nearest neighbors where $n$ is the size of the Sybil group.  The accuracy is the
+fraction of relays that were determined as neighbor.  The result is illustrated
+in Figure~\ref{fig:badexit-accuracy}.
+
+\begin{figure}
+\centering
+\subfigure[Bad exit relay Sybils]{
+	\includegraphics[width=0.46\linewidth]{diagrams/bad-relay-accuracy.pdf}
+\label{fig:badexit-accuracy}
+}
+\subfigure[Benign family Sybils]{
+	\includegraphics[width=0.46\linewidth]{diagrams/family-accuracy.pdf}
+\label{fig:family-accuracy}
+}
+\caption{ECDF for our two evaluations, the bad exit Sybils
+	in Fig.~\ref{fig:badexit-accuracy} and the benign family Sybils
+	in Fig.~\ref{fig:family-accuracy}.  Both diagrams plot the algorithm's
+accuracy (x-axis) against the fraction of observations (y-axis).}
+\label{fig:accuracy}
 \end{figure}
 
-% We manually investigated some classification results and found that
-% \mynote{explain}.
+As expected, our algorithm is significantly more accurate for the family
+dataset---66\% of searches had perfect accuracy.  The bad exit dataset, however,
+did worse.  59\% of all searches had an accuracy in the interval $[0.3,0.6]$,
+and not a single search had perfect accuracy.
 
 \subsection{Computational cost}
 \label{sec:performance}
@@ -477,7 +502,7 @@ performance bottleneck.
 	Nearest-neighbor & Daily & One consensus & $\sim$15s \\
 	Fingerprint analysis & Daily & One month & $\sim$55s \\
 	Uptime matrix & Daily & One month & $\sim$67s \\
-	Similarity matrix & Daily & One consensus & XXX \\
+	Similarity matrix & Daily & One consensus & $\sim$26s \\
 	\end{tabular}
 	\caption{The computational cost of our analysis techniques, measured in
 	execution time.  Network churn analysis is very fast and can easily be run
@@ -490,9 +515,11 @@ The table columns contain, from left to right, our analysis technique, how often
 we intend to run the technique, the technique's data time window, and how long
 it takes to compute its output.  The calculation of network churn is very
 fast---it takes as input only two consensus files---and can easily be done for
-every network consensus.  Nearest-neighbour search takes approximately 15
+every network consensus.  Nearest-neighbor search takes approximately 15
 seconds, most of which is spent building the vantage point tree.  We used
-nearest-neighbour search for manual analysis, but it can also be used
+nearest-neighbor search for manual analysis, but it can also be used
 automatically.  Fingerprint and uptime analysis for one month work of consensus
-files both take approximately one minute and can easily be run daily.
-%Finally, computing a similarity matrix takes \mynote{XXX}.
+files both take approximately one minute and can easily be run daily.  Finally,
+the creation of the similarity matrix is prohibitively slow for all currently
+running 7,000 relays because of its quadratic runtime, but it can be created for
+a subset of 1,882 relays in approximately 26 seconds.
