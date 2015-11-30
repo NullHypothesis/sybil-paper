@@ -18,8 +18,8 @@ refer to Levine, Shields, and Margolin's technical report~\cite{Levine2006a}.
 Social constraints are based on the assumptions that it is difficult for an
 attacker to form trust relationships with honest users.  Past work exploited
 this fact in systems such as SybilGuard~\cite{Yu2006a},
-SybilLimit~\cite{Yu2008a}, and SybilInfer~\cite{Danezis2009a}.  However, social
-graph-based defenses don't work in our setting because there is \emph{no
+SybilLimit~\cite{Yu2008a}, and SybilInfer~\cite{Danezis2009a}.  Unfortunately,
+social graph-based defenses don't work in our setting because there is \emph{no
 existing trust relationship} between the operators of Tor relays.  Note that we
 could create such a relationship, e.g., by linking relays to their operator's
 social networking account, or by creating a ``relay operator web of trust'' from
@@ -28,10 +28,10 @@ adoption.
 
 Orthogonal to social constraints, computational resource constraints can be
 useful if an attacker that seeks to operate 100 Sybils suddenly needs 100 times
-the computational resources she would need for a single virtual identity.
+the computational resources she would have needed for a single virtual identity.
 Previous work used computational puzzles for that
-purpose~\cite{Borisov2006a,Li2012a}.  However, requiring relay operators to
-complete proof-of-works is pointless because running a relay already implies
+purpose~\cite{Borisov2006a,Li2012a}.  Unfortunately, requiring relay operators
+to complete proof-of-works is pointless because running a relay already implies
 computational work, i.e., relaying data; in other words, there is no way to run
 100 Tor relays while not spending the resources for 100 relays.  In summary, we
 believe that existing Sybil defences don't work well when applied to the Tor
