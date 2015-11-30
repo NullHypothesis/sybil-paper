@@ -1,8 +1,9 @@
 \section{Data and design}
 \label{sec:design}
-We now discuss how we detect Sybils in the Tor network.  Our detection methods
-are implemented in a tool, sybilhunter, which takes as input archived Tor
-network data and then attempts to expose Sybil groups, as illustrated in
+We draw on two datasets, one publicly available and one created by us, to
+uncover Tor relays that behave and look similarly.  Our detection methods are
+implemented in a tool, sybilhunter, which takes as input archived Tor network
+data and then attempts to expose Sybil groups, as illustrated in
 Figure~\ref{fig:system}.  While developing sybilhunter, we faced many design
 decisions that we tackled by drawing on the experience we gained by manually
 analyzing numerous Sybil relay groups.  We iteratively improved sybilhunter when
@@ -20,38 +21,36 @@ frequently change at the same time~\cite{Cao2014a}.
 	\label{fig:system}
 \end{figure}
 
-Sybilhunter is designed to 1) run over historical network data, dating back to
-2007; 2) run over online data, to detect new Sybils as they join the network;
-and 3) find relays that might be associated with previously discovered,
-malicious relays.  Generally speaking, sybilhunter seeks to expose relays that
-are similar in their \emph{behavior} and \emph{appearance}.
-
-In this section, we first characterize our datasets~(\S~\ref{sec:datasets}) and
-present our threat model~(\S~\ref{sec:threat_model}).  We then discuss our
-analysis techniques~(\S~\ref{sec:techniques}) and how the Sybils we
-discovered were removed from the Tor network~(\S~\ref{sec:blocking-sybils}).
+Generally speaking, sybilhunter seeks to expose relays that are similar in their
+\emph{behavior} and \emph{appearance}; we designed it to 1) run over historical
+network data, dating back to 2007; 2) run over online data, to detect new Sybils
+as they join the network; and 3) find relays that might be associated with
+previously discovered, malicious relays.
 
 \subsection{Datasets}
 \label{sec:datasets}
-We employ two datasets, both illustrated in Figure~\ref{fig:system}.  We mine
-archived consensuses and router descriptors for relay clusters and we use the
-output of the exitmap scanner---in combination with archived data---to find
-associated, malicious relays.
+Figure~\ref{fig:system} shows how we use our two datasets.  Archived consensuses
+and router descriptors (in short: descriptors) allow us to 1) restore past
+states of the Tor network, which we mine for Sybil groups, and to 2) find
+``partners in crime'' of malicious exit relays that we discovered by running the
+exitmap scanner.
 
 \subsubsection{Consensuses and router descriptors}
-The consensus and router descriptor dataset comes from
-CollecTor~\cite{collector}, a service that is run by The Tor Project and
-archives network data such as consensuses, router descriptors, and network
-status votes.  Some of the archived data dates back to as early as 2004,
-allowing us to restore arbitrary Tor network states in the last ten years.  Not
-all of CollecTor's archived data is relevant for our hunt for Sybils, which is
-why we only analyse the following two:
+The consensus and router descriptor dataset is publicly available on
+CollecTor~\cite{collector}, a service that is run by The Tor Project to archive
+network data such as consensuses, router descriptors, and network status votes.
+Some of the archived data dates back to as early as 2004, allowing us to restore
+arbitrary Tor network states in the last ten years.  Not all of CollecTor's
+archived data, however, is relevant to our hunt for Sybils, which is why we only
+analyse the following two:
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=0.3\textwidth]{diagrams/data_sets.pdf}
 	\caption{Our dataset contains consensuses (produced by directory
-		authorities) and router descriptors (produced by relays).}
+		authorities) and router descriptors (produced by relays).  Every hour,
+		a new consensus is generated, and relays upload their router descriptor
+		at least every 18 hours.}
 	\label{fig:datasets}
 \end{figure}
 
@@ -66,25 +65,38 @@ why we only analyse the following two:
 
 	\item[Consensuses] Every hour, directory authorities vote on the state of
 		the network, producing the consensus, which is a list of all running Tor
-		relays.  Every relay status in the consensus contains a digest that is
-		used to obtain the relay's respective descriptor, as shown in
-		Figure~\ref{fig:datasets}.
+		relays.  Every relay status in the consensus contains a digest that
+		points to the relay's descriptor.
 \end{description}
 
+Figure~\ref{fig:datasets} illustrates the relationship between our data.
+Primarily, we are interested in the hourly consensus files.  A consensus file
+consists of \emph{router statuses} that contain basic information about Tor
+relays such as its bandwidth, flags, and exit policy.  As of Nov 2015,
+consensuses contain almost 7,000 router statuses, i.e., every hour, 7,000 router
+statuses are published, and archived by CollecTor.  Every router status contains
+a digest that is used to locate its corresponding \emph{router descriptor}.
+Again, router descriptors are published as they were received by Tor relays
+while consensus files are voted on, and published, by directory authorities.
+Some fields in a router status are also subject to verification.  For example,
+the Tor network operates bandwidth scanners that verify if a relay is able to
+sustain the bandwidth it claims to handle in its router descriptor.
+
 Table~\ref{tab:collector-dataset} gives an overview of the size of our dataset.
-We found it challenging to process such large amounts of data.  We started by
-using the Python parsing library Stem~\cite{stem}, which is maintained by The
-Tor Project.  The size of the datasets and the amount of files turned out to be
-difficult to handle for Stem because of Python's interpreted and dynamic nature.
-To process our dataset more efficiently, we implemented a custom parser in the
-Go programming language~\cite{zoossh}.  Our parser consists of approximately
-2,000 lines of code (and 1,000 additional lines for tests) and supports both
-strict and lazy parsing.  According to our benchmarks, our parser can process
-approximately 27 consensuses per second, as measured on an Intel Core i7 2.9 GHz
-CPU, a consumer-grade CPU.  We placed our datasets on a solid state drive to
-eliminate the I/O bottleneck.  Stem, for comparison, averages at around 1.8
-consensuses per second.  Note, however, that Stem processes more fields than our
-parser, which makes it difficult to have a fair comparison.
+We found it challenging to process these millions of files, adding up to almost
+100 GiB of uncompressed data.  In our first processing attempt, we used the
+Python parsing library Stem~\cite{stem}, which is maintained by The Tor Project.
+The size of data and number of files turned out to be difficult to handle for
+Stem because of Python's interpreted and dynamic nature.  To process our dataset
+more efficiently, we implemented a custom parser in the Go programming
+language~\cite{zoossh}.  Our parser consists of approximately 1,300 lines of
+code (and 800 additional lines for tests) and supports both strict and lazy
+parsing.  According to our benchmarks, our parser can process approximately 27
+consensuses per second, as measured on an Intel Core i7 2.9 GHz CPU, a
+consumer-grade CPU.  We placed our datasets on a solid state drive to eliminate
+the I/O bottleneck.  Stem, for comparison, averages at around 1.8 consensuses
+per second.  Note, however, that Stem processes more fields than our parser,
+which makes it difficult to have a fair comparison.
 
 \begin{table}[t]
 \centering
@@ -101,31 +113,20 @@ since 2007 and 2005, respectively.}
 \label{tab:collector-dataset}
 \end{table}
 
-Figure~\ref{fig:datasets} illustrates the relationship between our data.
-Primarily, we are interested in the hourly consensus files.  A consensus file
-consists of \emph{router statuses} that contain basic information about Tor
-relays such as its bandwidth, flags, and exit policy.  As of August 2015,
-consensuses contain approximately 6,000 router statuses.  Every router status
-contains a digest that is used to locate its corresponding \emph{router
-descriptor}.  Again, router descriptors are published as they were received by
-Tor relays while consensus files are voted on, and published, by directory
-authorities.  Some fields in a router status are also subject to verification.
-For example, the Tor network operates bandwidth scanners that verify if a relay
-is able to sustain the bandwidth it claims to handle in its router descriptor.
-
 \subsubsection{Malicious relays}
-We use a second, complementary dataset, shown in
+We used a second, complementary dataset, shown in
 Table~\ref{tab:exitmap-dataset}, that consists of malicious exit relays we
 gathered by running Winter's exitmap tool~\cite[\S 3.1]{Winter2014a} over 15
 months.  Exitmap is a Python-based scanning framework for Tor exit relays.
 Exitmap modules perform a network task that can then be run over all exit
 relays.  One use case is HTTPS MitM detection: A module can fetch the X.509
 certificate of a web server over all exit relays and then compare the
-fingerprint to the expected, valid fingerprint.  In addition to the original
-modules that the exitmap's authors shared with us, we implemented modules to
-detect HTML tampering and TLS downgrading.  Our modules ran from August 2014 to
-November 2015 and discovered 205 malicious exit relays, which we all reported to
-The Tor Project.
+fingerprint with the expected, valid fingerprint.  In addition to the original
+modules that the exitmap authors shared with us, we implemented modules to
+detect HTML tampering and TLS downgrading, by connecting to servers under our
+control and raising an alert if the returned HTML or received TLS server hello
+were modified.  Our modules ran from August 2014 to November 2015 and discovered
+205 malicious exit relays, which we all reported to The Tor Project.
 
 \begin{table}[t]
 \centering
@@ -175,7 +176,7 @@ The Tor Project.
 \label{tab:exitmap-dataset}
 \end{table}
 
-We include malicious exit relays in our dataset because these relays frequently
+We add malicious exit relays to our dataset because these relays frequently
 \emph{surface in groups}, i.e., an attacker runs the same attack on several,
 physically distinct exit relays~\cite{Winter2014a}.  Winter et al.'s
 work~\cite[\S 5.2]{Winter2014a} further showed that attackers make an effort to
@@ -186,11 +187,10 @@ Section~\ref{sec:nearest-neighbor}.
 
 \subsection{Threat model}
 \label{sec:threat_model}
-Recall that sybilhunter can process \emph{past data} just as \emph{future data}.
-Future data, however, can be manipulated by adversaries that seek to evade our
-system and the powerful nature of Sybil attacks~\cite{Douceur2002a} limits our
-defenses.  This is reflected in our adversarial assumptions.  We assume that our
-adversaries \emph{do}:
+When we apply sybilhunter on newly incoming data, adversaries can manipulate
+their Sybil configuration to evade our system, and the powerful nature of Sybil
+attacks~\cite{Douceur2002a} limits our defenses.  This is reflected in our
+adversarial assumptions.  We assume that our adversaries \emph{do}:
 \begin{itemize}
 	\item Run more than one Tor relay.
 
@@ -308,8 +308,8 @@ the radar.  Refer to Section~\ref{sec:secrecy} for a comprehensive discussion on
 this transparency and secrecy tradeoff.  If $\lambda$ or $\sigma_{n,g}$ exceed a
 manually defined threshold, an alert is raised.
 
-\mynote{We could plot the number of alerts we would get for a sequence of
-thresholds.}
+% \mynote{We could plot the number of alerts we would get for a sequence of
+% thresholds.}
 
 \subsubsection{Uptime matrix}
 \label{sec:uptime-matrix}
@@ -346,8 +346,8 @@ interval $[0, 1]$.  According to this algorithm, relay $A$ and $B$ in
 Figure~\ref{fig:uptime-pattern} have a similarity of 0.1 + 0.1 while $A$ and $C$
 have a similarity of 0.1 + 0.2.
 
-\mynote{Uptime sequences in Algorithm~\ref{alg:uptime} should probably deviate
-exponentially rather than linearly.}
+% \mynote{Uptime sequences in Algorithm~\ref{alg:uptime} should probably deviate
+% exponentially rather than linearly.}
 
 \begin{figure}[t]
 \centering

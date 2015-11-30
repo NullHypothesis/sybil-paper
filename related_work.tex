@@ -11,9 +11,9 @@ and anonymously.  An identity-verifying authority would raise that barrier and
 thwart Tor's growth.  Barring a central authority, researchers have proposed
 techniques that build on a resource that is difficult for an attacker to scale.
 Two categories of Sybil-resistant schemes turned out to be particularly popular:
-schemes that build on \emph{social} and \emph{computational} constraints.  For a
-broader overview of Sybil defenses, refer to Levine, Shields, and Margolin's
-technical report~\cite{Levine2006a}.
+schemes that build on \emph{social} and schemes that build on
+\emph{computational} constraints.  For a broader overview of Sybil defenses,
+refer to Levine, Shields, and Margolin's technical report~\cite{Levine2006a}.
 
 Social constraints are based on the assumptions that it is difficult for an
 attacker to form trust relationships with honest users.  Past work exploited
@@ -33,7 +33,9 @@ Previous work used computational puzzles for that
 purpose~\cite{Borisov2006a,Li2012a}.  However, requiring relay operators to
 complete proof-of-works is pointless because running a relay already implies
 computational work, i.e., relaying data; in other words, there is no way to run
-100 Tor relays while not spending the resources for 100 relays.
+100 Tor relays while not spending the resources for 100 relays.  In summary, we
+believe that existing Sybil defences don't work well when applied to the Tor
+network; its destinctive features call for special solutions.
 
 In parallel to Sybil prevention, research has focused on characterizing
 real-world Sybils.  Wang and Kangasharju uncovered a Sybil attack in
