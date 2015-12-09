@@ -182,66 +182,91 @@ now give an overview of the more interesting groups we exposed.
 
 \begin{table*}[t]
 \centering
-\begin{tabular}{l c c p{10cm}}
-\textbf{Discovery} & \textbf{Group ID} & \textbf{\# of relays} & \textbf{Characteristics} \\
+\begin{tabularx}{\textwidth}{c|c c c X}
+\textbf{Purpose} & \textbf{First active} & \textbf{Group ID} & \textbf{\# of
+relays} & \textbf{Description} \\
 \hline
 %2015-11-28 & foo & 60 & not sure. \\
 
-2015-11-17 & rewrite$\dagger$ & 8 & Replaced onion domains with impersonation site. \\
+\multirow{6}{*}{MitM}
+& 2015-11 & rewrite$\dagger$ & 8 & Replaced onion domains with impersonation
+site. \\
 
-2015-10-30 & 11BX1371 & 142 & All relays were in two /24 networks and a single
-relay had the \texttt{Exit} flag.  \\
+& 2015-06 & rewrite$\dagger$ & 55 & Replaced onion domains with impersonation
+site. \\
 
-2015-07-10 & DenkoNet & 58 & Hosted on Amazon AWS and only present in a single
-consensus.  No relay had the \texttt{Exit} flag. \\
+& 2015-04 & rewrite$\dagger$ & 70 & Replaced onion domains with impersonation
+site. \\
 
-2015-07-02 & cloudvps & 55 & All relays only had the \texttt{Running} and
-\texttt{Valid} flag.  As their name suggests, the relays were hosted by
-the Dutch hoster ``CloudVPS.'' \\
+& 2015-03 & redirect$\ddagger$ & 24 & Redirected users to impersonated site.
+\\
 
-2015-06-29 & rewrite$\dagger$ & 55 & Replaced onion domains with impersonation site. \\
+& 2015-02 & redirect$\ddagger$ & 17 & Redirected users to impersonated site.
+\\
 
-% 2015-06-17 & 1jabberat & 12 & \ldots \\
+& 2015-01 & redirect$\ddagger$ & 23 & Redirected users to impersonated site.
+\\
 
-2015-06-03 & fingerprints & 28 & All relays, located in the same /24, changed
+\hline
+
+\multirow{3}{*}{DHT}
+& 2015-06 & fingerprints & 28 & All relays, located in the same /24, changed
 their fingerprint regularly, presumably in an attempt to manipulate the
 distributed hash table. \\
 
-2015-04-22 & rewrite$\dagger$ & 70 & Replaced onion domains with impersonation site. \\
-
-2015-03-11 & redirect$\ddagger$ & 24 & Redirected users to impersonated site. \\
-2015-02-11 & redirect$\ddagger$ & 17 & Redirected users to impersonated site. \\
-2015-01-09 & redirect$\ddagger$ & 23 & Redirected users to impersonated site. \\
-
-2015-08 & default & --- & Likely a Windows-powered botnet.  The group
-features wide, geographical distribution, which is uncommon for typical Tor
-relays. \\
-% Shared: nickname, IP address, port, platform, version.
-
-2014-12-30 & Anonpoke & 284 & The relays did not have the \texttt{Exit} flag and
-were removed from the network before they could get the \texttt{HSDir} flag. \\
-
-2014-12-26 & FuslVZTOR & 246 & The relays showed up only hours after the
-LizardNSA incident. \\
-
-2014-12-26 & LizardNSA & 3,347 & A group publicly claimed to be responsible for
-the attack~\cite{lizards}.  All relays were hosted in the Google cloud and The
-Tor Project removed them within hours. \\
-
-2013-02-03 & AmazonEC2 & 57 & The relays were likely part of a research
-project~\cite{Biryukov2013a}. \\
-
-2014-01-04 & FDCservers & 126 & Relays that were involved in an onion service
+& 2014-01 & FDCservers & 126 & Relays that were involved in an onion service
 deanonymization attack~\cite{cmucert}. \\
 
-2010-09-09 & trotsky & 219 & The relays could have been part of a botnet. \\
+\hline
 
-2010-06-26 & planetlab & 512 & According to a report from The Tor
+\multirow{2}{*}{Botnet}
+& 2015-08 & default & --- & Likely a Windows-powered botnet.  The group features
+wide, geographical distribution, which is uncommon for typical Tor relays. \\
+
+& 2010-09 & trotsky & 219 & The relays could have been part of a botnet. \\
+
+\hline
+
+\multirow{5}{*}{Unclear}
+& 2015-10 & 11BX1371 & 142 & All relays were in two /24 networks and a single
+relay had the \texttt{Exit} flag.  \\
+
+& 2015-07 & DenkoNet & 58 & Hosted on Amazon AWS and only present in a single
+consensus.  No relay had the \texttt{Exit} flag. \\
+
+& 2015-07 & cloudvps & 55 & All relays only had the \texttt{Running} and
+\texttt{Valid} flag.  As their name suggests, the relays were hosted by the
+Dutch hoster ``CloudVPS.'' \\
+
+% Shared: nickname, IP address, port, platform, version.
+& 2014-12 & Anonpoke & 284 & The relays did not have the \texttt{Exit} flag
+and were removed from the network before they could get the \texttt{HSDir} flag.
+\\
+
+& 2014-12 & FuslVZTOR & 246 & The relays showed up only hours after the
+LizardNSA incident. \\
+
+\hline
+
+\multirow{1}{*}{DoS}
+& 2014-12 & LizardNSA & 3,347 & A group publicly claimed to be responsible
+for the attack~\cite{lizards}.  All relays were hosted in the Google cloud and
+The Tor Project removed them within hours. \\
+
+\hline
+
+\multirow{2}{*}{Research}
+& 2010-06 & planetlab & 512 & According to a report from The Tor
 Project~\cite{progressreport}, a researcher started these relays to learn more
 about scalability effects. \\
-\end{tabular}
+
+& 2013-02 & AmazonEC2 & 57 & The relays were likely part of a research
+project~\cite{Biryukov2013a}. \\
+
+\end{tabularx}
 \caption{The Sybil groups we discovered using sybilhunter and our custom exitmap
-modules.}
+modules, grouped by their purpose.  We believe that groups marked with the
+symbols $\dagger$ and $\ddagger$ were run by the same operator, respectively.}
 \label{tab:sybils}
 \end{table*}
 
