@@ -2,70 +2,81 @@
 \label{sec:introduction}
 
 % Short introduction to Sybil attacks.
-The absence of a central, controlling authority in distributed systems
-facilitates \emph{Sybil attacks}.  We define Sybil attacks---coined by Douceur
-in 2002~\cite{Douceur2002a}---as one physical entity controlling many virtual
-identities in a distributed system.  The attack is problematic because many
-distributed systems make assumptions on the maximum number of malicious nodes
-they can endure.  Indeed, the attack is not only of academic interest.  In 2014,
-researchers added Sybils to the Tor network to deanonymize onion service
-users~\cite{cmucert}.
+In a Sybil attack, one physical entity controls many virtual identities to
+obtain disproportionately large influence in a network.  These attacks take many
+shapes, such as sockpuppets hijacking online discourse~\cite{Thomas2012a}; the
+manipulation of BitTorrent's distributed hash table~\cite{Wang2012a}; and, most
+relevant to our work, relays in the Tor network that seek to deanonymize
+users~\cite{cmucert}.  Preventing Sybil attacks remains challenging, as
+evidenced by Douceur's seminal 2002 paper that shows that Sybil attacks are
+always possible in the absence of a central authority~\cite{Douceur2002a}.  In
+this work, we focus on Sybils in the Tor network, i.e., Tor relays (virtual
+identities) that are controlled by a single operator (physical entity).  But
+what harm can Sybils do in Tor?
 
-% How do Sybil attacks relate to Tor? -- DHT manipulation.
-An attacker's motivation for performing a Sybil attack depends on the system she
-is targeting.  In the case of Tor, attackers are frequently motivated by
-deanonymizing or gathering statistics about onion services, which requires
-manipulating Tor's distributed hash table (DHT)~\cite{rendspec}.  Tor clients
-need an onion service descriptor to connect to an onion service such as
-3g2upl4pq6kufc4m.onion, the DuckDuckGo search engine.  Tor's DHT stores these
-descriptors.  However, the DHT implementation suffers from a vulnerability that
-allows an attacker to predict at which position in the DHT a descriptor will be
-stored at some point in the future.  An attacker can exploit this knowledge by
-configuring six Sybil relays to monitor (still anonymous) clients requests, or
-refuse to serve the onion service, effectively censoring it~\cite{Biryukov2013a}.
-
-% How do Sybil attacks relate to Tor? -- Increased traffic exposure.
-In addition to DHT manipulation, Sybils in Tor allow an attacker to monitor more
-traffic that enters and exits the Tor network.  Because of Tor's
-bandwidth-weighted relay selection, running $n$ relays equates to running a
-single relay that provides as much bandwidth as all $n$ relays.  But at some
-point, an attacker will have to scale horizontally, by adding more relays,
-because there are limits to how much traffic can be relayed by a single machine.
-As an attacker's bandwidth grows, she is increasingly able to:
+The effectiveness of many attacks on Tor depends on how large a fraction of the
+network's traffic---the consensus weight---an attacker can observe.  As the
+attacker's consensus weight grows, she is increasingly able to launch attacks
+such as:
 \begin{description}
-	\item[Sniff and manipulate exit traffic] to steal credentials, break into
-		TLS connections, or inject data~\cite{Winter2014a}.
-	\item[End-to-end correlate] traffic by running entry guards as well as exit
-		relays~\cite{Johnson2013a}.  Note that large network-level adversaries
-		such as an ISP or a government might only need to run one of both.
-	\item[Harvest bridge addresses] by running middle nodes and isolating the
-		IP addresses of incoming Tor connections that don't originate from
-		(publicly known) guard relays~\cite{Ling2012a}.
-	\item[Website fingerprint] connections on guard relays to learn what
-		websites Tor users are connecting to~\cite{Juarez2014a}.
+	\item[Exit relay tampering:] A Tor user's traffic traverses exit relays, the
+		last hop in a Tor circuit, when leaving the Tor network.  Having control
+		over exit relays, an attacker can sniff traffic to harvest unencrypted
+		credentials, break into TLS-protected connections, or inject traffic
+		such as advertisements~\cite{Winter2014a}.
+	\item[Website fingerprinting:] Tor's encryption prevents guard relays (the
+		first hop in a Tor circuit) from learning their user's online activity.
+		Ignoring the encrypted payload, an attacker can still take advantage of
+		flow information such as packet lengths and timings to infer what web
+		site its users are connecting to~\cite{Juarez2014a}.
+	\item[Bridge address harvesting:] Bridges are unpublished Tor relays that
+		are given to censored users as hidden stepping stone into the Tor
+		network.  It is important that censors cannot obtain all bridge
+		addresses, which is why bridge distribution is rate-limited.  An
+		attacker can harvest bridge addresses by running a middle relay and
+		looking for incoming connections that do not originate from guard
+		relays.  These have to be bridge addresses~\cite{Ling2012a}.
+	\item[End-to-end correlation:] By running both entry guards and exit relays,
+		the attacker can use timing analysis to link a Tor user's activity to
+		her identity, e.g., learn that Alice visited Facebook.  For this attack,
+		an attacker must run at least two Tor relays~\cite{Johnson2013a}.
 \end{description}
 
-% Sybils can be a side effect.
-Instead of being a direct means to an end, Sybil relays can be a \emph{side
-effect} of another issue.  In Section~\ref{sec:sybil_groups}, we provide
-evidence for what appears to be botnets whose zombies are running Tor relays,
-perhaps because of a misguided attempt to help the Tor network grow.  The zombie
-owners are probably not aware of the relays they are running.
+% Scale horizontally when we run out of consensus weight.
+An attacker can increase its consensus weight by configuring her relay to
+forward more traffic.  However, the capacity of a single relay is limited by its
+link bandwidth and, because of the computational cost of cryptography, by CPU.
+Once an adversary reaches this limit, she has to scale horizontally, i.e., add
+more Sybil relays to the network.
+
+% Sybils are needed to manipulate the DHT, and can be a side effect.
+Besides the above attacks, an adversary needs Sybil relays to manipulate onion
+services, which are TCP servers whose IP address is hidden by Tor.  Six Sybil
+relays are sufficient to take offline an onion service because of a weakness in
+the design of the distributed hash table (DHT) that powers onion
+services~\cite{Biryukov2013a}.  Finally, instead of being a direct means to an
+end, Sybil relays can be a \emph{side effect} of another issue.  In
+Section~\ref{sec:sybil_groups}, we provide evidence for what appears to be
+botnets whose zombies are running Tor relays, perhaps because of a misguided
+attempt to help the Tor network grow.  The zombie owners are likely unaware of
+the relays they are running.
 
 % Existing Sybil defense mechanisms.
 Sybil attacks are a well-known problem to The Tor Project, which is reflected in
-a number of implicit and explicit Sybil defenses that are in place as of Nov
-2015.  First, directory authorities, the ``gatekeepers'' of the Tor network,
-accept at most two relays per IP address~\cite{Bauer2007b} to prevent
-low-resource Sybil attacks~\cite{Bauer2007a}.  Similarly, the path selection
-algorithm~\cite{path-spec} contains heuristics to avoid relays that could be
+a number of both implicit and explicit Sybil defenses that are in place as of
+Dec 2015.  First, directory authorities---the ``gatekeepers'' of the Tor
+network---accept at most two relays per IP address~\cite{Bauer2007b} to prevent
+low-resource Sybil attacks~\cite{Bauer2007a}.  Similarly, Tor's path selection
+algorithm~\cite{path-spec} incorporates heuristics to avoid relays that could be
 controlled by the same operator, e.g., Tor clients never select two relays in
-the same /16 network.  Second, The Tor Project has recently increased the
-minimal time until relays obtain the \texttt{Stable} flag (seven days) and the
-\texttt{HSDir} (96 hours) flag, to increase the cost of Sybil relays and to give
-Tor developers more time to discover suspicious relays before they are in a
-position to run an attack.  Finally, operating a Tor relay causes recurring
-costs---most notably bandwidth and CPU---which can further limit an adversary.
+the same /16 network.  Second, directory authorities assign flags to relays,
+indicating their status and quality of service.  The Tor Project has recently
+increased the minimal time until relays obtain the \texttt{Stable} flag (seven
+days) and the \texttt{HSDir} flag (96 hours).  This change increases the cost of
+Sybil attacks and gives Tor developers more time to discover suspicious relays
+before they get in a position to run an attack.  Finally, operating a Tor relay
+causes recurring costs---most notably bandwidth and electricity---which can
+further limit an adversary.
 
 % Our contributions.
 Motivated by the lack of practical Sybil detection tools, we design and
