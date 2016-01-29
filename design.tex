@@ -37,21 +37,70 @@ exitmap scanner.
 
 \subsubsection{Consensuses and router descriptors}
 The consensus and router descriptor dataset is publicly available on
-CollecTor~\cite{collector}, a service that is run by The Tor Project to archive
-network data such as consensuses, router descriptors, and network status votes.
-Some of the archived data dates back to as early as 2004, allowing us to restore
-arbitrary Tor network states in the last ten years.  Not all of CollecTor's
-archived data, however, is relevant to our hunt for Sybils, which is why we only
-analyse the following two:
+CollecTor~\cite{collector}, a service run by The Tor Project to archive network
+data such as consensuses, router descriptors, and network status votes.  Some of
+the archived data dates back to 2004, allowing us to restore arbitrary Tor
+network configurations in the last ten years.  Not all of CollecTor's archived
+data, however, is relevant to our hunt for Sybils, which is why we only analyse
+the following two:
 
 \begin{figure}[t]
-	\centering
-	\includegraphics[width=0.3\textwidth]{diagrams/data_sets.pdf}
-	\caption{Our dataset contains consensuses (produced by directory
-		authorities) and router descriptors (produced by relays).  Every hour,
-		a new consensus is generated, and relays upload their router descriptor
-		at least every 18 hours.}
-	\label{fig:datasets}
+\centering\small
+\begin{tikzpicture}[node distance=0 cm,outer sep = 0pt,inner sep = 2pt]
+
+	\tikzset{field/.style={align=center,shape=rectangle,
+		minimum height=4.5mm,minimum width=25mm,fill=gray!20}}
+
+	\tikzset{blankfield/.style={align=center,shape=rectangle,
+		minimum height=4.5mm,minimum width=25mm}}
+
+	\usetikzlibrary{positioning}
+
+	\node (consensus) [blankfield] {\textbf{Consensus}};
+
+	% Router status fields, one below another.
+	\node (routerstatus) [blankfield,below=of consensus] {\textbf{Router status}};
+	\node (desc) [field,below=of routerstatus] {Descriptor pointer};
+	\node (nickname) [field,below=of desc] {Nickname};
+	\node (fingerprint) [field,below=of nickname] {Fingerprint};
+	\node (publication) [field,below=of fingerprint] {Publication};
+	\node (address) [field,below=of publication] {Address and ports};
+	\node (flags) [field,below=of address] {Flags};
+	\node (version) [field,below=of flags] {Version};
+	\node (bandwidth) [field,below=of version] {Bandwidth};
+	\node (policy) [field,below=of bandwidth] {Exit policy};
+	\node [below=of policy] {\textbf{\dots}};
+
+	% Draw a rectangle around a router status.
+	\draw [draw=black] (desc.north west) rectangle (policy.south east);
+
+	% Draw a rectangle around multiple router statuses.
+	\draw [draw=black] ($(desc.north west) + (-2mm,4.5mm)$) rectangle ($(policy.south east) + (2mm,-4.5mm)$);
+
+	% Router descriptor fields, one below another.
+	\node (dummy) at (4cm,0) [blankfield] {};
+	\node (descriptor) at (4cm,0) [blankfield,below=of dummy] {\textbf{Router descriptor}};
+	\node (descaddr) at (4cm,0) [field,below=of descriptor] {Address and ports};
+	\node (descplatform) at (4cm,0) [field,below=of descaddr] {Platform};
+	\node (descprotocols) at (4cm,0) [field,below=of descplatform] {Protocols};
+	\node (descpublished) at (4cm,0) [field,below=of descprotocols] {Published};
+	\node (descfingerprint) at (4cm,0) [field,below=of descpublished] {Fingerprint};
+	\node (descuptime) at (4cm,0) [field,below=of descfingerprint] {Uptime};
+	\node (descbandwidth) at (4cm,0) [field,below=of descuptime] {Bandwidth};
+	\node (descsignature) at (4cm,0) [field,below=of descbandwidth] {Signature};
+
+	% Draw a rectangle around a descriptor.
+	\draw [draw=black] (descaddr.north west) rectangle (descsignature.south east);
+
+	% Pointer from digest to descriptor.
+	\draw [-latex,thick] (desc) -- (descaddr);
+\end{tikzpicture}
+\caption{Our dataset contains consensuses (produced by directory
+	authorities) and router descriptors (produced by relays).  Every hour,
+	a new consensus is generated, and relays upload their router descriptor
+	at least every 18 hours.  Every router status of a consensus has a
+	field, the digest, that points to its router descriptor.}
+\label{fig:datasets}
 \end{figure}
 
 \begin{description}
