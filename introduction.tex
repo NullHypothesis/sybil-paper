@@ -2,7 +2,7 @@
 \label{sec:introduction}
 
 % Short introduction to Sybil attacks.
-In a Sybil attack, one physical entity controls many virtual identities to
+In a Sybil attack, an attacker controls many virtual identities to
 obtain disproportionately large influence in a network.  These attacks take many
 shapes, such as sockpuppets hijacking online discourse~\cite{Thomas2012a}; the
 manipulation of BitTorrent's distributed hash table~\cite{Wang2012a}; and, most
@@ -29,9 +29,9 @@ such as:
 		Ignoring the encrypted payload, an attacker can still take advantage of
 		flow information such as packet lengths and timings to infer what web
 		site its users are connecting to~\cite{Juarez2014a}.
-	\item[Bridge address harvesting:] Bridges are unpublished Tor relays that
-		are given to censored users as hidden stepping stone into the Tor
-		network.  It is important that censors cannot obtain all bridge
+	\item[Bridge address harvesting:] Users behind censorship firewalls use
+		bridges---basically non-public Tor relays---as hidden stepping stones
+		into the Tor network.  It is important that censors cannot obtain all bridge
 		addresses, which is why bridge distribution is rate-limited.  An
 		attacker can harvest bridge addresses by running a middle relay and
 		looking for incoming connections that do not originate from guard
@@ -67,21 +67,24 @@ a number of both implicit and explicit Sybil defenses that are in place as of
 Dec 2015.  First, directory authorities---the ``gatekeepers'' of the Tor
 network---accept at most two relays per IP address~\cite{Bauer2007b} to prevent
 low-resource Sybil attacks~\cite{Bauer2007a}.  Similarly, Tor's path selection
-algorithm~\cite{path-spec} incorporates heuristics to avoid relays that could be
-controlled by the same operator, e.g., Tor clients never select two relays in
-the same /16 network.  Second, directory authorities assign flags to relays,
-indicating their status and quality of service.  The Tor Project has recently
-increased the minimal time until relays obtain the \texttt{Stable} flag (seven
-days) and the \texttt{HSDir} flag (96 hours).  This change increases the cost of
-Sybil attacks and gives Tor developers more time to discover suspicious relays
-before they get in a position to run an attack.  Finally, operating a Tor relay
-causes recurring costs---most notably bandwidth and electricity---which can
-further limit an adversary.
+algorithm~\cite{path-spec} incorporates heuristics so Tor clients avoid relays
+that could be controlled by the same operator, e.g., Tor clients never select
+two relays in the same /16 network.  Second, directory authorities assign flags
+to relays, indicating their status and quality of service.  The Tor Project has
+recently increased the minimal time until relays obtain the \texttt{Stable} flag
+(seven days) and the \texttt{HSDir} flag (96 hours).  This change increases the
+cost of Sybil attacks and gives Tor developers more time to discover suspicious
+relays before they get in a position to run an attack.  Finally, operating a Tor
+relay causes recurring costs---most notably bandwidth and electricity---which
+can further limit an adversary.
 
 % Our contributions.
 Motivated by the lack of practical Sybil detection tools, we design and
-implement techniques to find Sybils in the Tor network.  We implemented these
-techniques in a tool, sybilhunter, which we then use to analyze historical
+implement heuristics, leveraging that Sybils 1) frequently go online and offline
+simultaneously, 2) share similarities in their configuration, and 3) may change
+their identity fingerprint---a relay's fingerprint is the hash over its public
+key---frequently, to manipulate Tor's DHT.  We implemented
+these heuristics in a tool, sybilhunter, which we then use to analyze historical
 network data, dating back to as early as 2007, to discover past attacks and
 anomalies.  Finally, we characterize the Sybil groups we discover.  To sum up,
 we make the following key contributions:
@@ -90,7 +93,7 @@ we make the following key contributions:
 		future Tor data.  Our approach does not require any modifications to the
 		Tor network, finds similarities in relays' configuration and their
 		uptime sequences.
-	\item We expose and characterize Sybil clusters and publish a dataset to
+	\item We expose and characterize Sybil groups and publish a dataset to
 		stimulate future research.  We find that many different kinds of
 		operators run Sybil groups, including financially-motiviated attackers,
 		researchers, and unskilled troublemakers.
