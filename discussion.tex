@@ -1,30 +1,35 @@
 \section{Discussion}
 \label{sec:discussion}
 Having presented and evaluated our techniques, we will now discuss the
-transparency and secrecy tradeoff~(\S~\ref{sec:secrecy}), we reiterate our
-work's limitations~(\S~\ref{sec:limitations}), and we discuss the role of cloud
-providers in Sybil attacks~(\S~\ref{sec:cloud}).
+transparency and secrecy tradeoff, we reiterate our work's limitations, and we
+discuss the role of cloud providers in Sybil attacks.
 
 \subsection{Balancing transparency and secrecy}
 \label{sec:secrecy}
 During the development of sybilhunter, we pondered what a reasonable balance
-between transparency and secrecy should look like.  On the one hand, we want our
-system design and code to be open, to stimulate scientific progress.  On the
-other hand, a freely available implementation helps attackers evade our system
-because they can first test and refine their attacks offline.
+between transparency and secrecy should look like.  We want our system design
+and code to be open, to stimulate scientific progress, but a freely available
+implementation helps attackers evade our system because they can first test and
+refine their attacks offline.
 
-It seems difficult to achieve a setting analogous to Kerckhoffs' principle in
-cryptography, stating that a system must be secure even if everything except the
-key is known about it.  There is no key in our setting.  We can, however, divide
-our system into the \emph{open} analysis framework and its \emph{secret}
-parameters.  After all, the analysis framework is of primary interest to other
-researchers, whereas its parameters are mere operational details.
+To mitigate this problem, we divide our system into the \emph{open} analysis
+framework and its \emph{secret} parameters.  After all, the analysis framework
+is of primary interest to other researchers, whereas its parameters are mere
+operational details.  Note that the authors of exitmap follow a similar
+philosophy by making available exitmap's scanning framework~\cite{exitmap}, but
+sharing its modules only privately.  This differentiation seems to be
+sustainable as attackers are primarily interested in scanning modules, e.g.,
+which URLs, protocols, and ports are probed.  The scanning framework, which is
+of primary interest to the scientific community, is available as free software.
 
-Note that the authors of exitmap follow a similar philosophy by making available
-exitmap's scanning framework~\cite{exitmap}, but sharing its modules only
-privately.  This differentiation seems to be sustainable as attackers are
-primarily interested in scanning modules, e.g., which URLs, protocols, and ports
-are probed.
+Unfortunately, we are unable to achieve a setting analogous to Kerckhoffs'
+principle in cryptography, stating that a system must be secure even if all
+except the key is known.  In sybilhunter, unlike modern cryptograhpic systems,
+there is a clear relationship between the input (the system parameters) and the
+output (an alert).  Still, an attacker has to make an effort to stay under the
+radar of our system.  Given that it is impossible to always find all Sybils, our
+efforts are ultimately limited to increasing the cost of an attack, e.g.,
+forcing an attacker to infer our system's parameters.
 
 \subsection{Limitations}
 \label{sec:limitations}
@@ -39,16 +44,16 @@ for the Tor network.  It would be in conflict with Tor's goal of distributing
 trust and alienate relay operators.  As a result, detecting Sybils in the Tor
 network is limited to making a best effort.
 
-% We cannot determine the purpose of a Sybil cluster.
+% We cannot determine the purpose of a Sybil group.
 Finally, our approach is unable to determine the \emph{purpose} of a Sybil
-attack.  In some cases, the purpose is obvious; for example, if a Sybil cluster
-has the \texttt{Exit} flag and tampers with traffic, or if a cluster has the
+attack.  In some cases, the purpose is obvious; for example, if a Sybil group
+has the \texttt{Exit} flag and tampers with traffic, or if a group has the
 \texttt{HSDir} flag and shares an unusually long fingerprint prefix.  In many
 other cases, however, we rely on additional information to decide if a Sybil
-cluster should be removed.  For example, Sybils originating from ``bulletproof''
+group should be removed.  For example, Sybils originating from ``bulletproof''
 ASes~\cite{Konte2015a}, showing signs of not running the tor reference
 implementation, or spoofing information in their router descriptor could all
-suggest malicious intent.  In the end, Sybil clusters have to be evaluated case
+suggest malicious intent.  In the end, Sybil groups have to be evaluated case
 by case, and the benefits and disadvantages of blocking it have to be evaluated.
 
 % We will now explore how costly a Sybil attack is in practice.  First, an
