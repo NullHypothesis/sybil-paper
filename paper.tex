@@ -1,15 +1,16 @@
-\documentclass[USenglish,oneside,twocolumn]{article}
+\documentclass[letterpaper,twocolumn,10pt]{article}
 
+\usepackage{usenix,epsfig}
 \usepackage[utf8]{inputenc}
-\usepackage[big]{dgruyter_NEW}
-\usepackage[T1]{fontenc}
-\usepackage[scaled=0.8]{beramono}
-\usepackage[linesnumbered,boxed]{algorithm2e}
 \usepackage{tikz}
+\usetikzlibrary{calc}
+\usetikzlibrary{positioning}
 \usepackage{amsmath}
-\usepackage{gitinfo2}
 \usepackage{subfigure}
+\usepackage{tabularx}
 \usepackage{multirow}
+\usepackage{hyperref}
+\usepackage{balance}
 
 \definecolor{darkblue}{rgb}{0,0,0.7}
 \hypersetup{
@@ -26,41 +27,32 @@
 \newcommand{\mynote}[1]{\noindent\textcolor{red}{\textbf{Note:} #1}}
 \newcommand{\sybilgroup}[1]{\noindent\textbf{\textsf{#1:}}}
 
-\cclogo{\includegraphics{by-nc-nd.pdf}}
-
 \begin{document}
 
-\author*[1]{Philipp Winter}
-\author[2]{Roya Ensafi}
-\author[3]{Karsten Loesing}
-\author[4]{Nick Feamster}
+\title{\Large \bf Identifying and characterizing Sybils in the Tor network}
 
-\affil[1]{Princeton University and Karlstad University, E-mail:
-	\href{mailto:phw@nymity.ch}{phw@nymity.ch}}
-\affil[2]{Princeton University}
-\affil[3]{The Tor Project}
-\affil[4]{Princeton University}
-
-\title{\huge Identifying and characterizing\\Sybils in the Tor network}
-
-\runningtitle{Identifying and characterizing Sybils in the Tor network}
-
-\input{abstract}
-
-\keywords{Tor, Sybil attack, anonymity}
-
-\journalname{Proceedings on Privacy Enhancing Technologies}
-\DOI{Editor to enter DOI}
-\startpage{1}
-\received{..}
-\revised{..}
-\accepted{..}
-
-\journalyear{2015}
-\journalvolume{2015}
-\journalissue{2}
+%for single author (just remove % characters)
+\author{
+{\rm Philipp Winter}\\
+Princeton \& Karlstad \\ University
+\and
+{\rm Roya Ensafi}\\
+Princeton University
+\and
+{\rm Karsten Loesing}\\
+The Tor Project
+\and
+{\rm Nick Feamster}\\
+Princeton University
+} % end author
 
 \maketitle
+
+% Use the following at camera-ready time to suppress page numbers.
+% Comment it out when you first submit the paper for review.
+\thispagestyle{empty}
+
+\input{abstract}
 
 \input{introduction}
 
@@ -74,10 +66,10 @@
 
 \input{conclusion}
 
-% \input{acknowledgments}
+\input{acknowledgments}
 
-\bibliography{literature}{}
-\bibliographystyle{unsrt}
+{\footnotesize \bibliographystyle{abbrv}
+\balance\bibliography{literature}}
 
 \input{appendix}
 
