@@ -97,27 +97,23 @@ why we only analyse the following two:
 \label{fig:datasets}
 \end{figure}
 
-\begin{description}
-	\item[Descriptors] Tor relays and bridges periodically upload router
-		descriptors, that capture their configuration, to directory authorities.
-		Figure~\ref{fig:datasets} shows an example in the box to the right.
-		Relays upload their descriptors no later than every 18 hours, or sooner,
-		depending on certain conditions.  Note that some information in router
-		descriptors is not verified by directory authorities.  Therefore, relays
-		can spoof information such as their operating system, Tor version, and
-		uptime.
+\paragraph{Descriptors} Tor relays and bridges periodically upload router
+descriptors, that capture their configuration, to directory authorities.
+Figure~\ref{fig:datasets} shows an example in the box to the right.  Relays
+upload their descriptors no later than every 18 hours, or sooner, depending on
+certain conditions.  Note that some information in router descriptors is not
+verified by directory authorities.  Therefore, relays can spoof information such
+as their operating system, Tor version, and uptime.
 
-	\item[Consensuses] Each hour, the nine directory authorities vote on their
-		view of all Tor relays that are currently online.  The vote produces the
-		consensus, an authoritative list that comprises all running Tor relays,
-		represented as a set of router statuses.  Each router status in the
-		consensus contains basic information about Tor relays such as their
-		bandwidth, flags, and exit policy.  It also contains a pointer to the
-		relay's descriptor, as shown in Figure~\ref{fig:datasets}.  As of Jan
-		2016, consensuses contain approximately 7,000 router statuses, i.e.,
-		each hour, 7,000 router statuses are published, and archived by
-		CollecTor.
-\end{description}
+\paragraph{Consensuses} Each hour, the nine directory authorities vote on their
+view of all Tor relays that are currently online.  The vote produces the
+consensus, an authoritative list that comprises all running Tor relays,
+represented as a set of router statuses.  Each router status in the consensus
+contains basic information about Tor relays such as their bandwidth, flags, and
+exit policy.  It also contains a pointer to the relay's descriptor, as shown in
+Figure~\ref{fig:datasets}.  As of Jan 2016, consensuses contain approximately
+7,000 router statuses, i.e., each hour, 7,000 router statuses are published, and
+archived by CollecTor.
 
 Table~\ref{tab:collector-dataset} gives an overview of the size of our consensus
 and descriptor archives.  We found it challenging to repeatedly process these
