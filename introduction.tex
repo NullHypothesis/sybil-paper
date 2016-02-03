@@ -80,14 +80,14 @@ can further limit an adversary.
 
 % Our contributions.
 Motivated by the lack of practical Sybil detection tools, we design and
-implement heuristics, leveraging that Sybils 1) frequently go online and offline
-simultaneously, 2) share similarities in their configuration, and 3) may change
-their identity fingerprint---a relay's fingerprint is the hash over its public
-key---frequently, to manipulate Tor's DHT.  We implemented
-these heuristics in a tool, sybilhunter, which we then use to analyze historical
-network data, dating back to as early as 2007, to discover past attacks and
-anomalies.  Finally, we characterize the Sybil groups we discover.  To sum up,
-we make the following key contributions:
+implement heuristics, leveraging that Sybils (\emph{i}) frequently go online and
+offline simultaneously, (\emph{ii}) share similarities in their configuration,
+and (\emph{iii}) may change their identity fingerprint---a relay's fingerprint
+is the hash over its public key---frequently, to manipulate Tor's DHT.  We
+implemented these heuristics in a tool, sybilhunter, which we then use to
+analyze historical network data, dating back to as early as 2007, to discover
+past attacks and anomalies.  Finally, we characterize the Sybil groups we
+discover.  To sum up, we make the following key contributions:
 \begin{itemize}
 	\item We design and implement a tool---sybilhunter---to analyze past and
 		future Tor data.  Our approach does not require any modifications to the
