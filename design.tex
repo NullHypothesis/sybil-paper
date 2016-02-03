@@ -399,9 +399,7 @@ This is reflected in their relays' uptime.  When an attacker installs an
 operating system upgrade on her Sybils, we will observe a set of relays going
 offline and back online at the same time.  To isolate such events, we are
 visualizing the \emph{uptime patterns} of Tor relays by grouping together relays
-whose uptime is highly correlated.
-
-This technique is similar to the above section, but the churn technique only
+whose uptime is highly correlated.  The churn technique is similar but it only
 provides an aggregate, high-level view on how Tor relays join and leave the
 network.  Since the technique is aggregate, it is poorly suited for visualizing
 the uptime of specific relays; an abnormally high churn value attracts our
@@ -411,17 +409,17 @@ uptime of specific relays---an uptime matrix that we will now present.
 
 This uptime matrix consists of the uptime patterns of all Tor relays, which we
 represent as binary sequences.  Each hour, when a new consensus is published, we
-append a new data point to each Tor relay's sequence, representing ``online'' or
-``offline.'' We visualize all sequences in a bitmap whose rows represent
-consensuses and whose columns represent relays.  As a result, each pixel denotes
-the uptime status of a particular relay at a particular time.  Black pixels mean
-that the relay was online and white pixels mean that the relay was offline.
-This type of visualization was first proposed by Ensafi and subsequently
-implemented by Fifield~\cite{Fifield2014a}.
+add a new data point---``online'' or ``offline''---to each Tor relay's sequence.
+We visualize all sequences in a bitmap whose rows represent consensuses and
+whose columns represent relays.  Each pixel denotes the uptime status of a
+particular relay at a particular hour.  Black pixels mean that the relay was
+online and white pixels mean that the relay was offline.  This type of
+visualization was first proposed by Ensafi and subsequently implemented by
+Fifield~\cite{Fifield2014a}.
 
 Of particular importance is how the uptime sequences are sorted.  If highly
-correlated sequences are not grouped next to each other, we might miss them.  We
-sort sequences using single-linkage clustering, a type of hierarchical
+correlated sequences are not adjacent in the visualization, we might miss them.
+We sort sequences using single-linkage clustering, a type of hierarchical
 clustering algorithm that forms groups bottom-up, based on the minimum distance
 between group members.  Similar to Andersen et al.~\cite{Andersen2002a}, we use
 Pearson's correlation coefficient in our distance function because it tells us
@@ -435,46 +433,41 @@ r = \frac{\sum_{i=1}^{n} (x_{i} - \bar{x}) (y_{i} - \bar{y})}
 \end{equation}
 
 and yields a value in the interval $[-1, 1]$.  The sample mean is given by
-$\bar{x}$ and $\bar{y}$.  A coefficient of \(-1\) denotes perfect
-anti-correlation (relay $A$ is only online when relay $B$ is offline) and 1
-denotes perfect correlation (relay $A$ is only online when relay $B$ is online).
-We define our distance function $d$ as $d = 1 - r$, so two perfectly correlated
-sequences have a distance of zero while two perfectly anti-correlated sequences
-have a distance of two.  Once all sequences are sorted, we color adjacent
-sequences in red if their uptime sequence is identical.
-Figure~\ref{fig:uptime-matrix} illustrates the output of our visualization
-algorithm, the uptime matrix for a subset of all Tor relays in Nov 2012.
+$\bar{x}$ and $\bar{y}$.  A coefficient of $-1$ denotes perfect anti-correlation
+(relay $R_1$ is only online when relay $R_2$ is offline) and 1 denotes perfect
+correlation (relay $R_1$ is only online when relay $R_2$ is online).  We define
+our distance function as $d(r) = 1 - r$, so two perfectly correlated sequences
+have a distance of zero while two perfectly anti-correlated sequences have a
+distance of two.  Once all sequences are sorted, we color adjacent sequences in
+red if their uptime sequence is identical.  Figure~\ref{fig:uptime-matrix} shows
+an example of our visualization algorithm, the uptime matrix for a subset of all
+Tor relays in Nov 2012.
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/2012-11.jpg}
-	\caption{The uptime matrix for a subset of all Tor relays in Nov 2012.
-		Every row in the image represents one consensus, and every column
-		represents one relay.  As a result, every pixel denotes the uptime
-		status of a given relay at a given hour.  Black pixels mean ``online,''
-		white pixels mean ``offline.''  Red blocks denote possible Sybil
-		groups.}
+	\caption{The uptime matrix for a subset of all Tor relays in Nov 2012.}
 	\label{fig:uptime-matrix}
 \end{figure}
 
 \subsubsection{Fingerprint analysis}
 \label{sec:fingerprint-analysis}
 The information a Tor client needs to connect to an onion service is stored in a
-distributed hash table (DHT) that consists of a subset of all Tor relays, the
-onion service directories (HSDirs).  As of Jan 2016, 42\% of all Tor relays are
-configured to serve as HSDir.  A daily-changing set of six HSDirs are
-responsible for any given onion service.  Tor clients contact one of these six
-HSDirs to request information about the onion service they intend to connect to.
-An HSDir becomes responsible for an onion service if its fingerprint is close to
-the service's descriptor ID that is derived from the onion service's public key,
-a time stamp, and additional information.
+DHT that consists of a subset of all Tor relays, the onion service directories
+(HSDirs).  As of Jan 2016, 42\% of all Tor relays serve as HSDir.  A
+daily-changing set of six HSDirs host the contact information of any given
+onion service.  Tor clients contact one of these six HSDirs to request
+information about the onion service they intend to connect to.  A HSDir becomes
+responsible for an onion service if the difference between its relay fingerprint
+and the service's descriptor ID is small.  The descriptor ID is derived from the
+onion service's public key, a time stamp, and additional information.
 % https://gitweb.torproject.org/torspec.git/tree/rend-spec.txt:231
 % descriptor-id = H(permanent-id | H(time-period | descriptor-cookie | replica))
-Note that the DHT and all its HSDirs are known, making it possible to determine
-at which ring position an onion service will end up at any point in the
-future~\cite{Biryukov2013a}.  Attackers can exploit the ability to predict the
-ring position by repeatedly generating identity keys until their fingerprint is
-sufficiently close to the onion service's index, thus becoming its HSDir.
+All HSDirs are public, making it possible to determine at which position in the
+DHT an onion service will end up at any point in the future.  Attackers can
+exploit the ability to predict the DHT position by repeatedly generating
+identity keys until their fingerprint is sufficiently close to the targeted
+onion service's index, thus becoming its HSDir~\cite{Biryukov2013a}.
 
 We detect relays that change their fingerprint frequently by maintaining a
 lookup table that maps a relay's IP addresses to a list of all fingerprints we
