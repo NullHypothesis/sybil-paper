@@ -476,60 +476,55 @@ fingerprints the most, and output the results.
 
 \subsubsection{Nearest-neighbor search}
 \label{sec:nearest-neighbor}
-We frequently found ourselves in situations where exitmap discovered a malicious
-exit relay and we were trying to find similar, potentially associated relays.
-This involved extensive manual work, which we soon started to automate.  We
-needed an algorithm for nearest-neighbor search, i.e., given a ``seed'' relay,
-what are its $n$ most similar neighbors?  We define similarity as
-\emph{redundancy in relay configuration} because similar relays share their
-configuration parameters file such as ports, IP addresses, exit policies, or
-bandwidth.  As a result, our algorithm works by comparing relay configurations.
+We frequently found ourselves in a situation where exitmap discovered a
+malicious exit relay and we were left wondering if there were similar,
+potentially associated relays.  Looking for such relays involved extensive
+manual work, which we soon started to automate.  We needed an algorithm for
+nearest-neighbor search that takes as input a ``seed'' relay and finds its $n$
+most similar neighbors.  We define similarity as shared configuration parameters
+such as port number, IP addresses, exit policies, or bandwidth.  Our search
+algorithm sorts relays by comparing these configuration parameters.
 
-A naive implementation would compare the seed relay to all other relays in the
-consensus, which scales linearly.  We can do better by using \emph{metric trees}
-because they guarantee $\mathrm{O}(\textrm{log}\,n)$ lookup, at the cost of
-building a tree first.  Metric trees are a type of data structure to index data
-in metric spaces and they require a distance metric in the mathematical sense,
-i.e., the following four conditions must be met for three points $x$, $y$, and
-$z$:
-\begin{enumerate}
-	\item $d(x, y) \geq 0$
-	\item $d(x, y) = 0$ iff $x = y$
-	\item $d(x, y) = d(y, x)$
-	\item $d(x, z) \leq d(x, y) + d(y, z)$
-\end{enumerate}
+To quantify the similarity between two relays, we use the Levenshtein distance,
+a popular distance metric that takes as input two strings and determines the
+minimum number of modifications---insert, delete, and modify---that are
+necessary to turn string $s_{1}$ into $s_{2}$.  Our algorithm extracts several
+configuration parameters of two relays, turns them into strings, and determines
+their Levenshtein distance.  As an example, consider a simplified configuration
+representation consisting of the concatenation of nickname, IP address, and
+port.  To turn the string $s_2$ into $s_1$, six operations are necessary; three
+modifications (green) and two deletions (red):
 
-We use the Levenshtein distance metric, a popular distance metric for strings
-that takes as input two strings and determines the minimum number of
-modifications---insert, delete, and modify---that are necessary to turn string
-$s_{1}$ into $s_{2}$.  The Levenshtein distance can handle strings of different
-length and satisfies the triangle inequality (number four in the above
-enumeration), so we are free to use it in a metric tree.
+\definecolor{change}{rgb}{0.7,1.0,0.7}
+\definecolor{delete}{rgb}{1.0,0.7,0.7}
 
-Metric trees are only a concept.  As concrete implementation, we use the vantage
-point tree (vp-tree)~\cite{Yianilos1993a} because a Go library already existed
-and it achieved satisfactory results in our experiments.  A vp-tree recursively
-divides the given data into two partitions; one that is close to the seed point
-according to a threshold, and one that is not.  The vp-tree must first be built
-for the given data, and it is then ready to perform nearest neighbor searches.
-In our implementation, building a vp-tree for 6,235 relays takes approximately
-15 seconds.\footnote{Again, measured on a single Intel Core i7 2.9 GHz CPU.}
-Subsequent nearest-neighbor lookups finish almost instantly.
+$s_1$: \texttt{Foo10.0.0.19001}
 
-% TODO (23 Nov 2015, 11:04am): \mynote{Still need to compare this to naive $n^{2}$ search.}
+$s_2$: \texttt{\setlength{\fboxsep}{0pt}%
+\colorbox{change}{\strut Bar}10.0.0.%
+\colorbox{change}{\strut 2}%
+\colorbox{delete}{\strut 54}%
+9001}
+
+We implemented a simple linear search to determine the Levenshtein distance
+between a given relay and all other relays that are part of the same consensus.
+For a consensus consisting of 6,525 relays, our algorithm takes approximately
+1.5 seconds to finish.\footnote{Again, we measured on an Intel Core i7 2.9 GHz.}
 
 \subsubsection{Narrowing the semantic gap}
 Systems that employ complex and opaque analysis techniques frequently suffer
 from what Sommer and Paxson call the \emph{semantic gap}~\cite[\S
-III.C]{Sommer2010a}, i.e., a system's output is difficult to act upon as its
-meaning is unclear.  Our tools automate the \emph{detection} of Sybils, but the
-process of \emph{blocking} them involves human interaction, which is why we took
-special care to address the semantic gap.
+III.C]{Sommer2010a}, a gap in understanding what a system's output means and how
+it should be acted upon.  Our techniques automate the \emph{detection} of
+Sybils, but the process of \emph{blocking} them involves human interaction.  If
+The Tor Project must spend hours to understand and verify sybilhunter alerts,
+our techniques are ultimately useless.  Therefore, we took special care to
+narrow the semantic gap.
 
-We avoid the use of opaque classification methods such as Support Vector
-Machines as their output (frequently distances in high-dimensional vector space)
-is difficult to interpret.  Instead, we use the Levenshtein distance because its
-output is easy to understand and retrace.  Finally, corresponding to the Unix
-tool design philosophy~\cite{Pike1983a}, sybilhunter can produce CSV-formatted
-text output that is easy to pipe into command line tools such as cut, grep, and
-awk for further analysis.
+We avoid the use of opaque classification methods because their
+output---frequently distances in high-dimensional vector space---is difficult to
+interpret.  Instead, we use the Levenshtein distance because its output is easy
+to understand and retrace.  Finally, in accordance with the Unix tool design
+philosophy~\cite{Pike1983a}, sybilhunter produces CSV-formatted text output that
+is easy to pipe into command line tools such as cut, grep, and awk for further
+analysis.
