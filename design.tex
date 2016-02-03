@@ -290,74 +290,74 @@ features when we experienced operational shortcomings.
 
 \subsubsection{Network churn time series}
 \label{sec:churn-time-series}
-The churn rate of a distributed system is the rate of joining and leaving
+The churn rate of a distributed system captures the rate of joining and leaving
 network participants.  In the Tor network, these participants are relays.  An
-unexpectedly high churn rate between two subsequent consensuses can reveal
-Sybils because Sybil operators frequently start and stop their Sybils at the
-same time to ease administration.
+unexpectedly high churn rate between two subsequent consensuses means that many
+relays joined or left, which can reveal Sybils and other network issues because
+Sybil operators frequently start and stop their Sybils at the same time to ease
+administration---they behave similarly.
 
 The Tor Project is maintaining a Python script~\cite{doctor} that determines the
-number of relay fingerprints in new consensuses that have never been seen
-before.  If that number is greater than or equal to the static threshold 50, the
-script sends an email alert.  The threshold is a magic number and was chosen
-arbitrarily.  We reimplemented the script in sybilhunter and ran it over all
-archived consensus documents, dating back to 2007.  The script raised 47 alerts
-in nine years, all of which seemed to be true positives, i.e., they should be of
-interest to directory authority operators.  The script did not raise false
-positives because the median number of new fingerprints in a consensus is only
-six---significantly below the conservative threshold of 49.  The script's
-conservative threshold probably causes false negatives, but we cannot determine
+number of previously unobserved relay fingerprints in new consensuses.  If that
+number is greater than or equal to the static threshold 50, the script sends an
+email alert.  The threshold was chosen arbitrarily.  We reimplemented the script
+in sybilhunter and ran it over all archived consensus documents, dating back to
+2007.  The script raised 47 alerts in nine years, all of which seemed to be true
+positives, i.e., they should be of interest to The Tor Project.  The script did
+not raise false positives because the median number of new fingerprints in a
+consensus is only six---significantly below the conservative threshold of 50.
+Conversely, the threshold likely causes false negatives, but we cannot determine
 the false negative rate because we lack ground truth.  In addition, The Tor
-Project's script can be defeated by a ``trickling'' attack in which Sybils are
-slowly added over time.  We now extend The Tor Project's approach to make it
-more robust against these shortcomings.
+Project's script does not consider relays did leave the network and it can be
+defeated by a ``trickling'' attack in which Sybils are slowly added over time.
+We now extend The Tor Project's approach to make it more robust against these
+shortcomings.
 
 We found that churn anomalies worthy of our attention range from \emph{flat
-hills} (see Figure~\ref{fig:flat-hill}) to \emph{sudden spikes} (see
-Figure~\ref{fig:sudden-spike}).  The former can be a sign of an event that
-affected a large number of relays in the network\footnote{This happened shortly
-after the heartbleed vulnerability when The Tor Project asked relay operators
-to generate new keys.  Naturally, relay operators did not do this at the same
-hour, but gradually over approximately two days.} while the latter can happen if
-an attacker adds relays over time, or an external event causes an influx of
-relays.
+hills} (Fig.~\ref{fig:flat-hill}) to \emph{sudden spikes}
+(Fig.~\ref{fig:sudden-spike}).  Flat hills can be a sign of an event that
+concerned a large number of relays, over many hours or days.  Such an event
+happened shortly after the heartbleed bug, when The Tor Project asked relay
+operators to generate new keys.  Relay operators acted gradually, over
+approximately two days.  Sudden spikes can happen if an attacker adds many
+relays, all at once.
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/flat-hill.pdf}
-	\caption{A flat hill in 2009.  The time series was smoothed using a moving
-	average with a window size of 12 hours.}
+	\caption{A flat hill of new relays in 2009.  The time series was smoothed
+	using a moving average with a window size of 12 hours.}
 	\label{fig:flat-hill}
 \end{figure}
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/sudden-spike.pdf}
-	\caption{A sudden spike in 2010.  The time series was smoothed using a
-	moving average with a window size of 12 hours.}
+	\caption{A sudden spike of new relays in 2010.  The time series was smoothed
+	using a moving average with a window size of 12 hours.}
 	\label{fig:sudden-spike}
 \end{figure}
 
 To quantify the churn rate $\sigma$ between two subsequent consensus documents,
-we adapt Godfrey et al.~\cite{Godfrey2006a} formula which yields a single churn
-value that captures both systems that joined and left.  That means that an
-unusually low number of systems that left could cancel out an unusually high
-number of new systems---an undesired property for a system that should highlight
-abnormal changes.  To address this issue, we split the formula in two parts and
-create a time series for new relays ($\sigma_{n}$) as well as for relays that
-left ($\sigma_{g}$).  $C_{t}$ is the network consensus at time $t$, and
-$\setminus$ denotes the complement between two consensuses, i.e., the number of
-relays that is in one consensus, but not the other.  We now define $\sigma_{n}$
-and $\sigma_{g}$ as:
+we adapt Godfrey et al.'s~\cite{Godfrey2006a} formula, which yields a scalar
+churn value that captures both systems that joined and systems that left the
+network.  An unusually low number of systems that left could cancel out an
+unusually high number of new systems---an undesired property for a technique
+that should spot abnormal changes.  To address this issue, we split the formula
+in two parts, creating a time series for new relays ($\sigma_{n}$) as well as
+for relays that left ($\sigma_{g}$).  $C_{t}$ is the network consensus at time
+$t$, and $\setminus$ denotes the complement between two consensuses, i.e., the
+relays that are in one consensus, but not the other.  We define $\sigma_{n}$ and
+$\sigma_{g}$ as:
 
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=\linewidth]{diagrams/churn-example.pdf}
-	\caption{Churn time series for the first week of 2016.  The three diagrams
-		illustrate the churn rate of all relays with the \texttt{Guard},
-		\texttt{Exit}, and \texttt{HSDir} flag, respectively.}
-	\label{fig:churn-example}
-\end{figure}
+% \begin{figure}[t]
+% 	\centering
+% 	\includegraphics[width=\linewidth]{diagrams/churn-example.pdf}
+% 	\caption{Churn time series for the first week of 2016.  The three diagrams
+% 		illustrate the churn rate of all relays with the \texttt{Guard},
+% 		\texttt{Exit}, and \texttt{HSDir} flag, respectively.}
+% 	\label{fig:churn-example}
+% \end{figure}
 
 \begin{equation}
 \sigma_{n} = \frac{\lvert C_{t} \setminus C_{t-1} \rvert}
@@ -372,35 +372,47 @@ and $\sigma_{g}$ as:
 Both $\sigma_{n}$ and $\sigma_{g}$ are bounded to the interval $[0, 1]$.  A
 churn value of 0 indicates no change between two subsequent consensuses whereas
 a churn value of 1 indicates a complete turnover.  Determining $\sigma_{n,g}$
-for the sequence $C_{t}, C_{t-1}$, $C_{t-2}$, \ldots, yields a time series of
-churn values that can readily be inspected for abnormal spikes as the one in
-Figure~\ref{fig:sudden-spike}.  To detect changes in the underlying trend, we
-can smooth $\sigma_{n,g}$ using a simple moving average $\lambda$, defined as:
+for the sequence $C_{t}, C_{t-1}$, \ldots, $C_{t-n}$, yields a time series of
+churn values that can readily be inspected for abnormal spikes.  We found that
+many churn anomalies are caused by relays that share a flag, or a flag
+combination, e.g., \texttt{HSDir} and \texttt{Exit}.  Therefore, sybilhunter can
+also generate per-flag churn time series that can uncover patterns that would be
+lost in a universal time series.
+
+Finally, to detect changes in the underlying time series trend---flat hills---we
+can smooth $\sigma_{n,g}$ using a simple moving average $\lambda$ defined as
 
 \begin{equation}
 \lambda = \frac{1}{w} \cdot \sum_{i=0}^{w} \sigma_{i}
 \end{equation}
 
-As we increase the window size $w$, we are able to detect more subtle changes in
-the underlying churn trend.  In an operational setting, we believe that this
-parameter should be kept secret because otherwise it would help attackers to
-stay under the radar.  Refer to Section~\ref{sec:secrecy} for a comprehensive
-discussion on this transparency and secrecy trade-off.  If $\lambda$ or
-$\sigma_{n,g}$ exceed a manually defined threshold, an alert is raised.
+As we increase the window size $w$, we can detect more subtle changes in the
+underlying churn trend.  If $\lambda$ or $\sigma_{n,g}$ exceed a manually
+defined threshold, an alert is raised.  Section~\ref{sec:churn} discusses how a
+threshold can be chosen.
 
 \subsubsection{Uptime matrix}
 \label{sec:uptime-matrix}
 For convenience, attackers are likely to administer their Sybil relays
-simultaneously, i.e., update, configure, and reboot them at the same time.  This
-is reflected in their uptime.  When an attacker installs an operating system
-upgrade on her Sybils, we will observe a set of relays going offline and back
-online nearly simultaneously.  To isolate such events, we are visualizing the
-\emph{uptime patterns} of Tor relays by grouping together relays whose uptime is
-highly correlated.
+simultaneously, i.e., update, configure, and reboot them all at the same time.
+This is reflected in their relays' uptime.  When an attacker installs an
+operating system upgrade on her Sybils, we will observe a set of relays going
+offline and back online at the same time.  To isolate such events, we are
+visualizing the \emph{uptime patterns} of Tor relays by grouping together relays
+whose uptime is highly correlated.
 
-For each relay, we represent an uptime pattern as a binary sequence.  Every
-hour, when a new consensus is published, we append a new data point to each Tor
-relay's sequence.  We visualize all sequences in a bitmap whose rows represent
+This technique is similar to the above section, but the churn technique only
+provides an aggregate, high-level view on how Tor relays join and leave the
+network.  Since the technique is aggregate, it is poorly suited for visualizing
+the uptime of specific relays; an abnormally high churn value attracts our
+attention but does not tell us what caused the anomaly.  To fill this gap, we
+complement the churn analysis with a qualitative technique that visualizes the
+uptime of specific relays---an uptime matrix that we will now present.
+
+This uptime matrix consists of the uptime patterns of all Tor relays, which we
+represent as binary sequences.  Each hour, when a new consensus is published, we
+append a new data point to each Tor relay's sequence, representing ``online'' or
+``offline.'' We visualize all sequences in a bitmap whose rows represent
 consensuses and whose columns represent relays.  As a result, each pixel denotes
 the uptime status of a particular relay at a particular time.  Black pixels mean
 that the relay was online and white pixels mean that the relay was offline.
@@ -416,10 +428,12 @@ Pearson's correlation coefficient in our distance function because it tells us
 if two uptime sequences change together.  The sample correlation coefficient $r$
 between two vectors $x = (x_1, \cdots, x_n)$ and $y = (y_1, \cdots, y_n)$ is
 defined as
-$$
+
+\begin{equation}
 r = \frac{\sum_{i=1}^{n} (x_{i} - \bar{x}) (y_{i} - \bar{y})}
 {\sqrt{\sum_{i=1}^{n} (x_{i} - \bar{x})^2} \sqrt{\sum_{i=1}^{n} (y_{i} - \bar{y})^2}}
-$$
+\end{equation}
+
 and yields a value in the interval $[-1, 1]$.  The sample mean is given by
 $\bar{x}$ and $\bar{y}$.  A coefficient of \(-1\) denotes perfect
 anti-correlation (relay $A$ is only online when relay $B$ is offline) and 1
