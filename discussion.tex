@@ -34,7 +34,7 @@ forcing an attacker to infer our system's parameters.
 \subsection{Limitations}
 \label{sec:limitations}
 % We cannot detect all Sybils.  We can only make an effort.
-We mentioned in Section~\ref{sec:threat_model} that we are unable to prevent all
+We argued in Section~\ref{sec:threat_model} that we are unable to prevent all
 Sybil attacks.  An adversary unconstrained by time and money will always be able
 to add Sybils and eliminate redundancy in her Sybils' appearance and behavior.
 This is known since Douceur showed in 2002 that the only way to prevent Sybil
@@ -55,80 +55,3 @@ ASes~\cite{Konte2015a}, showing signs of not running the tor reference
 implementation, or spoofing information in their router descriptor could all
 suggest malicious intent.  In the end, Sybil groups have to be evaluated case
 by case, and the benefits and disadvantages of blocking it have to be evaluated.
-
-% We will now explore how costly a Sybil attack is in practice.  First, an
-% adversary needs a number of systems to run Tor relays on.  These systems should
-% be geographically distributed to maximize IP address diversity.  One option is
-% to rent virtual private systems, starting at around \$3 per month for 1 Gbps.
-% In 2011, the price for 1,000 compromised systems to install malware on (so
-% called \emph{loads}) ranged from \$13 (in Asia) to \$125 (in the U.S.)\cite[\S
-% 5]{Stone-Gross2011a}.
-
-\subsection{Use and abuse of cloud providers}
-\label{sec:cloud}
-Some of the Sybil groups listed in Table~\ref{tab:sybils} were hosted in the
-cloud.  Presumably, cloud-hosted relays are attractive to attackers because they
-provide cheap, disposable, and hourly-billed platforms.  But does the bandwidth
-contributed by cloud-hosted relays make up for the abuse?
-
-To answer this question, we first calculated the amount of bandwidth contributed
-by Tor relays that were located in the netblocks of three major cloud providers,
-Amazon AWS~\cite{amazonaws}, Google Cloud Platform~\cite{googlecloud}, and
-Microsoft Azure~\cite{azure}.  Note that the netblocks published by these cloud
-providers can change over time, and are not archived.  As a result, we could
-have missed netblocks, which means that our calculations can only provide a
-lower bound of cloud-hosted bandwidth.
-
-Since we do not have access to archived netblocks, we limit our analysis to
-July 2015.  Having obtained cloud-hosted netblocks, we then iterated over all
-744 consensus files from July 2015 and identified Tor relays that were hosted
-by Google, Amazon, or Microsoft.  On average, 189 out of 6,540 Tor relays
-(2.9\%) were run in cloud-powered IP address space.  Because Tor
-clients select relays in their circuits based on bandwidth, we then determined
-the fraction these cloud-hosted relays contributed to the total Tor bandwidth.
-The results are shown in Table~\ref{tab:bwfraction}.  The median contributed
-bandwidth is 0.8\%.  There were no Google-hosted relays.  Amazon-hosted relays
-contributed about 18 times more bandwidth than Microsoft-hosted relays.
-
-\begin{table}[t]
-	\centering
-	% \begin{tabular}{lllllll}
-	\begin{tabular}{lllll}
-	% Provider & Min. & 1st Qu. & Median & Mean & 3rd Qu. & Max. \\
-	\textbf{Provider} & \textbf{Min.} & \textbf{Median} & \textbf{Mean} & \textbf{Max.} \\
-	\hline
-	% Google & 0 & 0 & 0 & 0 & 0 & 0 \\
-	Google & 0 & 0 & 0 & 0 \\
-	% Amazon & 0.2 & 0.7 & 0.7 & 0.76 & 0.8 & 1.5 \\
-	Amazon & 0.2 & 0.7 & 0.76 & 1.5 \\
-	% Microsoft & 0 & 0 & 0 & 0.02 & 0 & 0.1 \\
-	Microsoft & 0 & 0 & 0.02 & 0.1 \\
-	\hline
-	% Total & 0.2 & 0.7 & 0.8 & 0.79 & 0.8 & 1.5 \\
-	Total & 0.2 & 0.8 & 0.79 & 1.5 \\
-	\end{tabular}
-	\caption{Percentage of total Tor bandwidth in July 2015 contributed by
-	relays hosted in Google's, Amazon's, or Microsoft's cloud.}
-	\label{tab:bwfraction}
-\end{table}
-
-In addition to relays, the Tor network has bridges, basically unpublished Tor
-relays that are used for censorship circumvention.  The IP addresses of bridges
-are not published, which prevents us from repeating the bandwidth analysis.  The
-Tor Project however publishes the number of bridges in the Tor
-Cloud~\cite{torcloud}, a service to easily set up an EC2-powered bridge,
-leveraging Amazon's free usage tier.  The number of Tor Cloud bridges,
-illustrated in Figure~\ref{fig:cloudbridges}, can serve as proxy variable for
-the amount of bandwidth they contribute.  The number has been decreasing over
-time, and on May 8, 2015, the Tor Cloud program was shut down.  As a result, we
-expect the number of cloud bridges to keep decreasing as the free usage tier of
-more bridge operators runs out.
-
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=\linewidth]{diagrams/torcloud.pdf}
-	\caption{The amount of Tor Cloud~\cite{torcloud} bridges over time.  The
-	numbers are steadily decreasing and the Tor Cloud system was discontinued in
-	May 2015.}
-	\label{fig:cloudbridges}
-\end{figure}
