@@ -427,8 +427,8 @@ hours after the appeared.
 \subsection{Fingerprint anomalies}
 \label{sec:fingerprint-anomalies}
 We determined how often all Tor relays changed their fingerprint from 2007 to
-2015.  Figure~\ref{fig:fingerprints} illustrates the number of fingerprints
-(y-axis) we have observed for the 1,000 Tor relays (x-axis) that changed their
+2015.  Figure~\ref{fig:fingerprints} illustrates the number of fingerprints ($y$
+axis) we have observed for the 1,000 Tor relays ($x$ axis) that changed their
 fingerprint the most.  All these relays changed their fingerprint at least ten
 times.  Twenty one relays changed their fingerprint more than 100 times, and the
 relay at the very right end of the distribution changed its fingerprint 936
@@ -459,10 +459,11 @@ churn we observe.
 
 \subsection{Accuracy of nearest-neighbor search}
 \label{sec:accuracy}
-How good is our nearest-neighbor search at finding Sybils?  To answer this
-question, we now evaluate our algorithm's \emph{accuracy}, which we define as
-the fraction of neighbors it correctly labels as Sybils.  For example, if eight
-out of ten Sybils are correctly labeled as neighbors, the accuracy is 0.8.
+Given a single Sybil relay, how good is our nearest-neighbor search at finding
+the remaining Sybils?  To answer this question, we now evaluate our algorithm's
+\emph{accuracy}, which we define as the fraction of neighbors it correctly
+labels as Sybils.  For example, if eight out of ten Sybils are correctly labeled
+as neighbors, the accuracy is 0.8.
 
 % We lack ground truth and a comprehensive data set.
 A proper evaluation requires ground truth, i.e., relays that are \emph{known} to
@@ -484,13 +485,13 @@ member of a family in their path to prevent correlation attacks.  As of Nov.
 2015, there are approximately 350 families in the network whose size ranges from
 only two to 20 relays.  We can evaluate our algorithm by making it find the
 nearest neighbors of a family member, which, ideally, should be its family
-members.  Again, using families as ground truth is very likely to overestimate
-results because family operators frequently configure their relays almost
-identically.  At the time of this writing, a popular relay family uses the
-nicknames ``AccessNow000'' to ``AccessNow009,'' uses adjacent IP addresses, and
-identical contact information.  We expect the operators of malicious Sybils,
-however, to go out of their way to obscure the relationship between their
-relays.
+members.  Again, the use of relay families as ground truth is very likely to
+overestimate results because family operators frequently configure their relays
+identically on purpose.  At the time of this writing, a popular relay family has
+the nicknames ``AccessNow000'' to ``AccessNow009,'' adjacent IP addresses, and
+identical contact information---perfect prerequisites for our technique.  We
+expect the operators of malicious Sybils, however, to go out of their way to
+obscure the relationship between their relays.
 
 % Concrete MyFamily experiment.
 To determine our algorithm's accuracy, we used all relay families that were
@@ -530,6 +531,8 @@ As expected, our algorithm is significantly more accurate for the family
 dataset---66\% of searches had perfect accuracy.  The bad exit dataset, however,
 did worse.  59\% of all searches had an accuracy in the interval $[0.3,0.6]$,
 and not a single search had perfect accuracy.
+
+\mynote{Talk about base rate fallacy}
 
 \subsection{Computational cost}
 \label{sec:performance}
