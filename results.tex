@@ -119,7 +119,7 @@ experimental onion service deanonymization attack~\cite{cmucert}. \\
 \hline
 
 \end{tabularx}
-\caption{The Sybil groups, we discovered using sybilhunter and our exitmap
+\caption{The Sybil groups, we discovered using \sys and our exitmap
 modules.  We believe that groups marked with the
 symbols $\dagger$ and $\ddagger$ were run by the same operator, respectively.}
 \label{tab:sybils}
@@ -177,7 +177,7 @@ It is possible that this Sybil group was run by the same attackers as the
 ``rewrite'' group but we have no evidence to support that hypothesis.
 Interestingly, only our exitmap module was able to spot these Sybils.  The
 relays joined the network gradually over time and had little in common in their
-configuration, which is why our sybilhunter methods failed.  In fact, we cannot
+configuration, which is why our \sys methods failed.  In fact, we cannot
 rule out that the adversary was upstream, or compromised these relays.
 
 \paragraph{The ``default'' Sybils}

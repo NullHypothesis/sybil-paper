@@ -10,15 +10,15 @@ to deanonymize or otherwise harm Tor users.
 
 We draw on two datasets, one publicly available and one created by us, to
 uncover malicious Sybils.  Our detection methods are implemented in a tool,
-sybilhunter, which takes as input our two datasets and then attempts to expose
-Sybil groups, as illustrated in Figure~\ref{fig:system}.  Sybilhunter is
-implemented in Go and consists of 3,300 lines of code.
+\sys, which takes as input our two datasets and then attempts to expose Sybil
+groups, as illustrated in Figure~\ref{fig:system}.  \Sys is implemented in Go
+and consists of 3,300 lines of code.
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/system_architecture.pdf}
-	\caption{Sybilhunter's architecture.  Two datasets serve as input to
-		sybilhunter; archived consensuses and server descriptors, and malicious
+	\caption{\Sys's architecture.  Two datasets serve as input to
+		\sys; archived consensuses and server descriptors, and malicious
 		relays that we gather by running exitmap~\cite{Winter2014a}.}
 	\label{fig:system}
 \end{figure}
@@ -27,7 +27,7 @@ implemented in Go and consists of 3,300 lines of code.
 \label{sec:datasets}
 Figure~\ref{fig:system} shows how we use our two datasets.  Archived consensuses
 and router descriptors (in short: descriptors) allow us to (\emph{i}) restore
-past states of the Tor network, which sybilhunter mines for Sybil groups, and to
+past states of the Tor network, which \sys mines for Sybil groups, and to
 (\emph{ii}) find ``partners in crime'' of malicious exit relays that we
 discovered by running exitmap, a scanner for Tor exit relays.
 
@@ -176,7 +176,8 @@ Appendix~\ref{sec:malicious-relays}, that we all reported to The Tor Project.
 
 \subsection{Threat model}
 \label{sec:threat_model}
-When we apply sybilhunter on newly incoming data, adversaries can manipulate
+Most of our work is on applying \sys on archived data.  We can also apply \sys
+on newly incoming data, but that means that adversaries can manipulate
 their Sybil configuration to evade our system, and the powerful nature of Sybil
 attacks~\cite{Douceur2002a} limits our defenses.  This is reflected in our
 adversarial assumptions.
@@ -192,7 +193,7 @@ An adversary further \emph{can}:
 \begin{itemize}
 	\item Add Tor relays all at once or slowly over time.
 
-	\item Know about sybilhunter.
+	\item Know about \sys.
 
 	\item Run active or passive attacks.
 
@@ -210,25 +211,25 @@ parameters such as port numbers and nicknames cause similar appearance.  Sybils
 behave similarly when they reboot simultaneously and might exhibit the same
 quirks when relaying traffic.
 
-Sybilhunter can analyze (\emph{i}) historical network data, dating back to 2007;
+\Sys can analyze (\emph{i}) historical network data, dating back to 2007;
 (\emph{ii}) online data, to detect new Sybils as they join the network; and
 (\emph{iii}) find relays that might be associated with previously discovered,
-malicious relays.  Figure~\ref{fig:shr-internal} shows sybilhunter's internal
+malicious relays.  Figure~\ref{fig:shr-internal} shows \sys's internal
 architecture.  Tor network data first passes a filtering component that can be
 used to inspect a subset of the data.  It is then forwarded to one or more
 modules that implement an analysis technique.  These modules work independently,
 but share a data structure to find suspicious relays that show up in more than
-one module.  Depending on the analysis technique, sybilhunter's output is CSV
+one module.  Depending on the analysis technique, \sys's output is CSV
 files or images.
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=0.9\linewidth]{diagrams/sybilhunter-internal.pdf}
-	\caption{Sybilhunter's internal architecture.}
+	\caption{\Sys's internal architecture.}
 	\label{fig:shr-internal}
 \end{figure}
 
-While developing sybilhunter, we had to make many design decisions that we
+While developing \sys, we had to make many design decisions that we
 tackled by drawing on the experience we gained by manually analyzing numerous
 Sybil groups.  We iteratively improved our code and augmented it with new
 features when we experienced operational shortcomings.
@@ -246,7 +247,7 @@ The Tor Project is maintaining a Python script~\cite{doctor} that determines the
 number of previously unobserved relay fingerprints in new consensuses.  If that
 number is greater than or equal to the static threshold 50, the script sends an
 email alert.  The threshold was chosen arbitrarily.  We reimplemented the script
-in sybilhunter and ran it over all archived consensus documents, dating back to
+in \sys and ran it over all archived consensus documents, dating back to
 2007.  The script raised 47 alerts in nine years, all of which seemed to be true
 positives, i.e., they should be of interest to The Tor Project.  The script did
 not raise false positives because the median number of new fingerprints in a
@@ -320,7 +321,7 @@ a churn value of 1 indicates a complete turnover.  Determining $\sigma_{n,g}$
 for the sequence $C_{t}, C_{t-1}$, \ldots, $C_{t-n}$, yields a time series of
 churn values that can readily be inspected for abnormal spikes.  We found that
 many churn anomalies are caused by relays that share a flag, or a flag
-combination, e.g., \texttt{HSDir} and \texttt{Exit}.  Therefore, sybilhunter can
+combination, e.g., \texttt{HSDir} and \texttt{Exit}.  Therefore, \sys can
 also generate per-flag churn time series that can uncover patterns that would be
 lost in a universal time series.
 
@@ -465,7 +466,7 @@ from what Sommer and Paxson call the \emph{semantic gap}~\cite[\S
 III.C]{Sommer2010a}, a gap in understanding what a system's output means and how
 it should be acted upon.  Our techniques automate the \emph{detection} of
 Sybils, but the process of \emph{blocking} them involves human interaction.  If
-The Tor Project must spend hours to understand and verify sybilhunter alerts,
+The Tor Project must spend hours to understand and verify \sys alerts,
 our techniques are ultimately useless.  Therefore, we took special care to
 narrow the semantic gap.
 
@@ -473,6 +474,6 @@ We avoid the use of opaque classification methods because their
 output---frequently distances in high-dimensional vector space---is difficult to
 interpret.  Instead, we use the Levenshtein distance because its output is easy
 to understand and retrace.  Finally, in accordance with the Unix tool design
-philosophy~\cite{Pike1983a}, sybilhunter produces CSV-formatted text output that
+philosophy~\cite{Pike1983a}, \sys produces CSV-formatted text output that
 is easy to pipe into command line tools such as cut, grep, and awk for further
 analysis.
