@@ -11,15 +11,15 @@ to deanonymize or otherwise harm Tor users.
 We draw on two datasets, one publicly available and one created by us, to
 uncover malicious Sybils.  Our detection methods are implemented in a tool,
 sybilhunter, which takes as input our two datasets and then attempts to expose
-Sybil groups, as illustrated in Figure~\ref{fig:system}.
+Sybil groups, as illustrated in Figure~\ref{fig:system}.  Sybilhunter is
+implemented in Go and consists of 3,300 lines of code.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.4\textwidth]{diagrams/system_architecture.pdf}
+	\includegraphics[width=\linewidth]{diagrams/system_architecture.pdf}
 	\caption{Sybilhunter's architecture.  Two datasets serve as input to
-		sybilhunter: archived consensuses and server descriptors, and malicious
-		relays that we gather by running exitmap~\cite{Winter2014a}.
-		Sybilhunter then attempts to extract Sybil groups from the given data.}
+		sybilhunter; archived consensuses and server descriptors, and malicious
+		relays that we gather by running exitmap~\cite{Winter2014a}.}
 	\label{fig:system}
 \end{figure}
 
@@ -122,14 +122,14 @@ first processing attempt, we used the Python parsing library Stem~\cite{stem},
 which is maintained by The Tor Project.  The data volume turned out to be
 difficult to handle for Stem because of Python's interpreted and dynamic nature.
 To process our dataset more efficiently, we implemented a custom parser in Go.
-Our parser has approximately 1,300 lines of code (and 900 additional lines for
-tests) and supports both strict and lazy parsing.  According to our benchmarks,
-our parser can process approximately 27 consensuses per second, as measured on
-an Intel Core i7 2.9 GHz CPU, a consumer-grade CPU.  We placed our datasets on a
-solid state drive to eliminate the I/O bottleneck.  Stem, for comparison,
-averages at around 1.8 consensuses per second.  Note, however, that Stem
-processes more fields than our parser, which makes it difficult to have a fair
-comparison.
+% Our parser has approximately 1,300 lines of code (and 900 additional lines for
+% tests) and supports both strict and lazy parsing.  According to our benchmarks,
+% our parser can process approximately 27 consensuses per second, as measured on
+% an Intel Core i7 2.9 GHz CPU, a consumer-grade CPU.  We placed our datasets on a
+% solid state drive to eliminate the I/O bottleneck.  Stem, for comparison,
+% averages at around 1.8 consensuses per second.  Note, however, that Stem
+% processes more fields than our parser, which makes it difficult to have a fair
+% comparison.
 
 \begin{table}[t]
 \small
@@ -139,10 +139,10 @@ comparison.
 \hline
 % find . -type f | wc -l
 % du -b consensuses/
-Consensuses & 69,877 & 48 GiB & 10/2007--10/2015 \\
-Descriptors & 32,376,097 & 47 GiB & 12/2005--10/2015 \\
+Consensuses & 72,061 & 51 GiB & 10/2007--01/2016 \\
+Descriptors & 34,789,777 & 52 GiB & 12/2005--01/2016 \\
 \end{tabular}
-\caption{An overview of our first dataset, consensuses and server descriptors
+\caption{An overview of our primary dataset, consensuses and server descriptors
 since 2007 and 2005, respectively.}
 \label{tab:collector-dataset}
 \end{table}
@@ -172,62 +172,7 @@ implemented exitmap modules to detect HTML tampering and TLS downgrading, by
 connecting to servers under our control and raising an alert if the returned
 HTML or TLS server hello were modified.  Our modules ran from Aug 2014 to Jan
 2016 and discovered 205 malicious exit relays, shown in
-Table~\ref{tab:exitmap-dataset}, that we all reported to The Tor Project.
-
-\begin{table}[t]
-\small
-\centering
-\begin{tabular}{r c p{4cm}}
-\textbf{Discovery} & \textbf{\# of relays} & \textbf{Attack description} \\
-\hline
-% Message-ID: <20160112033141.GA499@nymity.ch>
-Jan 2016 & 43$\dagger$ & Onion service impersonation by rewriting onion domains. \\
-% Message-ID: <20151214230014.GA27729@nymity.ch>
-Dec 2015 & 1$\mathsection$ & Ran the tool sslstrip~\cite{sslstrip}. \\
-% Message-ID: <20151213025807.GB20685@nymity.ch>
-Dec 2015 & 1$\mathsection$ & Ran the tool sslstrip. \\
-% Message-ID: <20151117150055.GA25187@nymity.ch>
-Nov 2015 & 8$\dagger$ & Downgraded TLS and replaced onion domains. \\
-% Message-ID: <20151116164403.GL10892@nymity.ch>
-Nov 2015 & 1 & Ran the tool sslstrip. \\
-% Message-ID: <20150908174557.GG8901@nymity.ch>
-Sep 2015 & 1 & Injected iframe into relayed HTML. \\
-% Message-ID: <20150804202838.GA4774@nymity.ch>
-Aug 2015 & 4$\dagger$ & Onion service impersonation by rewriting onion domains. \\
-% Message-ID: <20150630022923.GA2340@nymity.ch>
-Jun 2015 & 55$\dagger$ & Onion service impersonation by rewriting onion domains. \\
-% Message-ID: <20150423004031.GA11395@nymity.ch>
-Apr 2015 & 70$\dagger$ & Onion service impersonation by rewriting onion domains. \\
-% Message-ID: <20150311125831.GD23215@nymity.ch>
-Mar 2015 & 1 & Injected iframe into relayed HTML. \\
-% Message-ID: <20150311131506.GE23215@nymity.ch>
-Mar 2015 & 18$\ddagger$ & Bitcoin site MitM. \\
-Feb 2015 & 17$\ddagger$ & Bitcoin site MitM. \\
-% Message-ID: <20150210154109.GD10777@nymity.ch>
-Feb 2015 & 1 & Injected advertisement into HTML. \\
-Jan 2015 & 1 & Incorrect DNS resolution. \\
-% Message-ID: <20150109195428.GA29115@nymity.ch>
-Jan 2015 & 23$\ddagger$ & Bitcoin site MitM. \\
-% Message-ID: <20141025182433.GA23244@nymity.ch>
-Oct 2014 & 1 & Ran the tool sslstrip. \\
-% Message-ID: <20141021133016.GA11247@nymity.ch>
-Oct 2014 & 1 & Ran the tool sslstrip. \\
-% Message-ID: <20141021133016.GA11247@nymity.ch>
-Oct 2014 & 1 & Injected JavaScript into HTML. \\
-% Message-ID: <20140920132357.GC8751@nymity.ch>
-Sep 2014 & 1 & Routed traffic back into the Tor network. \\
-% Message-ID: <20140831153809.GA1799@nymity.ch>
-Aug 2014 & 1 & Injecting JavaScript into HTML. \\
-% Message-ID: <20140811014615.GB23748@nymity.ch>
-Aug 2014 & 1 & Injecting JavaScript into HTML. \\
-\end{tabular}
-\caption{An overview of our second dataset, 205 bad exit relays we discovered
-	between Aug 2014 and Nov 2015.  We believe that all single relays in
-	the dataset were isolated incidents while multiple relays constituted Sybil
-	groups.  Sybil groups marked with the symbols $\dagger$, $\ddagger$, and
-	$\mathsection$ were run by the same attacker.}
-\label{tab:exitmap-dataset}
-\end{table}
+Appendix~\ref{sec:malicious-relays}, that we all reported to The Tor Project.
 
 \subsection{Threat model}
 \label{sec:threat_model}
@@ -348,7 +293,7 @@ in two parts, creating a time series for new relays ($\sigma_{n}$) as well as
 for relays that left ($\sigma_{g}$).  $C_{t}$ is the network consensus at time
 $t$, and $\setminus$ denotes the complement between two consensuses, i.e., the
 relays that are in one consensus, but not the other.  We define $\sigma_{n}$ and
-$\sigma_{g}$ as:
+$\sigma_{g}$ as
 
 % \begin{figure}[t]
 % 	\centering
@@ -361,12 +306,12 @@ $\sigma_{g}$ as:
 
 \begin{equation}
 \sigma_{n} = \frac{\lvert C_{t} \setminus C_{t-1} \rvert}
-{\textrm{max}\{\lvert C_{t-1} \rvert, \lvert C_{t} \rvert \}}
-\end{equation}
-
-\begin{equation}
+%{\textrm{max}\{\lvert C_{t-1} \rvert, \lvert C_{t} \rvert \}}
+{\lvert C_{t} \rvert}
+\qquad\text{and}\qquad
 \sigma_{g} = \frac{\lvert C_{t-1} \setminus C_{t} \rvert}
-{\textrm{max}\{\lvert C_{t-1} \rvert, \lvert C_{t} \rvert \}}
+%{\textrm{max}\{\lvert C_{t-1} \rvert, \lvert C_{t} \rvert \}}
+{\lvert C_{t-1} \rvert}.
 \end{equation}
 
 Both $\sigma_{n}$ and $\sigma_{g}$ are bounded to the interval $[0, 1]$.  A

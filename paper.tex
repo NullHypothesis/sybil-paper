@@ -11,16 +11,17 @@
 \usepackage{multirow}
 \usepackage{hyperref}
 \usepackage{balance}
+\usepackage{AlegreyaSans}
 
 \definecolor{darkblue}{rgb}{0,0,0.6}
 \definecolor{darkred}{rgb}{0.6,0,0}
 \hypersetup{
-	pdftitle={Identifying and characterizing Sybils in the Tor network},
-	pdfauthor={Philipp Winter, Roya Ensafi, Karsten Loesing, and Nick Feamster},
+	%pdftitle={Identifying and characterizing Sybils in the Tor network},
+	%pdfauthor={Philipp Winter, Roya Ensafi, Karsten Loesing, and Nick Feamster},
 	colorlinks=true,
 	urlcolor=darkred,
 	linkcolor=darkred,
-	citecolor=darkblue
+	citecolor=darkred
 }
 
 \urlstyle{sf}
@@ -32,19 +33,20 @@
 \title{\Large \bf Identifying and characterizing Sybils in the Tor network}
 
 %for single author (just remove % characters)
-\author{
-{\rm Philipp Winter}\\
-Princeton \& Karlstad \\ University
-\and
-{\rm Roya Ensafi}\\
-Princeton University
-\and
-{\rm Karsten Loesing}\\
-The Tor Project
-\and
-{\rm Nick Feamster}\\
-Princeton University
-} % end author
+\author{}
+% \author{
+% {\rm Philipp Winter}\\
+% Princeton \& Karlstad \\ University
+% \and
+% {\rm Roya Ensafi}\\
+% Princeton University
+% \and
+% {\rm Karsten Loesing}\\
+% The Tor Project
+% \and
+% {\rm Nick Feamster}\\
+% Princeton University
+% } % end author
 
 \maketitle
 
@@ -66,10 +68,10 @@ Princeton University
 
 \input{conclusion}
 
-\input{acknowledgments}
+% \input{acknowledgments}
 
-{\footnotesize \bibliographystyle{abbrv}
-\balance\bibliography{literature}}
+{\footnotesize \bibliographystyle{plain}
+\bibliography{literature}}
 
 \input{appendix}
 

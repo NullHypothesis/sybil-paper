@@ -1,5 +1,64 @@
 \appendix
 
+\section{Exposed malicious exit relays}
+\label{sec:malicious-relays}
+Table~\ref{tab:exitmap-dataset} provides an overview of our second dataset, 205
+bad exit relays that we discovered between August 2014 and January 2016.  We
+believe that all single relays in the dataset were isolated incidents while sets
+of relays constituted Sybil groups.  Sybil groups marked with the symbols
+$\dagger$, $\ddagger$, and $\mathsection$ were run by the same attacker.
+
+\begin{table}[t]
+\small
+\centering
+\begin{tabular}{r c p{4cm}}
+\textbf{Discovery} & \textbf{\# of relays} & \textbf{Attack description} \\
+\hline
+% Message-ID: <20160112033141.GA499@nymity.ch>
+Jan 2016 & 43$\dagger$ & Onion service impersonation by rewriting onion domains. \\
+% Message-ID: <20151214230014.GA27729@nymity.ch>
+Dec 2015 & 1$\mathsection$ & Ran the tool sslstrip~\cite{sslstrip}. \\
+% Message-ID: <20151213025807.GB20685@nymity.ch>
+Dec 2015 & 1$\mathsection$ & Ran the tool sslstrip. \\
+% Message-ID: <20151117150055.GA25187@nymity.ch>
+Nov 2015 & 8$\dagger$ & Downgraded TLS and replaced onion domains. \\
+% Message-ID: <20151116164403.GL10892@nymity.ch>
+Nov 2015 & 1 & Ran the tool sslstrip. \\
+% Message-ID: <20150908174557.GG8901@nymity.ch>
+Sep 2015 & 1 & Injected iframe into relayed HTML. \\
+% Message-ID: <20150804202838.GA4774@nymity.ch>
+Aug 2015 & 4$\dagger$ & Onion service impersonation by rewriting onion domains. \\
+% Message-ID: <20150630022923.GA2340@nymity.ch>
+Jun 2015 & 55$\dagger$ & Onion service impersonation by rewriting onion domains. \\
+% Message-ID: <20150423004031.GA11395@nymity.ch>
+Apr 2015 & 70$\dagger$ & Onion service impersonation by rewriting onion domains. \\
+% Message-ID: <20150311125831.GD23215@nymity.ch>
+Mar 2015 & 1 & Injected iframe into relayed HTML. \\
+% Message-ID: <20150311131506.GE23215@nymity.ch>
+Mar 2015 & 18$\ddagger$ & Bitcoin site MitM. \\
+Feb 2015 & 17$\ddagger$ & Bitcoin site MitM. \\
+% Message-ID: <20150210154109.GD10777@nymity.ch>
+Feb 2015 & 1 & Injected advertisement into HTML. \\
+Jan 2015 & 1 & Incorrect DNS resolution. \\
+% Message-ID: <20150109195428.GA29115@nymity.ch>
+Jan 2015 & 23$\ddagger$ & Bitcoin site MitM. \\
+% Message-ID: <20141025182433.GA23244@nymity.ch>
+Oct 2014 & 1 & Ran the tool sslstrip. \\
+% Message-ID: <20141021133016.GA11247@nymity.ch>
+Oct 2014 & 1 & Ran the tool sslstrip. \\
+% Message-ID: <20141021133016.GA11247@nymity.ch>
+Oct 2014 & 1 & Injected JavaScript into HTML. \\
+% Message-ID: <20140920132357.GC8751@nymity.ch>
+Sep 2014 & 1 & Routed traffic back into the Tor network. \\
+% Message-ID: <20140831153809.GA1799@nymity.ch>
+Aug 2014 & 1 & Injecting JavaScript into HTML. \\
+% Message-ID: <20140811014615.GB23748@nymity.ch>
+Aug 2014 & 1 & Injecting JavaScript into HTML. \\
+\end{tabular}
+\caption{An overview of our second dataset, created with exitmap.}
+\label{tab:exitmap-dataset}
+\end{table}
+
 \section{Supporting diagrams}
 Figure~\ref{fig:default-sybils-uptime} shows the uptime matrix for the
 ``default'' Sybil group for October 2015.  Matrix rows represent consensuses and
@@ -15,3 +74,24 @@ matrix shows that many relays exhibit a diurnal uptime pattern.
 	off regularly.}
 	\label{fig:default-sybils-uptime}
 \end{figure}
+
+\section{Computational cost}
+\begin{table}[t]
+	\small
+	\centering
+	\begin{tabular}{lccc}
+	\textbf{Method} & \textbf{Invocation} & \textbf{Analysis window} & \textbf{Run time} \\
+	\hline
+	Network churn & Hourly & Two consensuses & $\sim$0.16s \\
+	Nearest-neighbor & Daily & One consensus & $\sim$15s \\
+	Fingerprint & Daily & One month & $\sim$55s \\
+	Uptime matrix & Daily & One month & $\sim$67s \\
+	%Similarity matrix & Daily & One consensus & $\sim$26s \\
+	\end{tabular}
+	\caption{The computational cost of our analysis techniques, measured in
+	execution time.  Network churn analysis is very fast and can easily be run
+	hourly while the creation of a similarity matrix takes more time and can be
+	run daily.}
+	\label{tab:exp-deployment}
+\end{table}
+
