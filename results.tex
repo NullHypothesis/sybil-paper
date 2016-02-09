@@ -537,7 +537,7 @@ Fast techniques lend themselves to being run hourly, for every new consensus,
 while slower ones must be run less frequent.  Table~\ref{tab:exp-deployment}
 gives an overview of the runtime of our methods.\footnote{We determined all
 performance numbers on an Intel Core i7-3520M CPU at 2.9 GHz, a consumer-grade
-CPU.}  We stored our datasets on a solid state drive, to eliminate I/O as
+CPU.}  We stored our datasets on a solid state drive to eliminate I/O as
 performance bottleneck.
 
 \begin{table}[t]
@@ -549,8 +549,8 @@ performance bottleneck.
 	\hline
 	Churn & Two consensuses & $\sim$0.16s \\
 	Neighbor search & One consensus & $\sim$1.6s \\
-	Fingerprint & One month & $\sim$55s \\
-	Uptimes & One month & $\sim$67s \\
+	Fingerprint & One month & $\sim$58s \\
+	Uptimes & One month & $\sim$145s \\
 	\hline
 	\end{tabular}
 	\caption{The computational cost of our analysis techniques.}
@@ -558,13 +558,10 @@ performance bottleneck.
 \end{table}
 
 The table columns contain, from left to right, our analysis technique, the
-technique's analysis window, and how long it takes to compute its output.  The
-calculation of network churn is very fast---it takes as input only two consensus
-files---and can easily be done for every network consensus.  Nearest-neighbor
-search takes approximately 1.6 seconds for a consensus of size 6,942.  We only
-used nearest-neighbor search for manual analysis, but it can also be used
-automatically.  Fingerprint and uptime analysis for one month work of consensus
-files both take approximately one minute and can easily be run daily.  Finally,
-the creation of the similarity matrix is prohibitively slow for all currently
-running 7,000 relays because of its quadratic runtime, but it can be created for
-a subset of 1,882 relays in approximately 26 seconds.
+technique's analysis window, and how long it takes to compute its output.
+Network churn calculation is very fast; it takes as input only two consensus
+files and can easily be run for every new network consensus.  Nearest-neighbor
+search takes approximately 1.6 seconds for a single consensus counting 6,942
+relays.  Fingerprint and uptime analysis for one month worth of consensuses
+takes approximately one and two minutes, respectively---easy to invoke daily, or
+even several times a day.
