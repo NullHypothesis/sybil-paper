@@ -74,24 +74,3 @@ matrix shows that many relays exhibit a diurnal uptime pattern.
 	off regularly.}
 	\label{fig:default-sybils-uptime}
 \end{figure}
-
-\section{Computational cost}
-\begin{table}[t]
-	\small
-	\centering
-	\begin{tabular}{lccc}
-	\textbf{Method} & \textbf{Invocation} & \textbf{Analysis window} & \textbf{Run time} \\
-	\hline
-	Churn & Hourly & Two consensuses & $\sim$0.16s \\
-	Neighbor & Daily & One consensus & $\sim$15s \\
-	Fingerprint & Daily & One month & $\sim$55s \\
-	Uptimes & Daily & One month & $\sim$67s \\
-	%Similarity matrix & Daily & One consensus & $\sim$26s \\
-	\end{tabular}
-	\caption{The computational cost of our analysis techniques, measured in
-	execution time.  Network churn analysis is very fast and can easily be run
-	hourly while the creation of a similarity matrix takes more time and can be
-	run daily.}
-	\label{tab:exp-deployment}
-\end{table}
-
