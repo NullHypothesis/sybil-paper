@@ -1,14 +1,11 @@
 \section{Discussion}
 \label{sec:discussion}
-% Having evaluated our techniques, we will now discuss how parameters should be
-% chosen in an operational setting, followed by a reiteration of sybilhunter's
-% limitations.
 
 \subsection{Balancing transparency and secrecy}
 \label{sec:secrecy}
-During the development of sybilhunter, we pondered what a reasonable balance
+During the development of \sys, we pondered what a reasonable balance
 between transparency and secrecy should look like in an operational setting.
-While we were free to explore the choice of sybilhunter parameters in this
+While we were free to explore the choice of \sys parameters in this
 paper, parameters might have to be kept secret in an operational setting.  We
 want our system design and code to be open, to stimulate scientific progress,
 but a freely available implementation helps attackers evade our system because
@@ -26,7 +23,7 @@ of primary interest to the scientific community, is available as free software.
 
 Unfortunately, we are unable to achieve a setting analogous to Kerckhoffs'
 principle in cryptography, stating that a system must be secure even if all
-except the key is known.  In sybilhunter, unlike modern cryptograhpic systems,
+except the key is known.  In \sys, unlike modern cryptograhpic systems,
 there is a clear relationship between the input (the system parameters) and the
 output (an alert).  Still, an attacker has to make an effort to stay under the
 radar of our system.  Given that it is impossible to always find all Sybils, our
@@ -38,21 +35,23 @@ forcing an attacker to infer our system's parameters.
 In Section~\ref{sec:threat_model} we argued that we are unable to prevent all
 Sybil attacks.  An adversary unconstrained by time and money can add an
 unlimited number of Sybils to the network.  Indeed, Table~\ref{tab:sybils}
-contains six Sybil groups that sybilhunter was unable to detect.  Nevertheless,
-exitmap was able to expose these Sybils, which emphasizes the importance of
-having diverse and complementary analysis techniques.  Ultimately, our tools
-raise the bar for successful attacks.  By characterizing past attacks and
-documenting the evolution of recurring attacks, we can adapt our techniques,
-allowing for the bar to be raised even further.  However, this arms race is
-unlikely to end barring fundamental changes in how Tor relays are operated.
+contains six Sybil groups that \sys was unable to detect.  Exitmap, however, was
+able to expose these Sybils, which emphasizes the importance of having diverse
+and complementary analysis techniques to raise the bar for successful attacks.
+By characterizing past attacks and documenting the evolution of recurring
+attacks, we can adapt our techniques, allowing for the bar to be raised even
+further.  However, this arms race is unlikely to end, barring fundamental
+changes in how Tor relays are operated.  Given that attackers can stay under our
+radar, our results represent a lower bound because we might have missed Sybil
+groups.
 
-Finally, our approach is unable to ascertain the purpose of a Sybil attack.
-While the purpose is frequently obvious, Table~\ref{tab:sybils} contains several
-Sybil groups that we could not classify.  In such cases, it is difficult for The
-Tor Project to make a call and decide if Sybils should be removed from the
-network.  Keeping them runs the risk of exposing users to an unknown attack, but
-removing them deprives the network of bandwidth.  Often, additional context is
-helpful in making a call.  For example, Sybils that are (\emph{i}) operated in
+Finally, \sys is unable to ascertain the purpose of a Sybil attack.  While the
+purpose is frequently obvious, Table~\ref{tab:sybils} contains several Sybil
+groups that we could not classify.  In such cases, it is difficult for The Tor
+Project to make a call and decide if Sybils should be removed from the network.
+Keeping them runs the risk of exposing users to an unknown attack, but removing
+them deprives the network of bandwidth.  Often, additional context is helpful in
+making a call.  For example, Sybils that are (\emph{i}) operated in
 ``bulletproof'' ASes~\cite{Konte2015a}, (\emph{ii}) show signs of not running
 the Tor reference implementation, or (\emph{iii}) spoof information in their
 router descriptor all suggest malicious intent.  In the end, Sybil groups have
