@@ -111,7 +111,7 @@ consensus, an authoritative list that comprises all running Tor relays,
 represented as a set of router statuses.  Each router status in the consensus
 contains basic information about Tor relays such as their bandwidth, flags, and
 exit policy.  It also contains a pointer to the relay's descriptor, as shown in
-Figure~\ref{fig:datasets}.  As of Jan 2016, consensuses contain approximately
+Figure~\ref{fig:datasets}.  As of January 2016, consensuses contain approximately
 7,000 router statuses, i.e., each hour, 7,000 router statuses are published, and
 archived by CollecTor.
 
@@ -170,8 +170,8 @@ relay, e.g., at a malicious autonomous system.
 In addition to the original modules that the exitmap authors shared with us, we
 implemented exitmap modules to detect HTML tampering and TLS downgrading, by
 connecting to servers under our control and raising an alert if the returned
-HTML or TLS server hello were modified.  Our modules ran from Aug 2014 to Jan
-2016 and discovered 205 malicious exit relays, shown in
+HTML or TLS server hello were modified.  Our modules ran from Aug 2014 to
+January 2016 and discovered 205 malicious exit relays, shown in
 Appendix~\ref{sec:malicious-relays}, that we all reported to The Tor Project.
 
 \subsection{Threat model}
@@ -369,16 +369,18 @@ clustering algorithm that forms groups bottom-up, based on the minimum distance
 between group members.  Similar to Andersen et al.~\cite{Andersen2002a}, we use
 Pearson's correlation coefficient in our distance function because it tells us
 if two uptime sequences change together.  The sample correlation coefficient $r$
-between two vectors $x = (x_1, \cdots, x_n)$ and $y = (y_1, \cdots, y_n)$ is
-defined as
-
-\begin{equation}
-r = \frac{\sum_{i=1}^{n} (x_{i} - \bar{x}) (y_{i} - \bar{y})}
-{\sqrt{\sum_{i=1}^{n} (x_{i} - \bar{x})^2} \sqrt{\sum_{i=1}^{n} (y_{i} - \bar{y})^2}}
-\end{equation}
-
-and yields a value in the interval $[-1, 1]$.  The sample mean is given by
-$\bar{x}$ and $\bar{y}$.  A coefficient of $-1$ denotes perfect anti-correlation
+% between two vectors $x = (x_1, \cdots, x_n)$ and $y = (y_1, \cdots, y_n)$ is
+% defined as
+% 
+% \begin{equation}
+% r = \frac{\sum_{i=1}^{n} (x_{i} - \bar{x}) (y_{i} - \bar{y})}
+% {\sqrt{\sum_{i=1}^{n} (x_{i} - \bar{x})^2} \sqrt{\sum_{i=1}^{n} (y_{i} - \bar{y})^2}}
+% \end{equation}
+% 
+yields a value in the interval $[-1, 1]$.
+%The sample mean is given by
+%$\bar{x}$ and $\bar{y}$.
+A coefficient of $-1$ denotes perfect anti-correlation
 (relay $R_1$ is only online when relay $R_2$ is offline) and 1 denotes perfect
 correlation (relay $R_1$ is only online when relay $R_2$ is online).  We define
 our distance function as $d(r) = 1 - r$, so two perfectly correlated sequences
@@ -399,7 +401,7 @@ Tor relays in Nov 2012.
 \label{sec:fingerprint-analysis}
 The information a Tor client needs to connect to an onion service is stored in a
 DHT that consists of a subset of all Tor relays, the onion service directories
-(HSDirs).  As of Jan 2016, 42\% of all Tor relays serve as HSDir.  A
+(HSDirs).  As of January 2016, 42\% of all Tor relays serve as HSDir.  A
 daily-changing set of six HSDirs host the contact information of any given
 onion service.  Tor clients contact one of these six HSDirs to request
 information about the onion service they intend to connect to.  A HSDir becomes
@@ -454,7 +456,8 @@ $s_2$: \texttt{\setlength{\fboxsep}{0pt}%
 We implemented a simple linear search to determine the Levenshtein distance
 between a given relay and all other relays that are part of the same consensus.
 For a consensus consisting of 6,525 relays, our algorithm takes approximately
-1.5 seconds to finish.\footnote{Again, we measured on an Intel Core i7 2.9 GHz.}
+1.5 seconds to finish.\footnote{We measured on an Intel Core i7-3520M CPU at 2.9
+GHz, a consumer-grade CPU.}
 
 \subsubsection{Narrowing the semantic gap}
 Systems that employ complex and opaque analysis techniques frequently suffer
