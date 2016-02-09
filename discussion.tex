@@ -1,16 +1,18 @@
 \section{Discussion}
 \label{sec:discussion}
-Having presented and evaluated our techniques, we will now discuss the
-transparency and secrecy tradeoff, we reiterate our work's limitations, and we
-discuss the role of cloud providers in Sybil attacks.
+% Having evaluated our techniques, we will now discuss how parameters should be
+% chosen in an operational setting, followed by a reiteration of sybilhunter's
+% limitations.
 
 \subsection{Balancing transparency and secrecy}
 \label{sec:secrecy}
 During the development of sybilhunter, we pondered what a reasonable balance
-between transparency and secrecy should look like.  We want our system design
-and code to be open, to stimulate scientific progress, but a freely available
-implementation helps attackers evade our system because they can first test and
-refine their attacks offline.
+between transparency and secrecy should look like in an operational setting.
+While we were free to explore the choice of sybilhunter parameters in this
+paper, parameters might have to be kept secret in an operational setting.  We
+want our system design and code to be open, to stimulate scientific progress,
+but a freely available implementation helps attackers evade our system because
+they can first test and refine their attacks offline.
 
 To mitigate this problem, we divide our system into the \emph{open} analysis
 framework and its \emph{secret} parameters.  After all, the analysis framework
@@ -33,25 +35,26 @@ forcing an attacker to infer our system's parameters.
 
 \subsection{Limitations}
 \label{sec:limitations}
-% We cannot detect all Sybils.  We can only make an effort.
-We argued in Section~\ref{sec:threat_model} that we are unable to prevent all
-Sybil attacks.  An adversary unconstrained by time and money will always be able
-to add Sybils and eliminate redundancy in her Sybils' appearance and behavior.
-This is known since Douceur showed in 2002 that the only way to prevent Sybil
-attacks is a central authority that verifies network
-participants~\cite{Douceur2002a}.  A central authority is unlikely to be viable
-for the Tor network.  It would be in conflict with Tor's goal of distributing
-trust and alienate relay operators.  As a result, detecting Sybils in the Tor
-network is limited to making a best effort.
+In Section~\ref{sec:threat_model} we argued that we are unable to prevent all
+Sybil attacks.  An adversary unconstrained by time and money can add an
+unlimited number of Sybils to the network.  Indeed, Table~\ref{tab:sybils}
+contains six Sybil groups that sybilhunter was unable to detect.  Nevertheless,
+exitmap was able to expose these Sybils, which emphasizes the importance of
+having diverse and complementary analysis techniques.  Ultimately, our tools
+raise the bar for successful attacks.  By characterizing past attacks and
+documenting the evolution of recurring attacks, we can adapt our techniques,
+allowing for the bar to be raised even further.  However, this arms race is
+unlikely to end barring fundamental changes in how Tor relays are operated.
 
-% We cannot determine the purpose of a Sybil group.
-Finally, our approach is unable to determine the \emph{purpose} of a Sybil
-attack.  In some cases, the purpose is obvious; for example, if a Sybil group
-has the \texttt{Exit} flag and tampers with traffic, or if a group has the
-\texttt{HSDir} flag and shares an unusually long fingerprint prefix.  In many
-other cases, however, we rely on additional information to decide if a Sybil
-group should be removed.  For example, Sybils originating from ``bulletproof''
-ASes~\cite{Konte2015a}, showing signs of not running the tor reference
-implementation, or spoofing information in their router descriptor could all
-suggest malicious intent.  In the end, Sybil groups have to be evaluated case
-by case, and the benefits and disadvantages of blocking it have to be evaluated.
+Finally, our approach is unable to ascertain the purpose of a Sybil attack.
+While the purpose is frequently obvious, Table~\ref{tab:sybils} contains several
+Sybil groups that we could not classify.  In such cases, it is difficult for The
+Tor Project to make a call and decide if Sybils should be removed from the
+network.  Keeping them runs the risk of exposing users to an unknown attack, but
+removing them deprives the network of bandwidth.  Often, additional context is
+helpful in making a call.  For example, Sybils that are (\emph{i}) operated in
+``bulletproof'' ASes~\cite{Konte2015a}, (\emph{ii}) show signs of not running
+the Tor reference implementation, or (\emph{iii}) spoof information in their
+router descriptor all suggest malicious intent.  In the end, Sybil groups have
+to be evaluated case by case, and the advantages and disadvantages of blocking
+them have to be considered.
