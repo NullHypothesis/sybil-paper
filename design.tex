@@ -135,12 +135,14 @@ To process our dataset more efficiently, we implemented a custom parser in Go.
 \small
 \centering
 \begin{tabular}{l c c c}
+\hline
 \textbf{Dataset} & \textbf{\# of files} & \textbf{Size} & \textbf{Time span} \\
 \hline
 % find . -type f | wc -l
 % du -b consensuses/
 Consensuses & 72,061 & 51 GiB & 10/2007--01/2016 \\
 Descriptors & 34,789,777 & 52 GiB & 12/2005--01/2016 \\
+\hline
 \end{tabular}
 \caption{An overview of our primary dataset, consensuses and server descriptors
 since 2007 and 2005, respectively.}
@@ -176,13 +178,11 @@ Appendix~\ref{sec:malicious-relays}, that we all reported to The Tor Project.
 
 \subsection{Threat model}
 \label{sec:threat_model}
-Most of our work is on applying \sys on archived data.  We can also apply \sys
-on newly incoming data, but that means that adversaries can manipulate
-their Sybil configuration to evade our system, and the powerful nature of Sybil
-attacks~\cite{Douceur2002a} limits our defenses.  This is reflected in our
-adversarial assumptions.
-
-We assume that an adversary \emph{does}:
+Most of this paper is on applying \sys to archived network data, but we can also
+apply it to newly incoming data.  However, this puts us in an \emph{adversarial
+setting}, as attackers can tune their Sybils to evade our system.  This is
+reflected in our adversarial assumptions.  We assume that an adversary
+\emph{does}:
 \begin{itemize}
 	\item Run more than one Tor relay.
 
@@ -191,9 +191,7 @@ We assume that an adversary \emph{does}:
 
 An adversary further \emph{can}:
 \begin{itemize}
-	\item Add Tor relays all at once or slowly over time.
-
-	\item Know about \sys.
+	\item Know how \sys's modules work.
 
 	\item Run active or passive attacks.
 
@@ -254,7 +252,7 @@ not raise false positives because the median number of new fingerprints in a
 consensus is only six---significantly below the conservative threshold of 50.
 Conversely, the threshold likely causes false negatives, but we cannot determine
 the false negative rate because we lack ground truth.  In addition, The Tor
-Project's script does not consider relays did leave the network and it can be
+Project's script does not consider relays that left the network and it can be
 defeated by a ``trickling'' attack in which Sybils are slowly added over time.
 We now extend The Tor Project's approach to make it more robust against these
 shortcomings.
