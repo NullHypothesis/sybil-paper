@@ -1,39 +1,20 @@
 \section{Discussion}
 \label{sec:discussion}
 
-\subsection{Balancing transparency and secrecy}
-\label{sec:secrecy}
-% - in academic setting, we are free to explore parameters
-% - in operational setting, when run online, that's not that easy as attackers
-%   would leverage that to test attack offline.
-% 
-% 
-During the development of \sys, we pondered what a reasonable balance
-between transparency and secrecy should look like in an operational setting.
-While we were free to explore the choice of \sys parameters in this
-paper, parameters might have to be kept secret in an operational setting.  We
-want our system design and code to be open, to stimulate scientific progress,
-but a freely available implementation helps attackers evade our system because
-they can first test and refine their attacks offline.
-
-To mitigate this problem, we divide our system into the \emph{open} analysis
-framework and its \emph{secret} parameters.  After all, the analysis framework
-is of primary interest to other researchers, whereas its parameters are mere
-operational details.  Note that the authors of exitmap follow a similar
-philosophy by making available exitmap's scanning framework~\cite{exitmap}, but
-sharing its modules only privately.  This differentiation seems to be
-sustainable as attackers are primarily interested in scanning modules, e.g.,
-which URLs, protocols, and ports are probed.  The scanning framework, which is
-of primary interest to the scientific community, is available as free software.
-
-Unfortunately, we are unable to achieve a setting analogous to Kerckhoffs'
-principle in cryptography, stating that a system must be secure even if all
-except the key is known.  In \sys, unlike modern cryptograhpic systems,
-there is a clear relationship between the input (the system parameters) and the
-output (an alert).  Still, an attacker has to make an effort to stay under the
-radar of our system.  Given that it is impossible to always find all Sybils, our
-efforts are ultimately limited to increasing the cost of an attack, e.g.,
-forcing an attacker to infer our system's parameters.
+\subsection{Operational experience}
+\label{sec:operational}
+Our practical work with \sys taught us that detecting Sybils frequently requires
+manual work; for example, comparing a new Sybil group with a previously
+disclosed one, sending decoy traffic over Sybils, or sorting and comparing
+information in their descriptors.  It is difficult to predict all kinds of
+manual analyses that might be necessary in the future, which is why we designed
+\sys to be highly interoperable with Unix command line tools.  Its CSV-formatted
+output can easily be piped into tools such as sed, awk, and grep.  We found that
+compact text output was significantly easier to deal with, both for plotting
+results and for manual analysis.  We also found that \sys can serve as valuable
+tool to better understand the Tor network and monitor its reliability.  Our
+techniques can disclose network consensus issues and illustrate the wide
+diversity of Tor relays.
 
 \subsection{Limitations}
 \label{sec:limitations}
