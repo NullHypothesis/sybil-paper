@@ -1,17 +1,16 @@
 \subsection*{Abstract}
 Being a volunteer-run, distributed anonymity network, Tor is vulnerable to Sybil
-attacks that can increase an attacker's exposure to relayed traffic and
-manipulate Tor's distributed hash table.  Little is known about real-world
-Sybils in the Tor network, and we lack practical tools and methods to expose
-Sybil attacks.
+attacks.  Little is known about real-world Sybils in the Tor network, and we
+lack practical tools and methods to expose Sybil attacks.
 %
-In this work, we develop \sys, the first system for detecting Sybil
-relays based on their \emph{appearance}, such as configuration; and
-\emph{behavior}, such as uptime sequences.  Our system can analyze past and
-future Tor network data for Sybil attacks.  We discuss the design of our system
-and characterize the Sybil groups we discovered, which includes botnets and
-relays that engage in Bitcoin theft.
+In this work, we develop \sys, the first system for detecting Sybil relays based
+on their \emph{appearance}, such as configuration; and \emph{behavior}, such as
+uptime sequences.  We used \sys's diverse analysis techniques to analyze nine
+years of archived Tor network data, providing us with new insights into the
+operation of real-world attackers.  Our findings include diverse incidents,
+ranging from botnets, to academic research, and relays that engage in Bitcoin
+transaction hijacking.
 %
-Our work shows how existing Sybil defenses do not apply to Tor, it reveals how
-attackers operate, and provides practical tools to analyze and characterize Tor
-relays.
+Our work shows that existing Sybil defenses do not apply to Tor, it delivers
+insight into real-world attackers, and provides practical tools to expose and
+characterize Tor relays, making the network safer for its users.
