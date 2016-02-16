@@ -4,9 +4,9 @@
 In his seminal 2002 paper, Douceur showed that only a \emph{central authority}
 that verifies new nodes as they join the distributed system is guaranteed to
 prevent Sybils~\cite{Douceur2002a}.  This approach conflicts with Tor's design
-philosophy that seeks to eliminate central points of control and distribute
-trust.  In addition, a major factor contributing to Tor's relay growth is the
-low barrier of entry, allowing operators to set up relays quickly and
+philosophy that seeks to distribute trust and eliminate central points of
+control.  In addition, a major factor contributing to Tor's network growth is
+the low barrier of entry, allowing operators to set up relays both quickly and
 anonymously.  An identity-verifying authority would raise that barrier, alienate
 privacy-conscious relay operators, and impede Tor's growth.  Barring a central
 authority, researchers have proposed techniques that leverage a resource that is
@@ -36,12 +36,13 @@ that an attacker that seeks to operate 100 Sybils needs 100 times the
 computational resources she would have needed for a single virtual identity.
 Both Borisov~\cite{Borisov2006a} and Li et al.~\cite{Li2012a} used computational
 puzzles for that purpose.  Computational constraints work well in distributed
-systems where the cost of joining the network is low.  For example, to use
-BitTorrent, a user only needs to run a lightweight client.  However, this is not
-the case in Tor because relay operations require constant use of bandwidth and
-CPU.  Unlike in many other distributed systems, it is impossible to run 100 Tor
-relays while not spending the resources for 100 relays.  In a way, computational
-constraints are inherent to running a relay.
+systems where the cost of joining the network is low.  For example, a
+lightweight client is enough to use BitTorrent, allowing even low-end consumer
+devices to participate.  However, this is not the case in Tor because relay
+operations require constant use of bandwidth and CPU.  Unlike in many other
+distributed systems, it is impossible to run 100 Tor relays while not spending
+the resources for 100 relays.  In a way, computational constraints are inherent
+to running a relay.
 
 In summary, we believe that existing Sybil defences do not work well when
 applied to the Tor network; its destinctive features call for special solutions.
