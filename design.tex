@@ -37,7 +37,7 @@ CollecTor~\cite{collector}, an archiving service that is run by The Tor Project.
 Some of the archived data dates back to 2004, allowing us to restore arbitrary
 Tor network configurations from the last ten years.  Not all of CollecTor's
 archived data is relevant to our hunt for Sybils, however, which is why we only
-analyse the following two:
+analyze the following two:
 
 \begin{figure}[t]
 \centering
@@ -185,8 +185,8 @@ Sybils, however, our heuristics require \emph{some} redundancy.
 Having discussed our datasets and threat model, we now turn to presenting
 techniques that can expose Sybils.  Our techniques are based on the insight that
 Sybil relays typically \emph{behave or appear similarly}.  Shared configuration
-parameters such as port numbers and nicknames cause similar appearance and
-Sybils behave similarly when they reboot simultaneously, or exhibit the same
+parameters such as port numbers and nicknames cause similar appearance whereas
+Sybils behave similarly when they reboot simultaneously, or exhibit identical
 quirks when relaying traffic.
 
 \Sys can analyze (\emph{i}) historical network data, dating back to 2007;
@@ -218,7 +218,7 @@ The churn rate of a distributed system captures the rate of joining and leaving
 network participants.  In the Tor network, these participants are relays.  An
 unexpectedly high churn rate between two subsequent consensuses means that many
 relays joined or left, which can reveal Sybils and other network issues because
-Sybil operators frequently start and stop their Sybils at the same time to ease
+Sybil operators frequently start and stop their Sybils at the same time, to ease
 administration---they behave similarly.
 
 The Tor Project is maintaining a Python script~\cite{doctor} that determines the
