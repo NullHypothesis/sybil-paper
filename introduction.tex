@@ -61,10 +61,11 @@ implement heuristics, leveraging that Sybils (\emph{i}) frequently go online and
 offline simultaneously, (\emph{ii}) share similarities in their configuration,
 and (\emph{iii}) may change their identity fingerprint---a relay's fingerprint
 is the hash over its public key---frequently, to manipulate Tor's DHT.  We
-implemented these heuristics in a tool, \sys, which we then used to analyze
-archived network data, dating back to 2007, to discover past attacks and
-anomalies.  Finally, we characterize the Sybil groups we discovered.  To sum up,
-we make the following key contributions:
+implemented these heuristics in a tool, \sys, whose development required a major
+engineering effort because we had to process 100 GiB of data and millions of
+files.  We used \sys to analyze archived network data, dating back to 2007, to
+discover past attacks and anomalies.  Finally, we characterize the Sybil groups
+we discovered.  To sum up, we make the following key contributions:
 \begin{itemize}
 	\item We design and implement \sys, a tool to analyze past and future Tor
 		network data.  While we designed it specifically for the use in Tor, our
