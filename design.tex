@@ -1,12 +1,12 @@
 \section{Data and design}
 \label{sec:design}
-We define Sybils in the Tor network as two or more relays that are under central
-control.  Sybils per se do not have to be malicious; a relay operator could
-simply have forgotten to configure the \texttt{MyFamily} option that is used to
-express that multiple relays are under central control.  Such Sybils are no
-threat to the Tor network, which is why we refer to them as \emph{benign
-Sybils}.  What we are interested in is \emph{malicious Sybils} whose purpose is
-to deanonymize or otherwise harm Tor users.
+We define Sybils in the Tor network as two or more relays that are controlled by
+a single person or group of people.  Sybils per se do not have to be malicious;
+a relay operator could simply have forgotten to configure the \texttt{MyFamily}
+option that is used to express that multiple relays are under central control.
+Such Sybils are no threat to the Tor network, which is why we refer to them as
+\emph{benign Sybils}.  What we are interested in is \emph{malicious Sybils}
+whose purpose is to deanonymize or otherwise harm Tor users.
 
 We draw on two datasets---one publicly available and one created by us---to
 uncover malicious Sybils.  Our detection methods are implemented in a tool,
@@ -29,7 +29,8 @@ Figure~\ref{fig:system} shows how we use our two datasets.  Archived consensuses
 and router descriptors (in short: descriptors) allow us to (\emph{i}) restore
 past states of the Tor network, which \sys mines for Sybil groups, and to
 (\emph{ii}) find ``partners in crime'' of malicious exit relays that we
-discovered by running exitmap, a scanner for Tor exit relays.
+discovered by running exitmap, a scanner for Tor exit relays that is presented
+below.
 
 \subsubsection{Consensuses and router descriptors}
 The consensus and descriptor dataset is publicly available on
@@ -142,14 +143,15 @@ since 2007 and 2005, respectively.}
 
 \subsubsection{Malicious exit relays}
 In addition to our publicly available and primary dataset, we collected
-malicious exit relays over 18 months.  We add these relays to our dataset
-because they frequently \emph{surface in groups}, as malicious Sybils, because
-an attacker runs the same attack on several, physically distinct exit
-relays.  Winter et al.'s work~\cite[\S 5.2]{Winter2014a} further showed that
-attackers make an effort to stay under the radar, which is why we cannot only
-rely on active probing to find such relays.  We also seek to find potential
-``partners in crime'' of each newly discovered malicious relay, which we discuss
-in Section~\ref{sec:nearest-neighbor}.
+malicious exit relays over 18 months.  We call exit relays malicious if they
+modify forwarded traffic in bad faith, e.g., to run man-in-the-middle attacks.
+We add these relays to our dataset because they frequently \emph{surface in
+groups}, as malicious Sybils, because an attacker runs the same attack on
+several, physically distinct exit relays.  Winter et al.'s work~\cite[\S
+5.2]{Winter2014a} further showed that attackers make an effort to stay under the
+radar, which is why we cannot only rely on active probing to find such relays.
+We also seek to find potential ``partners in crime'' of each newly discovered
+malicious relay, which we discuss in Section~\ref{sec:nearest-neighbor}.
 
 We exposed malicious exit relays using Winter et al.'s exitmap tool~\cite[\S
 3.1]{Winter2014a}.  Exitmap is a Python-based scanning framework for Tor exit
@@ -171,14 +173,14 @@ which subsequently blocked these relays.
 \subsection{Threat model}
 \label{sec:threat_model}
 Most of this paper is on applying \sys to archived network data, but we can also
-apply it to newly incoming data.  However, this puts us in an adversarial
-setting as attackers can tune their Sybils to evade our system.  This is
-reflected in our adversarial assumptions.  We assume that an adversary
-\emph{does} run more than one Tor relay and exhibits redundancy in their relay
-configuration, or uptime sequence.  An adversary further \emph{can} know how
-\sys's modules work, run active or passive attacks, and make a limited effort to
-stay under the radar, by diversifying parts of their configuration.  To detect
-Sybils, however, our heuristics require \emph{some} redundancy.
+apply it to newly incoming data.  This puts us in an adversarial setting as
+attackers can tune their Sybils to evade our system.  This is reflected in our
+adversarial assumptions.  We assume that an adversary \emph{does} run more than
+one Tor relay and exhibits redundancy in their relay configuration, or uptime
+sequence.  An adversary further \emph{can} know how \sys's modules work, run
+active or passive attacks, and make a limited effort to stay under the radar, by
+diversifying parts of their configuration.  To detect Sybils, however, our
+heuristics require \emph{some} redundancy.
 
 \subsection{Analysis techniques}
 \label{sec:techniques}
@@ -224,7 +226,7 @@ administration---they behave similarly.
 The Tor Project is maintaining a Python script~\cite{doctor} that determines the
 number of previously unobserved relay fingerprints in new consensuses.  If that
 number is greater than or equal to the static threshold 50, the script sends an
-email alert.  The threshold was chosen arbitrarily.  We reimplemented the script
+e-mail alert.  The threshold was chosen arbitrarily.  We reimplemented the script
 in \sys and ran it over all archived consensus documents, dating back to 2007.
 The script raised 47 alerts in nine years, all of which seemed to be true
 positives, i.e., they should be of interest to The Tor Project.  The script did
@@ -263,16 +265,16 @@ once.
 \end{figure}
 
 To quantify the churn rate $\sigma$ between two subsequent consensus documents,
-we adapt Godfrey et al.'s~\cite{Godfrey2006a} formula, which yields a churn
-value that captures both systems that joined and systems that left the network.
+we adapt Godfrey et al.'s formula, which yields a churn value that captures both
+systems that joined and systems that left the network~\cite{Godfrey2006a}.
 However, an unusually low number of systems that left could cancel out an
 unusually high number of new systems and vice versa---an undesired property for
 a technique that should spot abnormal changes.  To address this issue, we split
 the formula in two parts, creating a time series for new relays ($\sigma_{n}$)
-as well as for relays that left ($\sigma_{g}$).  $C_{t}$ is the network
-consensus at time $t$, and $\setminus$ denotes the complement between two
-consensuses, i.e., the relays that are in the left operand, but not the right
-operand.  We define $\sigma_{n}$ and $\sigma_{g}$ as
+and for relays that left ($\sigma_{g}$).  $C_{t}$ is the network consensus at
+time $t$, and $\setminus$ denotes the complement between two consensuses, i.e.,
+the relays that are in the left operand, but not the right operand.  We define
+$\sigma_{n}$ and $\sigma_{g}$ as
 
 \begin{equation}
 \sigma_{n} = \frac{\lvert C_{t} \setminus C_{t-1} \rvert}
@@ -314,13 +316,13 @@ This is reflected in their relays' uptime.  When an attacker installs an
 operating system upgrade that requires a reboot on her Sybils, we will observe a
 set of relays going offline and back online at the same time.  To isolate such
 events, we are visualizing the \emph{uptime patterns} of Tor relays by grouping
-together relays whose uptime is highly correlated.  The churn technique is
-similar but it only provides an aggregate, high-level view on how Tor relays
-join and leave the network.  Since the technique is aggregate, it is poorly
-suited for visualizing the uptime of specific relays; an abnormally high churn
-value attracts our attention but does not tell us what caused the anomaly.  To
-fill this gap, we complement the churn analysis with an uptime matrix that we
-will now present.
+together relays whose uptime is highly correlated.  The churn technique
+presented above is similar but it only provides an aggregate, high-level view on
+how Tor relays join and leave the network.  Since the technique is aggregate, it
+is poorly suited for visualizing the uptime of specific relays; an abnormally
+high churn value attracts our attention but does not tell us what caused the
+anomaly.  To fill this gap, we complement the churn analysis with an uptime
+matrix that we will now present.
 
 This uptime matrix consists of the uptime patterns of all Tor relays, which we
 represent as binary sequences.  Each hour, when a new consensus is published, we
@@ -336,21 +338,11 @@ Of particular importance is how the uptime sequences are sorted.  If highly
 correlated sequences are not adjacent in the visualization, we might miss them.
 We sort sequences using single-linkage clustering, a type of hierarchical
 clustering algorithm that forms groups bottom-up, based on the minimum distance
-between group members.  Similar to Andersen et al.~\cite{Andersen2002a}, we use
-Pearson's correlation coefficient in our distance function because it tells us
-if two uptime sequences change together.  The sample correlation coefficient $r$
-% between two vectors $x = (x_1, \cdots, x_n)$ and $y = (y_1, \cdots, y_n)$ is
-% defined as
-% 
-% \begin{equation}
-% r = \frac{\sum_{i=1}^{n} (x_{i} - \bar{x}) (y_{i} - \bar{y})}
-% {\sqrt{\sum_{i=1}^{n} (x_{i} - \bar{x})^2} \sqrt{\sum_{i=1}^{n} (y_{i} - \bar{y})^2}}
-% \end{equation}
-% 
-yields a value in the interval $[-1, 1]$.
-%The sample mean is given by
-%$\bar{x}$ and $\bar{y}$.
-A coefficient of $-1$ denotes perfect anti-correlation
+between group members.  Our clustering algorithm requires a distance function.
+Similar to Andersen et al.~\cite{Andersen2002a}, we use Pearson's correlation
+coefficient as our distance function because it tells us if two uptime sequences
+change together.  The sample correlation coefficient $r$ yields a value in the
+interval $[-1, 1]$.  A coefficient of $-1$ denotes perfect anti-correlation
 (relay $R_1$ is only online when relay $R_2$ is offline) and 1 denotes perfect
 correlation (relay $R_1$ is only online when relay $R_2$ is online).  We define
 our distance function as $d(r) = 1 - r$, so two perfectly correlated sequences
@@ -371,7 +363,7 @@ Tor relays in November 2012.
 \label{sec:fingerprint-analysis}
 The information a Tor client needs to connect to an onion service is stored in a
 DHT that consists of a subset of all Tor relays, the onion service directories
-(HSDirs).  As of February 2016, 46\% of all Tor relays serve as HSDir.  A
+(HSDirs).  As of February 2016, 46\% of all Tor relays serve as HSDirs.  A
 daily-changing set of six HSDirs host the contact information of any given
 onion service.  Tor clients contact one of these six HSDirs to request
 information about the onion service they intend to connect to.  A HSDir becomes
@@ -388,7 +380,7 @@ identity keys until their fingerprint is sufficiently close to the targeted
 onion service's index, thus becoming its HSDir~\cite{Biryukov2013a}.
 
 We detect relays that change their fingerprint frequently by maintaining a
-lookup table that maps a relay's IP addresses to a list of all fingerprints we
+lookup table that maps a relay's IP address to a list of all fingerprints we
 have seen it use.  We sort the lookup table by the relays that changed their
 fingerprints the most, and output the results.
 
@@ -400,18 +392,18 @@ potentially associated relays.  Looking for such relays involved extensive
 manual work, which we soon started to automate.  We needed an algorithm for
 nearest-neighbor search that takes as input a ``seed'' relay and finds its $n$
 most similar neighbors.  We define similarity as shared configuration parameters
-such as port number, IP addresses, exit policies, or bandwidth.  Our search
-algorithm sorts relays by comparing these configuration parameters.
+such as port numbers, IP addresses, exit policies, or bandwidth values.  Our
+search algorithm sorts relays by comparing these configuration parameters.
 
 To quantify the similarity between two relays, we use the Levenshtein distance,
 a distance metric that takes as input two strings and determines the minimum
 number of modifications---insert, delete, and modify---that are necessary to
-turn string $s_{1}$ into $s_{2}$.  Our algorithm extracts several configuration
-parameters of two relays, concatenates them into two strings, and determines
-their Levenshtein distance.  As an example, consider a simplified configuration
-representation consisting of the concatenation of nickname, IP address, and
-port.  To turn string $s_2$ into $s_1$, six operations are necessary; three
-modifications (green) and two deletions (red):
+turn string $s_{2}$ into $s_{1}$.  Our algorithm turns the router statuses and
+descriptors of two relays into strings and determines their Levenshtein
+distance.  As an example, consider a simplified configuration representation
+consisting of the concatenation of nickname, IP address, and port.  To turn
+string $s_2$ into $s_1$, six operations are necessary; three modifications
+(green) and two deletions (red):
 
 \definecolor{change}{rgb}{0.7,1.0,0.7}
 \definecolor{delete}{rgb}{1.0,0.7,0.7}
@@ -424,10 +416,11 @@ $s_2$: \texttt{\setlength{\fboxsep}{0pt}%
 \colorbox{delete}{\strut 54}%
 9001}
 
-We implemented a simple linear search to determine the Levenshtein distance
-between a given relay and all other relays that are part of the same consensus.
-For a consensus consisting of 6,525 relays, our algorithm takes approximately
-1.5 seconds to finish.\footnote{We measured on an Intel Core i7-3520M CPU at 2.9
+Our algorithm determines the Levenshtein distance between a ``seed'' relay and
+all $n-1$ relays in a consensus.  It then sorts the calculated distances in
+ascending order and prints the most similar relays to the console.  For a
+consensus consisting of 6,525 relays, our algorithm takes approximately 1.5
+seconds to finish.\footnote{We measured on an Intel Core i7-3520M CPU at 2.9
 GHz, a consumer-grade CPU.}
 
 \subsubsection{Narrowing the semantic gap}
