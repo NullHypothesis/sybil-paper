@@ -7,15 +7,13 @@ manipulation of BitTorrent's distributed hash table~\cite{Wang2012a}; and, most
 relevant to our work, relays in the Tor network that seek to deanonymize
 users~\cite{cmucert}.  In addition to coining the term ``Sybil,'' Douceur showed
 that practical Sybil defenses are challenging, arguing that Sybil attacks are
-always possible in the absence of a central authority~\cite{Douceur2002a}.  In
-this work, we focus on Sybils in the Tor network, i.e., Tor relays---virtual
-identities---that are controlled by a single operator.  But what harm can Sybils
-do in Tor?
+always possible without a central authority~\cite{Douceur2002a}.  In this work,
+we focus on Sybils in Tor---relays that are controlled by a single operator.
+But what harm can Sybils do?
 
 The effectiveness of many attacks on Tor depends on how large a fraction of the
 network's traffic---the consensus weight---an attacker can observe.  As the
-attacker's consensus weight grows, she is increasingly able to launch the
-following attacks.
+attacker's consensus weight grows, the following attacks become easier.
 
 \begin{description}
 	\item[Exit traffic tampering:] A Tor user's traffic traverses exit relays,
@@ -29,49 +27,34 @@ following attacks.
 		flow information such as packet lengths and timings to infer what web
 		site her users are connecting to~\cite{Juarez2014a}.
 	\item[Bridge address harvesting:] Users behind censorship firewalls use
-		bridges---basically non-public Tor relays---as hidden stepping stones
-		into the Tor network.  It is important that censors cannot obtain all
-		bridge addresses, which is why bridge distribution is rate-limited.
-		However, an attacker can harvest bridge addresses by running a middle
-		relay and looking for incoming connections that do not originate from
-		any of the publicly-known guard relays~\cite{Ling2012a}.
+		private Tor relays (``bridges'') as hidden stepping stones into the Tor
+		network.  It is important that censors cannot obtain all bridge
+		addresses, which is why bridge distribution is rate-limited.  However,
+		an attacker can harvest bridge addresses by running a middle relay and
+		looking for incoming connections that do not originate from any of the
+		publicly known guard relays~\cite{Ling2012a}.
 	\item[End-to-end correlation:] By running both entry guards and exit relays,
 		an attacker can use timing analysis to link a Tor user's identity to her
 		activity, e.g., learn that \emph{Alice} is visiting \emph{Facebook}.
-		For this to work, an attacker must run at least two Tor relays, or be
-		able to eavesdrop on at least two networks~\cite{Johnson2013a}.
+		For this attack to work, an attacker must run at least two Tor relays,
+		or be able to eavesdrop on at least two networks~\cite{Johnson2013a}.
 \end{description}
 
-To scale an attack, an attacker can increase her consensus weight by configuring
-her relay to forward more traffic.  However, the capacity of a single relay is
-limited by its link bandwidth and, because of the computational cost of
-cryptography, by CPU.  Once an adversary reaches this limit, she has to scale
-horizontally, i.e., add Sybil relays to the network.
+Configuring a relay to forward more traffic allows an attacker to increase her
+consensus weight.  However, the capacity of a single relay is limited by its
+link bandwidth and, because of the computational cost of cryptography, by CPU.
+Ultimately, increasing consensus weight requires an adversary to add relays to
+the network; we call these additional relays Sybils.
 
 In addition to the above attacks, an adversary needs Sybil relays to manipulate
 onion services, which are TCP servers whose IP address is hidden by Tor.  In the
-current onion service protocol, six Sybil relays are enough to take offline
+current onion service protocol, six Sybil relays are sufficient to take offline
 an onion service because of a weakness in the design of the distributed hash
 table (DHT) that powers onion services~\cite{Biryukov2013a}.  Finally, instead
 of being a direct means to an end, Sybil relays can be a \emph{side effect} of
 another issue.  In Section~\ref{sec:sybil_groups}, we provide evidence for what
 appears to be botnets whose zombies are running Tor relays, perhaps because of a
 misguided attempt to help the Tor network grow.
-
-Sybil attacks are a well-known problem to The Tor Project, which is reflected in
-a number of both implicit and explicit Sybil defenses that are in place as of
-February 2016.  First, directory authorities---the ``gatekeepers'' of the Tor
-network---accept at most two relays per IP address to prevent low-resource Sybil
-attacks~\cite{Bauer2007a,Bauer2007b}.  Similarly, Tor's path selection algorithm
-states that Tor clients never select two relays in the same /16
-network~\cite{path-spec}.  Second, directory authorities automatically assign
-flags to relays, indicating their status and quality of service.  The Tor
-Project has recently increased the minimal time until relays obtain the
-\texttt{Stable} flag (seven days) and the \texttt{HSDir} flag (96 hours).  This
-change increases the cost of Sybil attacks and gives Tor developers more time to
-discover and block suspicious relays before they get in a position to run an
-attack.  Finally, the operation of a Tor relay causes recurring costs---most
-notably bandwidth and electricity---which can further restrain an adversary.
 
 Motivated by the lack of practical Sybil detection tools, we design and
 implement heuristics, leveraging that Sybils (\emph{i}) frequently go online and
@@ -88,9 +71,9 @@ we make the following key contributions:
 		techniques are general in nature and can easily be applied to other
 		distributed systems such as I2P~\cite{i2p}.
 	\item We expose and characterize Sybil groups, and publish our findings as
-		datasets to stimulate future research.  We find that many different
-		kinds of operators run Sybil groups, including financially-motiviated
-		attackers, researchers, and unskilled troublemakers.
+		datasets to stimulate future research.\footnote{Link redacted for
+		anonymization.}  We find that Sybils run MitM attacks, DoS attacks, and
+		are used for research projects.
 \end{itemize}
 
 % Structure of the paper.

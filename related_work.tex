@@ -44,5 +44,20 @@ distributed systems, it is impossible to run 100 Tor relays while not spending
 the resources for 100 relays.  In a way, computational constraints are inherent
 to running a relay.
 
+Sybil attacks are a well-known problem to The Tor Project, which is reflected in
+a number of both implicit and explicit Sybil defenses that are in place as of
+February 2016.  First, directory authorities---the ``gatekeepers'' of the Tor
+network---accept at most two relays per IP address to prevent low-resource Sybil
+attacks~\cite{Bauer2007a,Bauer2007b}.  Similarly, Tor's path selection algorithm
+states that Tor clients never select two relays in the same /16
+network~\cite{path-spec}.  Second, directory authorities automatically assign
+flags to relays, indicating their status and quality of service.  The Tor
+Project has recently increased the minimal time until relays obtain the
+\texttt{Stable} flag (seven days) and the \texttt{HSDir} flag (96 hours).  This
+change increases the cost of Sybil attacks and gives Tor developers more time to
+discover and block suspicious relays before they get in a position to run an
+attack.  Finally, the operation of a Tor relay causes recurring costs---most
+notably bandwidth and electricity---which can further restrain an adversary.
+
 In summary, we believe that existing Sybil defences do not work well when
 applied to the Tor network; its destinctive features call for special solutions.
