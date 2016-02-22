@@ -23,13 +23,12 @@ systems such as SybilGuard~\cite{Yu2006a}, SybilLimit~\cite{Yu2008a}, and
 SybilInfer~\cite{Danezis2009a}.  Unfortunately, social graph-based defenses
 do not work in our setting because there is no existing trust relationship
 between relay operators.\footnote{Relay operators can express in their
-configuration that their relays are run by the same operator, using the
-\texttt{MyFamily} option, but this denotes an \emph{intra}-person and not an
-\emph{inter}-person trust relationship.} Note that we could create such a
-relationship by, e.g., linking relays to their operator's social networking
-account, or by creating a ``relay operator web of trust,'' but again, we
-believe that such an effort would alienate relay operators and receive limited
-adoption.
+configuration that their relays are run by the same operator, but this
+denotes an \emph{intra}-person and not an \emph{inter}-person trust
+relationship.} Note that we could create such a relationship by, e.g., linking
+relays to their operator's social networking account, or by creating a ``relay
+operator web of trust,'' but again, we believe that such an effort would
+alienate relay operators and receive limited adoption.
 
 Orthogonal to social constraints, computational resource constraints guarantee
 that an attacker that seeks to operate 100 Sybils needs 100 times the

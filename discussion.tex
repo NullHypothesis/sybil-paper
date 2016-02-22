@@ -1,5 +1,7 @@
 \section{Discussion}
 \label{sec:discussion}
+After having used \sys in practice for several months, we elaborate on both our
+operational experience and the shortcomings of \sys.
 
 \subsection{Operational experience}
 \label{sec:operational}
@@ -8,16 +10,17 @@ manual work; for example, comparing a new Sybil group with a previously
 disclosed one, sending decoy traffic over Sybils, or sorting and comparing
 information in their descriptors.  It is difficult to predict all kinds of
 manual analyses that might be necessary in the future, which is why we designed
-\sys to be highly interoperable with Unix command line tools.  Its CSV-formatted
-output can easily be piped into tools such as sed, awk, and grep.  We found that
-compact text output was significantly easier to deal with, both for plotting
-results and for manual analysis.  We also found that \sys can serve as valuable
-tool to better understand the Tor network and monitor its reliability.  Our
-techniques can disclose network consensus issues and illustrate the wide
-diversity of Tor relays.
+\sys to be highly interoperable with Unix command line tools~\cite{Pike1983a}.
+Its CSV-formatted output can easily be piped into tools such as sed, awk, and
+grep.  We found that compact text output was significantly easier to deal with,
+both for plotting results and for manual analysis.  We also found that \sys can
+serve as valuable tool to better understand the Tor network and monitor its
+reliability.  Our techniques can disclose network consensus issues and
+illustrate the wide diversity of Tor relays, providing empirical data that can
+influence future core design decisions.
 
 We are also working with The Tor Project on incorporating our techniques in
-\url{metrics.torproject.org}, a web site that contains network visualizations,
+Tor Metrics~\cite{metrics}, a web site that contains network visualizations,
 which are frequented by numerous volunteers that sometimes report anomalies.
 By adding our techniques, we hope to benefit from ``crowd-sourced'' Sybil
 detection.

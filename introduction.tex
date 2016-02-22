@@ -32,7 +32,7 @@ attacker's consensus weight grows, the following attacks become easier.
 		addresses, which is why bridge distribution is rate-limited.  However,
 		an attacker can harvest bridge addresses by running a middle relay and
 		looking for incoming connections that do not originate from any of the
-		publicly known guard relays~\cite{Ling2012a}.
+		publicly known guard relays~\cite{Ling2015b}.
 	\item[End-to-end correlation:] By running both entry guards and exit relays,
 		an attacker can use timing analysis to link a Tor user's identity to her
 		activity, e.g., learn that \emph{Alice} is visiting \emph{Facebook}.
@@ -72,16 +72,16 @@ we discovered.  To sum up, we make the following key contributions:
 		techniques are general in nature and can easily be applied to other
 		distributed systems such as I2P~\cite{i2p}.
 	\item We expose and characterize Sybil groups, and publish our findings as
-		datasets to stimulate future research.\footnote{Link redacted for
-		anonymization.}  We find that Sybils run MitM attacks, DoS attacks, and
-		are used for research projects.
-		% Deanonymize.
+		datasets to stimulate future research.\footnote{The dataset is online at
+			\url{https://nymity.ch/sybilhunting/}.} We find that Sybils run MitM
+		attacks, DoS attacks, and are used for research projects.
 \end{itemize}
 
 % Structure of the paper.
-The rest of this paper is structured as follows.  We begin by discussing
-related work in Section~\ref{sec:related_work}.  Section~\ref{sec:design}
-presents the design of our analysis tools, which is then followed by
-experimental results in Section~\ref{sec:results}.  We discuss our results in
+The rest of this paper is structured as follows.  We begin by discussing related
+work in Section~\ref{sec:related_work} and give some background on Tor in
+Section~\ref{sec:background}.  Section~\ref{sec:design} presents the design of
+our analysis tools, which is then followed by experimental results in
+Section~\ref{sec:results}.  We discuss our results in
 Section~\ref{sec:discussion} and conclude the paper in
 Section~\ref{sec:conclusion}.

@@ -1,5 +1,6 @@
 \documentclass[letterpaper,twocolumn,10pt]{article}
 
+\usepackage[table]{xcolor}
 \usepackage{usenix,epsfig}
 \usepackage[utf8]{inputenc}
 \usepackage{tikz}
@@ -15,19 +16,27 @@
 \usepackage{xspace}
 \usepackage{inconsolata}
 \usepackage{balance}
-
+\usepackage[backend=biber,backref=true]{biblatex}
 \usepackage[T1]{fontenc}
 \usepackage[scaled=0.8]{beramono}
+\usepackage{enumitem} % Compact descriptions.
 
-\definecolor{darkblue}{rgb}{0,0,0.6}
-\definecolor{darkred}{rgb}{0.6,0,0}
+\setlist{noitemsep}
+
+\bibliography{literature}
+
+\renewcommand*{\bibfont}{\footnotesize}
+
+\definecolor{lightgray}{gray}{0.9}
+\definecolor{darkblue}{rgb}{0,0,0.4}
+\definecolor{darkred}{rgb}{0,0,0}
 \hypersetup{
-	%pdftitle={Identifying and characterizing Sybils in the Tor network},
-	%pdfauthor={Philipp Winter, Roya Ensafi, Karsten Loesing, and Nick Feamster},
+	pdftitle={Identifying and characterizing Sybils in the Tor network},
+	pdfauthor={Philipp Winter, Roya Ensafi, Karsten Loesing, and Nick Feamster},
 	colorlinks=true,
-	urlcolor=darkred,
-	linkcolor=darkred,
-	citecolor=darkred
+	urlcolor=darkblue,
+	linkcolor=darkblue,
+	citecolor=darkblue
 }
 
 \newcommand{\sys}{sybilhunter\xspace}
@@ -42,20 +51,19 @@
 \title{\Large \bf Identifying and characterizing Sybils in the Tor network}
 
 %for single author (just remove % characters)
-\author{}
-% \author{
-% {\rm Philipp Winter}\\
-% Princeton \& Karlstad \\ University
-% \and
-% {\rm Roya Ensafi}\\
-% Princeton University
-% \and
-% {\rm Karsten Loesing}\\
-% The Tor Project
-% \and
-% {\rm Nick Feamster}\\
-% Princeton University
-% } % end author
+\author{
+{\rm Philipp Winter}\\
+Princeton \& Karlstad \\ University
+\and
+{\rm Roya Ensafi}\\
+Princeton University
+\and
+{\rm Karsten Loesing}\\
+The Tor Project
+\and
+{\rm Nick Feamster}\\
+Princeton University
+} % end author
 
 \maketitle
 
@@ -69,6 +77,8 @@
 
 \input{related_work}
 
+\input{background}
+
 \input{design}
 
 \input{results}
@@ -77,12 +87,14 @@
 
 \input{conclusion}
 
-% \input{acknowledgments}
+\input{acknowledgments}
 
-{\footnotesize\balance \bibliographystyle{plain}
-\bibliography{literature}}
+\raggedright
 
-\newpage
+{\balance
+\printbibliography}
+
+\pagebreak
 
 \input{appendix}
 

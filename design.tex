@@ -2,11 +2,10 @@
 \label{sec:design}
 We define Sybils in the Tor network as two or more relays that are controlled by
 a single person or group of people.  Sybils per se do not have to be malicious;
-a relay operator could simply have forgotten to configure the \texttt{MyFamily}
-option that is used to express that multiple relays are under central control.
-Such Sybils are no threat to the Tor network, which is why we refer to them as
-\emph{benign Sybils}.  What we are interested in is \emph{malicious Sybils}
-whose purpose is to deanonymize or otherwise harm Tor users.
+a relay operator could simply have forgotten to configure her relays as a relay
+family.  Such Sybils are no threat to the Tor network, which is why we refer to
+them as \emph{benign Sybils}.  What we are interested in is \emph{malicious
+Sybils} whose purpose is to deanonymize or otherwise harm Tor users.
 
 We draw on two datasets---one publicly available and one created by us---to
 uncover malicious Sybils.  Our detection methods are implemented in a tool,
@@ -121,7 +120,8 @@ millions of files, amounting to more than 100 GiB of uncompressed data.  In our
 first processing attempt, we used the Python parsing library Stem~\cite{stem},
 which is maintained by The Tor Project.  The data volume turned out to be
 difficult to handle for Stem because of Python's interpreted and dynamic nature.
-To process our dataset more efficiently, we implemented a custom parser in Go.
+To process our dataset more efficiently, we implemented a custom parser in
+Go~\cite{zoossh}.
 
 \begin{table}[t]
 \small
@@ -153,14 +153,14 @@ radar, which is why we cannot only rely on active probing to find such relays.
 We also seek to find potential ``partners in crime'' of each newly discovered
 malicious relay, which we discuss in Section~\ref{sec:nearest-neighbor}.
 
-We exposed malicious exit relays using Winter et al.'s exitmap tool~\cite[\S
-3.1]{Winter2014a}.  Exitmap is a Python-based scanning framework for Tor exit
-relays.  Exitmap modules perform a network task that can then be run over all
-exit relays.  One use case is HTTPS man-in-the-middle detection: A module can
-fetch the certificate of a web server over all exit relays and then compare its
-fingerprint with the expected, valid fingerprint.  Exposed attacks, however, can
-be difficult to attribute because an attack can take place upstream of the exit
-relay, e.g., at a malicious autonomous system.
+We exposed malicious exit relays using Winter et al.'s exitmap
+tool~\cite{Winter2014a}.  Exitmap is a Python-based scanning framework for Tor
+exit relays.  Exitmap modules perform a network task that can then be run over
+all exit relays.  One use case is HTTPS man-in-the-middle detection: A module
+can fetch the certificate of a web server over all exit relays and then compare
+its fingerprint with the expected, valid fingerprint.  Exposed attacks, however,
+can be difficult to attribute because an attack can take place upstream of the
+exit relay, e.g., at a malicious autonomous system.
 
 In addition to the original modules that the exitmap authors shared with us, we
 implemented exitmap modules to detect HTML tampering and TLS downgrading, by
@@ -226,18 +226,17 @@ administration---they behave similarly.
 The Tor Project is maintaining a Python script~\cite{doctor} that determines the
 number of previously unobserved relay fingerprints in new consensuses.  If that
 number is greater than or equal to the static threshold 50, the script sends an
-e-mail alert.  The threshold was chosen arbitrarily.  We reimplemented the script
-in \sys and ran it over all archived consensus documents, dating back to 2007.
-The script raised 47 alerts in nine years, all of which seemed to be true
-positives, i.e., they should be of interest to The Tor Project.  The script did
-not raise false positives because the median number of new fingerprints in a
-consensus is only six---significantly below the conservative threshold of 50.
-Conversely, the threshold likely causes false negatives, but we cannot determine
-the false negative rate because we lack ground truth.  In addition, The Tor
-Project's script does not consider relays that left the network, does not
-distinguish between relays with different flags, and does not adapt its
-threshold as the network grows.  We now extend The Tor Project's approach to
-make it more robust against these shortcomings.
+e-mail alert.  We reimplemented the script in \sys and ran it over all archived
+consensus documents, dating back to 2007.  The script raised 47 alerts in nine
+years, all of which seemed to be true positives, i.e., they should be of
+interest to The Tor Project.  The script did not raise false positives,
+presumably because the median number of new fingerprints in a consensus is only
+six---significantly below the conservative threshold of 50.  Yet, the threshold
+likely causes false negatives, but we cannot determine the false negative rate
+because we lack ground truth.  In addition, The Tor Project's script does not
+consider relays that left the network, does not distinguish between relays with
+different flags, and does not adapt its threshold as the network grows.  We now
+present an alternative approach that is more flexible and robust.
 
 We found that churn anomalies worthy of our attention range from \emph{flat
 hills} (Fig.~\ref{fig:flat-hill}) to \emph{sudden spikes}
@@ -246,7 +245,8 @@ concerned a large number of relays, over many hours or days.  Such an event
 happened shortly after the Heartbleed bug, when The Tor Project asked relay
 operators to generate new keys.  Relay operators acted gradually, most within
 two days.  Sudden spikes can happen if an attacker adds many relays, all at
-once.
+once.  These are mere examples, however; the shape of a time series cannot tell
+us anything about the nature of the underlying incident.
 
 \begin{figure}[t]
 	\centering
@@ -264,65 +264,65 @@ once.
 	\label{fig:sudden-spike}
 \end{figure}
 
-To quantify the churn rate $\sigma$ between two subsequent consensus documents,
+To quantify the churn rate $\alpha$ between two subsequent consensus documents,
 we adapt Godfrey et al.'s formula, which yields a churn value that captures both
 systems that joined and systems that left the network~\cite{Godfrey2006a}.
 However, an unusually low number of systems that left could cancel out an
 unusually high number of new systems and vice versa---an undesired property for
 a technique that should spot abnormal changes.  To address this issue, we split
-the formula in two parts, creating a time series for new relays ($\sigma_{n}$)
-and for relays that left ($\sigma_{g}$).  $C_{t}$ is the network consensus at
+the formula in two parts, creating a time series for new relays ($\alpha_{n}$)
+and for relays that left ($\alpha_{l}$).  $C_{t}$ is the network consensus at
 time $t$, and $\setminus$ denotes the complement between two consensuses, i.e.,
 the relays that are in the left operand, but not the right operand.  We define
-$\sigma_{n}$ and $\sigma_{g}$ as
+$\alpha_{n}$ and $\alpha_{l}$ as
 
 \begin{equation}
-\sigma_{n} = \frac{\lvert C_{t} \setminus C_{t-1} \rvert}
+\alpha_{n} = \frac{\lvert C_{t} \setminus C_{t-1} \rvert}
 %{\textrm{max}\{\lvert C_{t-1} \rvert, \lvert C_{t} \rvert \}}
 {\lvert C_{t} \rvert}
 \qquad\text{and}\qquad
-\sigma_{g} = \frac{\lvert C_{t-1} \setminus C_{t} \rvert}
+\alpha_{l} = \frac{\lvert C_{t-1} \setminus C_{t} \rvert}
 %{\textrm{max}\{\lvert C_{t-1} \rvert, \lvert C_{t} \rvert \}}
 {\lvert C_{t-1} \rvert}.
 \end{equation}
 
-Both $\sigma_{n}$ and $\sigma_{g}$ are bounded to the interval $[0, 1]$.  A
+Both $\alpha_{n}$ and $\alpha_{l}$ are bounded to the interval $[0, 1]$.  A
 churn value of 0 indicates no change between two subsequent consensuses whereas
-a churn value of 1 indicates a complete turnover.  Determining $\sigma_{n,g}$
+a churn value of 1 indicates a complete turnover.  Determining $\alpha_{n,l}$
 for the sequence $C_{t}, C_{t-1}$, \ldots, $C_{t-n}$, yields a time series of
 churn values that can readily be inspected for abnormal spikes.  We found that
 many churn anomalies are caused by relays that share a flag, or a flag
-combination, e.g., \texttt{HSDir} and \texttt{Exit}.  Therefore, \sys can
-also generate per-flag churn time series that can uncover patterns that would be
-lost in a flag-agnostic time series.
+combination, e.g., \texttt{HSDir} (onion service directories) and \texttt{Exit}
+(exit relays).  Therefore, \sys can also generate per-flag churn time series
+that can uncover patterns that would be lost in a flag-agnostic time series.
 
 Finally, to detect changes in the underlying time series trend---flat hills---we
-can smooth $\sigma_{n,g}$ using a simple moving average $\lambda$ defined as
+can smooth $\alpha_{n,l}$ using a simple moving average $\lambda$ defined as
 
 \begin{equation}
-\lambda = \frac{1}{w} \cdot \sum_{i=0}^{w} \sigma_{i}.
+\lambda = \frac{1}{w} \cdot \sum_{i=0}^{w} \alpha_{i}.
 \end{equation}
 
 As we increase the window size $w$, we can detect more subtle changes in the
-underlying churn trend.  If $\lambda$ or $\sigma_{n,g}$ exceed a manually
-defined threshold, an alert is raised.  Section~\ref{sec:churn} discusses the
-trade-off of choosing a threshold.
+underlying churn trend.  If $\lambda$ or $\alpha_{n,l}$ exceed a manually
+defined threshold, an alert is raised.  Section~\ref{sec:churn} elaborates on
+how a threshold can be chosen in practice.
 
 \subsubsection{Uptime matrix}
 \label{sec:uptime-matrix}
 For convenience, Sybil operators are likely to administer their relays
 simultaneously, i.e., update, configure, and reboot them all at the same time.
-This is reflected in their relays' uptime.  When an attacker installs an
-operating system upgrade that requires a reboot on her Sybils, we will observe a
-set of relays going offline and back online at the same time.  To isolate such
-events, we are visualizing the \emph{uptime patterns} of Tor relays by grouping
-together relays whose uptime is highly correlated.  The churn technique
-presented above is similar but it only provides an aggregate, high-level view on
-how Tor relays join and leave the network.  Since the technique is aggregate, it
-is poorly suited for visualizing the uptime of specific relays; an abnormally
-high churn value attracts our attention but does not tell us what caused the
-anomaly.  To fill this gap, we complement the churn analysis with an uptime
-matrix that we will now present.
+This is reflected in their relays' uptime.  An operating system upgrade that
+requires a reboot of Sybil relays will induce a set of relays to go offline and
+return online in a synchronized manner.  To isolate such events, we are
+visualizing the \emph{uptime patterns} of Tor relays by grouping together relays
+whose uptime is highly correlated.  The churn technique presented above is
+similar but it only provides an aggregate, high-level view on how Tor relays
+join and leave the network.  Since the technique is aggregate, it is poorly
+suited for visualizing the uptime of specific relays; an abnormally high churn
+value attracts our attention but does not tell us what caused the anomaly.  To
+fill this gap, we complement the churn analysis with an uptime matrix that we
+will now present.
 
 This uptime matrix consists of the uptime patterns of all Tor relays, which we
 represent as binary sequences.  Each hour, when a new consensus is published, we
@@ -355,7 +355,10 @@ Tor relays in November 2012.
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/2012-11.jpg}
-	\caption{The uptime matrix for a subset of all Tor relays in November 2012.}
+	\caption{The uptime matrix for 3,000 Tor relays for all of November 2012.
+	Rows represent consensuses and columns represent relays.  Black pixels mean
+	that a relay was online, and white means offline.  Red blocks denote relays
+	with identical uptime.}
 	\label{fig:uptime-matrix}
 \end{figure}
 
@@ -422,17 +425,3 @@ ascending order and prints the most similar relays to the console.  For a
 consensus consisting of 6,525 relays, our algorithm takes approximately 1.5
 seconds to finish.\footnote{We measured on an Intel Core i7-3520M CPU at 2.9
 GHz, a consumer-grade CPU.}
-
-\subsubsection{Narrowing the semantic gap}
-Systems that employ complex and opaque analysis techniques frequently suffer
-from what Sommer and Paxson call the semantic gap~\cite[\S III.C]{Sommer2010a},
-a gap in understanding what a system's output means and how it should be acted
-upon.  Our techniques automate much of the \emph{detection} of Sybils, but
-\emph{blocking} them involves human interaction.  If The Tor Project must spend
-hours to understand and verify \sys alerts, our techniques are ultimately
-useless.  Therefore, we took special care to narrow the semantic gap by avoiding
-the use of opaque classification methods because their output---frequently
-distances in high-dimensional vector space---is difficult to interpret.
-Finally, in accordance with the Unix tool design philosophy~\cite{Pike1983a},
-\sys produces CSV-formatted text output that is easy to pipe into command line
-tools such as cut, grep, and awk for further analysis.

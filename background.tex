@@ -1,0 +1,32 @@
+\section{Background}
+\label{sec:background}
+We now provide necessary background on the Tor network~\cite{Dingledine2004a}.
+Tor consists of several thousand volunteer-run relays that are summarized in the
+\emph{network consensus} that is voted on and published every hour by eight
+distributed \emph{directory authorities}.  The authorities assign a variety of
+flags to relays:
+
+\begin{description}
+	\item[Valid:] The relay is valid, i.e., not known to be broken.
+	\item[HSDir:] The relay is an onion service directory, i.e., it participates
+		in the DHT that powers Tor onion services.
+	\item[Exit:] The relay is an exit relay.
+	\item[BadExit:] The relay is an exit relay but is either misconfigured or
+		malicious, and should therefore not be used by Tor clients.
+	\item[Stable:] Relays are stable if their mean time between failure is at
+		least the median of all relays, or at least seven days.
+	\item[Guard:] Guard relays are the rarely-changing first hop for Tor clients.
+	\item[Running:] A relay is running if the directory authorities could
+		connect to it in the last 45 minutes.
+\end{description}
+
+Tor relays are uniquely identified by their \emph{fingerprint}, a Base32-encoded
+and truncated SHA-1 hash over their public key.  Operators can further assign a
+\emph{nickname} to their Tor relays, which is a string that identifies a relay
+(albeit not uniquely) and is easier to remember than its pseudo-random
+fingerprint.  Exit relays have an \emph{exit policy}---a list of IP addresses
+and ports that the relay allows connections to.  Finally, operators that run
+more than one relay are encouraged to configure their relays to be part of a
+\emph{relay family}.  Families are used to express that a set of relays is
+controlled by a single party.  Tor clients never use more than one family member
+in their path to prevent correlation attacks.
