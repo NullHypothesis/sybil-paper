@@ -8,10 +8,12 @@ believe that all single relays in the dataset were isolated incidents while sets
 of relays constituted Sybil groups.  Sybil groups marked with the symbols
 $\dagger$, $\ddagger$, and $\mathsection$ were run by the same attacker.
 
-\begin{table*}[t]
+\rowcolors{1}{}{gray!10}
+
+\begin{table*}
 \small
 \centering
-\begin{tabular}{r c p{10cm}}
+\begin{tabularx}{\textwidth}{r c X}
 \hline
 \textbf{Discovery} & \textbf{\# of relays} & \textbf{Attack description} \\
 \hline
@@ -57,8 +59,8 @@ sites, including torproject.org. \\
 Feb 2015 & 1 & The relay injected a script that attempted to load a resource
 from the now inaccessible torclick.net.  Curiously, torclick.net's front page
 said ``We place your advertising materials on all websites online.  Your ads
-will be seen only for anonymous network TOR users.  Now it is about 3 million
-users. The number of users is always growing.'' \\
+will be seen only for anonymous network TOR [sic] users.  Now it is about 3
+million users. The number of users is always growing.'' \\
 
 Feb 2015 & 17$\ddagger$ & Again, these relays tampered with HTTP redirects of
 Bitcoin web sites.  Interestingly, the attack became more sophisticated; these
@@ -105,7 +107,7 @@ Dec 2015 & 1$\mathsection$ & Same as above. \\
 % Message-ID: <20160112033141.GA499@nymity.ch>
 Jan 2016 & 43$\dagger$ & Same as the relays marked with a $\dagger$. \\
 \hline
-\end{tabular}
+\end{tabularx}
 \caption{An overview of our second dataset, 251 malicious exit relays discovered
 by exitmap.  We believe that Sybil groups marked with an $\dagger$,
 $\mathsection$, and $\ddagger$ were run by the same adversary.}
@@ -119,7 +121,7 @@ columns represent relays.  As a result, a single pixel shows if a given relays
 was online (black pixel) or offline (white pixel) in a given consensus.  The
 matrix shows that many relays exhibit a diurnal uptime pattern.
 
-\begin{figure}[t]
+\begin{figure}
 	\centering
 	\includegraphics[width=0.8\linewidth]{diagrams/default-sybils-2015-10.jpg}
 	\caption{Uptimes for the ``default'' Sybil group for October 2015.  Many
