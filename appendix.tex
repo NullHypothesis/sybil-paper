@@ -2,7 +2,7 @@
 
 \section{Exposed malicious exit relays}
 \label{sec:malicious-relays}
-Table~\ref{tab:exitmap-dataset} provides an overview of our second dataset, 205
+Table~\ref{tab:exitmap-dataset} provides an overview of our second dataset, 251
 bad exit relays that we discovered between August 2014 and January 2016.  We
 believe that all single relays in the dataset were isolated incidents while sets
 of relays constituted Sybil groups.  Sybil groups marked with the symbols
@@ -108,9 +108,9 @@ Dec 2015 & 1$\mathsection$ & Same as above. \\
 Jan 2016 & 43$\dagger$ & Same as the relays marked with a $\dagger$. \\
 \hline
 \end{tabularx}
-\caption{An overview of our second dataset, 251 malicious exit relays discovered
-by exitmap.  We believe that Sybil groups marked with an $\dagger$,
-$\mathsection$, and $\ddagger$ were run by the same adversary.}
+\caption{An overview of our second dataset, 251 malicious exit relays that we
+discovered using exitmap.  We believe that Sybil groups marked with an
+$\dagger$, $\mathsection$, and $\ddagger$ were run by the same adversary.}
 \label{tab:exitmap-dataset}
 \end{table*}
 
@@ -121,7 +121,7 @@ columns represent relays.  As a result, a single pixel shows if a given relays
 was online (black pixel) or offline (white pixel) in a given consensus.  The
 matrix shows that many relays exhibit a diurnal uptime pattern.
 
-\begin{figure}
+\begin{figure}[h]
 	\centering
 	\includegraphics[width=0.8\linewidth]{diagrams/default-sybils-2015-10.jpg}
 	\caption{Uptimes for the ``default'' Sybil group for October 2015.  Many

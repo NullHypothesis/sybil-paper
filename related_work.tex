@@ -1,6 +1,5 @@
 \section{Related work}
 \label{sec:related_work}
-% Why previously proposed solutions don't work.
 In his seminal 2002 paper, Douceur showed that only a \emph{central authority}
 that verifies new nodes as they join the distributed system is guaranteed to
 prevent Sybils~\cite{Douceur2002a}.  This approach conflicts with Tor's design
@@ -40,8 +39,8 @@ lightweight client is enough to use BitTorrent, allowing even low-end consumer
 devices to participate.  However, this is not the case in Tor because relay
 operations require constant use of bandwidth and CPU.  Unlike in many other
 distributed systems, it is impossible to run 100 Tor relays while not spending
-the resources for 100 relays.  In a way, computational constraints are inherent
-to running a relay.
+the resources for 100 relays.  Computational constraints are inherent to running
+a relay.
 
 There has also been progress outside of academic research; namely, The Tor
 Project has incorporated a number of both implicit and explicit Sybil defenses
