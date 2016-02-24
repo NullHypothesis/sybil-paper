@@ -30,24 +30,24 @@ Section~\ref{sec:performance}.
 \subsection{Sybil characterization}
 \label{sec:sybil_groups}
 Table~\ref{tab:sybils} shows the most interesting Sybil groups we identified.
-The columns show (\emph{i}) what we believe the purpose of the Sybils was,
-(\emph{ii}) when the Sybil group joined the network, (\emph{iii}) the ID we gave
-the Sybils, (\emph{iv}), the number of Sybils, (\emph{v}) the analysis
-techniques that could discover the Sybils, and (\emph{vi}) a short description.
-The analysis techniques are abbreviated as ``E'' (exitmap), ``C'' (Churn), ``U''
-(Uptime), ``F'' (Fingerprint), and ``N'' (Neighbor search).  We now discuss the
-most insightful incidents in greater detail.
+The columns show (\emph{i}) what we believe to be the purpose of the Sybils,
+(\emph{ii}) when the Sybil group was at its peak size, (\emph{iii}) the ID we
+gave the Sybils, (\emph{iv}), the number of Sybil fingerprints, (\emph{v}) the
+analysis techniques that could discover the Sybils, and (\emph{vi}) a short
+description.  The analysis techniques are abbreviated as ``E'' (exitmap), ``C''
+(Churn), ``U'' (Uptime), ``F'' (Fingerprint), and ``N'' (Neighbor search).  We
+now discuss the most insightful incidents in greater detail.
 
 \begin{table*}[ht!]
 \small
 \centering
 \begin{tabularx}{\textwidth}{c|c c c c X}
 \hline
-\textbf{Purpose} & \textbf{First active} & \textbf{Group ID} & \textbf{Amount} &
+\textbf{Purpose} & \textbf{Peak activity} & \textbf{Group ID} & \textbf{Number} &
 \textbf{Method} & \textbf{Description} \\
 \hline
-\multirow{6}{*}{MitM}
-& Jan 2016 & rewrite$\dagger$ & 43 & E & Replaced onion domains with
+\multirow{6}{*}{\textbf{MitM}}
+& Jan 2016 & rewrite$\dagger$ & 42 & E & Replaced onion domains with
 impersonation site. \\
 
 & Nov 2015 & rewrite$\dagger$ & 8 & E & Replaced onion domains with impersonation
@@ -56,33 +56,34 @@ site. \\
 & Jun 2015 & rewrite$\dagger$ & 55 & E & Replaced onion domains with
 impersonation site. \\
 
-& Feb 2015 & rewrite$\dagger$ & 70 & U,E & Replaced onion domains with
+& Apr 2015 & rewrite$\dagger$ & 71 & U,E & Replaced onion domains with
 impersonation site. \\
 
-& Jan 2015 & redirect$\ddagger$ & 24 & E & Redirected users to impersonated site.
+& Mar 2015 & redirect$\ddagger$ & 24 & E & Redirected users to impersonated site.
 \\
 
-& Oct 2014 & redirect$\ddagger$ & 17 & E & Redirected users to impersonated site.
+& Feb 2015 & redirect$\ddagger$ & 17 & E & Redirected users to impersonated site.
 \\
 
-& May 2014 & redirect$\ddagger$ & 23 & E & Redirected users to impersonated site.
+& Jan 2015 & redirect$\ddagger$ & 26 & E & Redirected users to impersonated site.
 \\
 
 \hline
 
-\multirow{2}{*}{Botnet}
-& Aug 2015 & default & --- & N & Likely a Windows-powered botnet.  The group features
-wide, geographical distribution, which is uncommon for typical Tor relays. \\
+\multirow{2}{*}{\textbf{Botnet}}
+& Mar 2014 & default & --- & N & Likely a Windows-powered botnet.  The group
+features wide geographical distribution, which is uncommon for typical Tor
+relays. \\
 
-& Sep 2010 & trotsky & 219 & N & The relays were likely part of a botnet.  They
+& Oct 2010 & trotsky & 649 & N & The relays were likely part of a botnet.  They
 appeared gradually, and were all running Windows. \\
 
 \hline
 
-\multirow{5}{*}{Unknown}
-& Jan 2016 & cloudvps & 46 & C,U & Hosted by Dutch hoster XL Internet Services. \\
+\multirow{5}{*}{\textbf{Unknown}}
+& Jan 2016 & cloudvps & 61 & C,U & Hosted by Dutch hoster XL Internet Services. \\
 
-& Oct 2015 & 11BX1371 & 142 & C,U & All relays were in two /24 networks and a single
+& Nov 2015 & 11BX1371 & 150 & C,U & All relays were in two /24 networks and a single
 relay had the \texttt{Exit} flag.  \\
 
 & Jul 2015 & DenkoNet & 58 & U & Hosted on Amazon AWS and only present in a single
@@ -101,27 +102,29 @@ LizardNSA incident. \\
 
 \hline
 
-\multirow{1}{*}{DoS}
-& Dec 2014 & LizardNSA & 3,347 & C,U & A group publicly claimed to be responsible
-for the attack~\cite{lizards}.  All relays were hosted in the Google cloud and
-The Tor Project removed them within hours. \\
+\multirow{1}{*}{\textbf{DoS}}
+& Dec 2014 & LizardNSA & 4,615 & C,U & A group publicly claimed to be
+responsible for the attack~\cite{lizards}.  All relays were hosted in the Google
+cloud and The Tor Project removed them within hours. \\
 
 \hline
 
-\multirow{4}{*}{Research}
-& Jun 2010 & planetlab & 512 & C,U & According to a report from The Tor
+\multirow{4}{*}{\textbf{Research}}
+& May 2015 & fingerprints & 168 & F & All twelve IP addresses, located in the
+same /24, changed their fingerprint regularly, presumably in an attempt to
+manipulate the distributed hash table. \\
+
+& Mar 2014 & FDCservers & 264 & C,U & Relays that were involved in an
+experimental onion service deanonymization attack~\cite{cmucert}. \\
+
+& Feb 2013 & AmazonEC2 & 1,424 & F,C,U & We observed 1,424 relay fingerprints on
+88 IP addresses.  These Sybils were likely part of a research
+project~\cite{Biryukov2013a}. \\
+
+& Jun 2010 & planetlab & 595 & C,U & According to a report from The Tor
 Project~\cite{progressreport}, a researcher started these relays to learn more
 about scalability effects. \\
 
-& Feb 2013 & AmazonEC2 & 57 & F,C,U & These Sybils were likely part of a research
-project~\cite{Biryukov2013a}. \\
-
-& Jun 2015 & fingerprints & 28 & F & All relays, located in the same /24, changed
-their fingerprint regularly, presumably in an attempt to manipulate the
-distributed hash table. \\
-
-& Jan 2014 & FDCservers & 126 & C,U & Relays that were involved in an
-experimental onion service deanonymization attack~\cite{cmucert}. \\
 \hline
 
 \end{tabularx}
@@ -250,13 +253,14 @@ illustrated in Figure~\ref{fig:default-over-time}.  After that, only 1--3 relays
 remained in the consensus.
 
 \paragraph{The ``Amazon EC2'' Sybils}
-The relays all used randomly-generated nicknames, consisting of 16 letters and
-numbers; Tor in version 0.2.2.37; GNU/Linux; and IP addresses in Amazon's EC2
-netblock.  Every IP address changed its fingerprint 24 times, but not randomly:
-the fingerprints were chosen systematically, in a small range.  For example,
-relay 54.242.248.129 had fingerprints with the prefixes \texttt{8D},
-\texttt{8E}, \texttt{8F}, and \texttt{90}.  The relays were online for 48 hours.
-After 24 hours, most of the relays obtained the \texttt{HSDir} flag.
+The relays all used randomly-generated nicknames, consisting of sixteen or
+seventeen letters and numbers; Tor in version 0.2.2.37; GNU/Linux; and IP
+addresses in Amazon's EC2 netblock.  Each of the 88 IP addresses changed its
+fingerprint 24 times, but not randomly: the fingerprints were chosen
+systematically, in a small range.  For example, relay 54.242.248.129 had
+fingerprints with the prefixes \texttt{8D}, \texttt{8E}, \texttt{8F}, and
+\texttt{90}.  The relays were online for 48 hours.  After 24 hours, most of the
+relays obtained the \texttt{HSDir} flag.
 
 We believe that this Sybil group was run by Biryukov, Pustogarov, and Weinmann
 as part of their Security and Privacy 2013 ``Trawling for Tor Hidden
@@ -290,14 +294,14 @@ were run by a researcher to learn more about ``cloud computing and scaling
 effects.''
 
 \paragraph{The ``LizardNSA'' Sybils}
-All relays were hosted in the Google Cloud and only online for nine hours, until
+All relays were hosted in the Google Cloud and only online for ten hours, until
 the directory authorities started to reject them.  The majority of machines were
 middle relays (96\%), but the attackers also started some exit relays (4\%).
 The Sybils were set up to be onion service directories, but the relays were
 taken offline before they could earn the \texttt{HSDir} flag.  If all relays
 would have obtained the \texttt{HSDir} flag in time, they would have constituted
-almost 50\% of all onion service directories; the median number of onion service
-directories on December 26 was 3,551.
+more than 50\% of all onion service directories; the median number of onion
+service directories on December 26 was 3,551.
 
 Shortly after the attack began, somebody claimed responsibility on the tor-talk
 mailing list~\cite{lizards}.  Judging by the supposed attacker's demeanor, the
@@ -341,10 +345,9 @@ do not have the \texttt{Running} flag are no longer listed in the consensus.
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/2008-08.pdf}
-	\caption{In August 2008, an upgrade in the Tor network's consensus format
-	caused the biggest anomaly in our dataset.  The positive time series
-	represents relays that joined and the negative one represents relays that
-	left.}
+	\caption{In August 2008, an upgrade in Tor's consensus format caused the
+	biggest anomaly in our dataset.  The positive time series represents relays
+	that joined and the negative one represents relays that left.}
 	\label{fig:2008-08}
 \end{figure}
 
@@ -373,17 +376,17 @@ interesting patterns.
 
 Figure~\ref{fig:2010-06-planetlab} shows June 2010, featuring a clear ``Sybil
 block'' on the left side.  The Sybils belonged to a researcher who, as
-documented by The Tor Project~\cite{progressreport}, started 512 Tor relays on
-PlanetLab for research on scalability.  Our manual analysis could verify this.
-The relays were easy to identify because their nicknames suggested that they
-were hosted on PlanetLab, containing strings such as ``planetlab,'' ``planet,''
-and ``plab.''  Note the small height of the Sybil block, indicating that the
-relays were only online for a short time.
+documented by The Tor Project~\cite{progressreport}, started several hundred Tor
+relays on PlanetLab for research on scalability.  Our manual analysis could
+verify this.  The relays were easy to identify because their nicknames suggested
+that they were hosted on PlanetLab, containing strings such as ``planetlab,''
+``planet,'' and ``plab.''  Note the small height of the Sybil block, indicating
+that the relays were only online for a short time.
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/2010-06.jpg}
-	\caption{In June 2010, a researcher started 512 Tor relays on
+	\caption{In June 2010, a researcher started several hundred Tor relays on
 		PlanetLab~\cite{progressreport}.  Die image shows the uptime of 2,000
 		relays for all of June.}
 	\label{fig:2010-06-planetlab}
@@ -417,16 +420,16 @@ Tor relay fingerprints.
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/2014-04.jpg}
-	\caption{In April 2014, the Heartbleed bug caused The Tor Project to reject
-	a large number of vulnerable relays.  The image shows the uptime of 3,000
-	relays for all of April.}
+	\caption{In April 2014, the Heartbleed bug forced The Tor Project to reject
+	many affected relays.  The image shows the uptime of 3,000 relays for all of
+	April.}
 	\label{fig:2014-04-heartbleed}
 \end{figure}
 
 Figure~\ref{fig:2014-12-lizard} illustrates the largest Sybil group to date,
-comprising 3,347 Tor relays that an attacker started in the Google cloud in
+comprising 4,615 Tor relays that an attacker started in the Google cloud in
 December 2014.  Because of its magnitude, the attack was spotted almost
-instantly, and The Tor Project removed the offending relays only nine hours
+instantly, and The Tor Project removed the offending relays only ten hours
 after they appeared.
 
 \begin{figure}[t]
