@@ -16,7 +16,7 @@ Project.  To defend against Sybil attacks, directory authorities can either
 remove a relay from the consensus, or take away its \texttt{Valid} flag, which
 means that the relay is still in the consensus, but Tor clients will not
 consider it for their first or last hop in a circuit.  The majority of directory
-authorities, i.e., five out of eight, must agree on either strategy.  This
+authorities, i.e., five out of nine, must agree on either strategy.  This
 mechanism is meant to distribute the power of removing relays into the hands of
 a diverse set of people.
 
@@ -191,10 +191,10 @@ relays.
 
 \paragraph{The ``FDCservers'' Sybils}
 These Sybils were used to deanonymize onion service users, as discussed by The
-Tor Project in a July 2014 blog post~\cite{cmucert}.  Supposedly, CMU/CERT
-researchers were executing a traffic confirmation attack by sending sequences of
-\texttt{RELAY\_EARLY} and \texttt{RELAY} cells as a signal down the circuit to
-the client, which the reference implementation never
+Tor Project in a July 2014 blog post~\cite{cmucert}.  Supposedly,
+CMU/SEI-affiliated researchers were executing a traffic confirmation attack by
+sending sequences of \texttt{RELAY\_EARLY} and \texttt{RELAY} cells as a signal
+down the circuit to the client, which the reference implementation never
 does~\cite{cmucert,cmucert2}.  The attacking relays were onion service
 directories and guards, allowing them to control both ends of the circuit for
 some Tor clients that were fetching onion service descriptors.  Most relays were
