@@ -41,14 +41,13 @@ now discuss the most insightful incidents in greater detail.
 \begin{table*}[ht!]
 \small
 \centering
-\begin{tabularx}{\textwidth}{c|c c c c X}
-\hline
+\begin{tabularx}{\textwidth}{l l l r c X}
+\toprule
 \textbf{Purpose} & \textbf{Peak activity} & \textbf{Group ID} & \textbf{Number} &
 \textbf{Method} & \textbf{Description} \\
-\hline
-\multirow{6}{*}{\textbf{MitM}}
-& Jan 2016 & rewrite$\dagger$ & 42 & E & Replaced onion domains with
-impersonation site. \\
+\midrule
+\textbf{MitM} & Jan 2016 & rewrite$\dagger$ & 42 & E & Replaced onion domains
+with impersonation site. \\
 
 & Nov 2015 & rewrite$\dagger$ & 8 & E & Replaced onion domains with impersonation
 site. \\
@@ -68,51 +67,48 @@ impersonation site. \\
 & Jan 2015 & redirect$\ddagger$ & 26 & E & Redirected users to impersonated site.
 \\
 
-\hline
+\midrule
 
-\multirow{2}{*}{\textbf{Botnet}}
-& Mar 2014 & default & --- & N & Likely a Windows-powered botnet.  The group
-features wide geographical distribution, which is uncommon for typical Tor
-relays. \\
+\textbf{Botnet} & Mar 2014 & default & --- & N & Likely a Windows-powered
+botnet.  The group features wide geographical distribution, which is uncommon
+for typical Tor relays. \\
 
 & Oct 2010 & trotsky & 649 & N & The relays were likely part of a botnet.  They
 appeared gradually, and were all running Windows. \\
 
-\hline
+\midrule
 
-\multirow{5}{*}{\textbf{Unknown}}
-& Jan 2016 & cloudvps & 61 & C,U & Hosted by Dutch hoster XL Internet Services. \\
+\textbf{Unknown} & Jan 2016 & cloudvps & 61 & C,U & Hosted by Dutch hoster XL
+Internet Services. \\
 
-& Nov 2015 & 11BX1371 & 150 & C,U & All relays were in two /24 networks and a single
-relay had the \texttt{Exit} flag.  \\
+& Nov 2015 & 11BX1371 & 150 & C,U & All relays were in two /24 networks and a
+single relay had the \texttt{Exit} flag.  \\
 
-& Jul 2015 & DenkoNet & 58 & U & Hosted on Amazon AWS and only present in a single
-consensus.  No relay had the \texttt{Exit} flag. \\
+& Jul 2015 & DenkoNet & 58 & U & Hosted on Amazon AWS and only present in a
+single consensus.  No relay had the \texttt{Exit} flag. \\
 
 & Jul 2015 & cloudvps & 55 & C,U & All relays only had the \texttt{Running} and
 \texttt{Valid} flag.  As their name suggests, the relays were hosted by the
 Dutch hoster ``CloudVPS.'' \\
 
-& Dec 2014 & Anonpoke & 284 & C,U & The relays did not have the \texttt{Exit} flag
-and were removed from the network before they could get the \texttt{HSDir} flag.
-\\
+& Dec 2014 & Anonpoke & 284 & C,U & The relays did not have the \texttt{Exit}
+flag and were removed from the network before they could get the \texttt{HSDir}
+flag.  \\
 
 & Dec 2014 & FuslVZTOR & 246 & C,U & The relays showed up only hours after the
 LizardNSA incident. \\
 
-\hline
+\midrule
 
-\multirow{1}{*}{\textbf{DoS}}
-& Dec 2014 & LizardNSA & 4,615 & C,U & A group publicly claimed to be
-responsible for the attack~\cite{lizards}.  All relays were hosted in the Google
-cloud and The Tor Project removed them within hours. \\
+\textbf{DoS} & Dec 2014 & LizardNSA & 4,615 & C,U & A group publicly claimed to
+be responsible for the attack~\cite{lizards}.  All relays were hosted in the
+Google cloud and The Tor Project removed them within hours. \\
 
-\hline
+\midrule
 
-\multirow{4}{*}{\textbf{Research}}
-& May 2015 & fingerprints & 168 & F & All twelve IP addresses, located in the
-same /24, changed their fingerprint regularly, presumably in an attempt to
-manipulate the distributed hash table. \\
+\textbf{Research} & May 2015 & fingerprints & 168 & F & All twelve IP addresses,
+located in the same /24, changed their fingerprint regularly, presumably in an
+attempt to manipulate the distributed hash table. \\
 
 & Mar 2014 & FDCservers & 264 & C,U & Relays that were involved in an
 experimental onion service deanonymization attack~\cite{cmucert}. \\
@@ -125,7 +121,7 @@ project~\cite{Biryukov2013a}. \\
 Project~\cite{progressreport}, a researcher started these relays to learn more
 about scalability effects. \\
 
-\hline
+\bottomrule
 
 \end{tabularx}
 \caption{The Sybil groups we discovered using \sys and our exitmap
@@ -560,15 +556,15 @@ performance bottleneck.
 
 \begin{table}[t]
 	\centering
-	\begin{tabular}{lcc}
-	\hline
+	\begin{tabular}{l l r}
+	\toprule
 	\textbf{Method} & \textbf{Analysis window} & \textbf{Run time} \\
-	\hline
+	\midrule
 	Churn & Two consensuses & $\sim$0.16s \\
 	Neighbor search & One consensus & $\sim$1.6s \\
 	Fingerprint & One month & $\sim$58s \\
 	Uptimes & One month & $\sim$145s \\
-	\hline
+	\bottomrule
 	\end{tabular}
 	\caption{The computational cost of our analysis techniques.}
 	\label{tab:exp-deployment}

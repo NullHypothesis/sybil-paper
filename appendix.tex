@@ -13,10 +13,10 @@ $\dagger$, $\ddagger$, and $\mathsection$ were run by the same attacker.
 \begin{table*}
 \small
 \centering
-\begin{tabularx}{\textwidth}{r c X}
-\hline
+\begin{tabularx}{\textwidth}{l r X}
+\toprule
 \textbf{Discovery} & \textbf{\# of relays} & \textbf{Attack description} \\
-\hline
+\midrule
 % Message-ID: <20140811014615.GB23748@nymity.ch>
 Aug 2014 & 1 & The relay injected JavaScript into returned HTML.  The script
 embedded another script from the domain fluxx.crazytall.com---not clearly
@@ -106,7 +106,7 @@ Dec 2015 & 1$\mathsection$ & Same as above. \\
 
 % Message-ID: <20160112033141.GA499@nymity.ch>
 Jan 2016 & 43$\dagger$ & Same as the relays marked with a $\dagger$. \\
-\hline
+\bottomrule
 \end{tabularx}
 \caption{An overview of our second dataset, 251 malicious exit relays that we
 discovered using exitmap.  We believe that Sybil groups marked with an
