@@ -38,86 +38,91 @@ description.  The analysis techniques are abbreviated as ``E'' (exitmap), ``C''
 (Churn), ``U'' (Uptime), ``F'' (Fingerprint), and ``N'' (Neighbor search).  We
 now discuss the most insightful incidents in greater detail.
 
+
+
 \begin{table*}[ht!]
 \small
 \centering
-\begin{tabularx}{\textwidth}{l l l r c X}
+\begin{tabularx}{\textwidth}{l r l r c X}
 \toprule
 \textbf{Purpose} & \textbf{Peak activity} & \textbf{Group ID} & \textbf{Number} &
 \textbf{Method} & \textbf{Description} \\
 \midrule
-\textbf{MitM} & Jan 2016 & rewrite$\dagger$ & 42 & E & Replaced onion domains
+\textbf{MitM} & Jan 2016 & rewrite$\dagger$ & 42 & \phantom{N,F,C,U,}E & Replaced onion domains
 with impersonation site. \\
 
-& Nov 2015 & rewrite$\dagger$ & 8 & E & Replaced onion domains with impersonation
+& Nov 2015 & rewrite$\dagger$ & 8 & \phantom{N,F,C,U,}E & Replaced onion domains with impersonation
 site. \\
 
-& Jun 2015 & rewrite$\dagger$ & 55 & E & Replaced onion domains with
+& Jun 2015 & rewrite$\dagger$ & 55 & \phantom{N,F,C,U,}E & Replaced onion domains with
 impersonation site. \\
 
-& Apr 2015 & rewrite$\dagger$ & 71 & U,E & Replaced onion domains with
+& Apr 2015 & rewrite$\dagger$ & 71 & \phantom{N,F,C,}U,E & Replaced onion domains with
 impersonation site. \\
 
-& Mar 2015 & redirect$\ddagger$ & 24 & E & Redirected users to impersonated site.
+& Mar 2015 & redirect$\ddagger$ & 24 & \phantom{N,F,C,U,}E & Redirected users to impersonated site.
 \\
 
-& Feb 2015 & redirect$\ddagger$ & 17 & E & Redirected users to impersonated site.
+& Feb 2015 & redirect$\ddagger$ & 17 & \phantom{N,F,C,U,}E & Redirected users to impersonated site.
 \\
 
-& Jan 2015 & redirect$\ddagger$ & 26 & E & Redirected users to impersonated site.
+& Jan 2015 & redirect$\ddagger$ & 26 & \phantom{N,F,C,U,}E & Redirected users to impersonated site.
 \\
 
-\midrule
+& & & & & \\
 
-\textbf{Botnet} & Mar 2014 & default & --- & N & Likely a Windows-powered
+\textbf{Botnet} & Mar 2014 & default & --- & N\phantom{,F,C,U,E} & Likely a Windows-powered
 botnet.  The group features wide geographical distribution, which is uncommon
 for typical Tor relays. \\
 
-& Oct 2010 & trotsky & 649 & N & The relays were likely part of a botnet.  They
+& Oct 2010 & trotsky & 649 & N\phantom{,F,C,U,E} & The relays were likely part of a botnet.  They
 appeared gradually, and were all running Windows. \\
 
-\midrule
+%\midrule
+& & & & & \\
 
-\textbf{Unknown} & Jan 2016 & cloudvps & 61 & C,U & Hosted by Dutch hoster XL
+\textbf{Unknown} & Jan 2016 & cloudvps & 61 & \phantom{N,F,}C,U\phantom{,E} & Hosted by Dutch hoster XL
 Internet Services. \\
 
-& Nov 2015 & 11BX1371 & 150 & C,U & All relays were in two /24 networks and a
+& Nov 2015 & 11BX1371 & 150 & \phantom{N,F,}C,U\phantom{,E} & All relays were in two /24 networks and a
 single relay had the \texttt{Exit} flag.  \\
 
-& Jul 2015 & DenkoNet & 58 & U & Hosted on Amazon AWS and only present in a
+& Jul 2015 & DenkoNet & 58 & \phantom{N,F,C,}U\phantom{,E} & Hosted on Amazon AWS and only present in a
 single consensus.  No relay had the \texttt{Exit} flag. \\
 
-& Jul 2015 & cloudvps & 55 & C,U & All relays only had the \texttt{Running} and
+& Jul 2015 & cloudvps & 55 & \phantom{N,F,}C,U\phantom{,E} & All relays only had the \texttt{Running} and
 \texttt{Valid} flag.  As their name suggests, the relays were hosted by the
 Dutch hoster ``CloudVPS.'' \\
 
-& Dec 2014 & Anonpoke & 284 & C,U & The relays did not have the \texttt{Exit}
+& Dec 2014 & Anonpoke & 284 & \phantom{N,F,}C,U\phantom{,E} & The relays did not have the \texttt{Exit}
 flag and were removed from the network before they could get the \texttt{HSDir}
 flag.  \\
 
-& Dec 2014 & FuslVZTOR & 246 & C,U & The relays showed up only hours after the
+& Dec 2014 & FuslVZTOR & 246 & \phantom{N,F,}C,U\phantom{,E} & The relays showed up only hours after the
 LizardNSA incident. \\
 
-\midrule
+& & & & & \\
+% \midrule
 
-\textbf{DoS} & Dec 2014 & LizardNSA & 4,615 & C,U & A group publicly claimed to
+\textbf{DoS} & Dec 2014 & LizardNSA & 4,615 & \phantom{N,F,}C,U\phantom{,E} & A group publicly claimed to
 be responsible for the attack~\cite{lizards}.  All relays were hosted in the
 Google cloud and The Tor Project removed them within hours. \\
 
-\midrule
+& & & & & \\
+% \midrule
 
-\textbf{Research} & May 2015 & fingerprints & 168 & F & All twelve IP addresses,
+\textbf{Research} & May 2015 & fingerprints & 168 & \phantom{N,}F\phantom{,C,U,E} & All twelve IP addresses,
 located in the same /24, changed their fingerprint regularly, presumably in an
 attempt to manipulate the distributed hash table. \\
 
-& Mar 2014 & FDCservers & 264 & C,U & Relays that were involved in an
+& Mar 2014 & FDCservers & 264 & \phantom{N,F,}C,U\phantom{,E} & Relays that were involved in an
 experimental onion service deanonymization attack~\cite{cmucert}. \\
 
-& Feb 2013 & AmazonEC2 & 1,424 & F,C,U & We observed 1,424 relay fingerprints on
+& Feb 2013 & AmazonEC2 & 1,424 & \phantom{N,}F,C,U\phantom{,E} & We observed 1,424 relay fingerprints on
 88 IP addresses.  These Sybils were likely part of a research
 project~\cite{Biryukov2013a}. \\
 
-& Jun 2010 & planetlab & 595 & C,U & According to a report from The Tor
+& Jun 2010 & planetlab & 595 & \phantom{N,F,}C,U\phantom{,E} & According to a report from The Tor
 Project~\cite{progressreport}, a researcher started these relays to learn more
 about scalability effects. \\
 
@@ -560,10 +565,10 @@ performance bottleneck.
 	\toprule
 	\textbf{Method} & \textbf{Analysis window} & \textbf{Run time} \\
 	\midrule
-	Churn & Two consensuses & $\sim$0.16s \\
+	Churn & Two consensuses & $\sim$0.2s \\
 	Neighbor search & One consensus & $\sim$1.6s \\
-	Fingerprint & One month & $\sim$58s \\
-	Uptimes & One month & $\sim$145s \\
+	Fingerprint & One month & $\sim$58.0s \\
+	Uptimes & One month & $\sim$145.0s \\
 	\bottomrule
 	\end{tabular}
 	\caption{The computational cost of our analysis techniques.}
