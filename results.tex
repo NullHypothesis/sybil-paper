@@ -32,7 +32,7 @@ Section~\ref{sec:performance}.
 Table~\ref{tab:sybils} shows the most interesting Sybil groups we identified.
 The columns show (\emph{i}) what we believe to be the purpose of the Sybils,
 (\emph{ii}) when the Sybil group was at its peak size, (\emph{iii}) the ID we
-gave the Sybils, (\emph{iv}), the number of Sybil fingerprints, (\emph{v}) the
+gave the Sybils, (\emph{iv}) the number of Sybil fingerprints, (\emph{v}) the
 analysis techniques that could discover the Sybils, and (\emph{vi}) a short
 description.  The analysis techniques are abbreviated as ``E'' (exitmap), ``C''
 (Churn), ``U'' (Uptime), ``F'' (Fingerprint), and ``N'' (Neighbor search).  We
@@ -231,7 +231,7 @@ and laptops.
 To get a better understanding of the number of ``default'' relays over time, we
 analyzed all consensuses, extracting the number of relays whose nickname was
 ``default,'' whose onion routing port was 443, and whose directory port was
-9001.  We did this for the first consensus every day and plot the result in
+9030.  We did this for the first consensus every day and plot the result in
 Figure~\ref{fig:default-over-time}.  Note that we might overestimate the numbers
 as our filter could capture unrelated relays.
 
@@ -355,7 +355,7 @@ do not have the \texttt{Running} flag are no longer listed in the consensus.
 
 To alleviate the choice of a detection threshold, we plot the number of alerts
 (in log scale) in 2015 as the threshold increases.  We calculate these numbers
-for four simple moving average window sizes.  The result is shown in
+for three simple moving average window sizes.  The result is shown in
 Figure~\ref{fig:threshold-alarm}.  Depending on the window size, thresholds
 greater than 0.012 seem practical considering that 181 alerts per year average
 to approximately one alert in two days---a tolerable number of incidents to
