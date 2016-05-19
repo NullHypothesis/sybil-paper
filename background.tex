@@ -20,14 +20,14 @@ flags to relays:
 		connect to it in the last 45 minutes.
 \end{description}
 
-Tor relays are uniquely identified by their \emph{fingerprint}, a Base32-encoded
-and truncated SHA-1 hash over their public key.  Operators can further assign a
-\emph{nickname} to their Tor relays, which is a string that identifies a relay
-(albeit not uniquely) and is easier to remember than its pseudo-random
-fingerprint.  Exit relays have an \emph{exit policy}---a list of IP addresses
-and ports that the relay allows connections to.  Finally, operators that run
-more than one relay are encouraged to configure their relays to be part of a
-\emph{relay family}.  Families are used to express that a set of relays is
-controlled by a single party.  Tor clients never use more than one family member
-in their path to prevent correlation attacks.  As of February 2016, there are
-approximately 400 relay families in all 7,000 relays.
+Tor relays are uniquely identified by their \emph{fingerprint}, a
+Base32-encoded and truncated SHA-1 hash over their public key.  Operators can
+further assign a \emph{nickname} to their Tor relays, which is a string that
+identifies a relay (albeit not uniquely) and is easier to remember than its
+pseudo-random fingerprint.  Exit relays have an \emph{exit policy}---a list of
+IP addresses and ports that the relay allows connections to.  Finally,
+operators that run more than one relay are encouraged to configure their relays
+to be part of a \emph{relay family}.  Families are used to express that a set
+of relays is controlled by a single party.  Tor clients never use more than one
+family member in their path to prevent correlation attacks.  In February 2016,
+there were approximately 400 relay families among all 7,000 relays.
