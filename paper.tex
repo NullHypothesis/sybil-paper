@@ -1,7 +1,7 @@
 \documentclass[letterpaper,twocolumn,10pt]{article}
 
-\usepackage[table]{xcolor}
 \usepackage{usenix,epsfig}
+\usepackage[table]{xcolor}
 \usepackage[utf8]{inputenc}
 \usepackage{tikz}
 \usetikzlibrary{calc}
@@ -9,24 +9,24 @@
 \usepackage{amsmath}
 \usepackage{subfigure}
 \usepackage{tabularx}
-\usepackage{multirow}
-\usepackage{hyperref}
-\usepackage{balance}
-\usepackage{AlegreyaSans}
-\usepackage{xspace}
-\usepackage{inconsolata}
-\usepackage{balance}
-\usepackage[backend=biber,backref=true]{biblatex}
-\usepackage[T1]{fontenc}
-\usepackage[scaled=0.8]{beramono}
+\usepackage{hyperref} % Clickable links.
+\usepackage{xspace}   % Functioning macros.
+\usepackage{balance}  % Balance columns on last page.
 \usepackage{enumitem} % Compact descriptions.
 \usepackage{booktabs} % Pretty tables.
 
+% Bibliography.
+\usepackage[backend=biber,backref=true]{biblatex}
 \bibliography{literature}
-
 \renewcommand*{\bibfont}{\footnotesize}
 
-\definecolor{darkblue}{rgb}{0,0,0.4}
+% Select a better monospace and sans-serif font.
+\usepackage[scaled=0.8]{beramono}
+\usepackage[defaultsans,scale=0.9]{droidsans}
+\usepackage[T1]{fontenc}
+\urlstyle{sf}
+
+\definecolor{darkblue}{rgb}{0,0,0.5}
 \hypersetup{
 	pdftitle={Identifying and characterizing Sybils in the Tor network},
 	pdfauthor={Philipp Winter, Roya Ensafi, Karsten Loesing, and Nick Feamster},
@@ -39,11 +39,9 @@
 \newcommand{\sys}{sybilhunter\xspace}
 \newcommand{\Sys}{Sybilhunter\xspace}
 
-\urlstyle{sf}
-
-\newcommand{\mynote}[1]{\noindent\textcolor{red}{\textbf{Note:} #1}}
-
 \begin{document}
+
+\date{}
 
 \title{\Large \bf Identifying and characterizing Sybils in the Tor network}
 
@@ -62,6 +60,10 @@ Princeton University
 }
 
 \maketitle
+
+% Use the following at camera-ready time to suppress page numbers.
+% Comment it out when you first submit the paper for review.
+\thispagestyle{empty}
 
 \input{abstract}
 
