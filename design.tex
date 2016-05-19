@@ -15,7 +15,7 @@ and consists of 3,300 lines of code.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=\linewidth]{diagrams/system_architecture.pdf}
+	\includegraphics[width=0.8\linewidth]{diagrams/architecture.pdf}
 	\caption{\Sys's architecture.  Two datasets serve as input to
 		\sys; consensuses and server descriptors, and malicious
 		relays gathered with exitmap~\cite{Winter2014a}.}
@@ -147,20 +147,23 @@ malicious exit relays over 18 months.  We call exit relays malicious if they
 modify forwarded traffic in bad faith, e.g., to run man-in-the-middle attacks.
 We add these relays to our dataset because they frequently \emph{surface in
 groups}, as malicious Sybils, because an attacker runs the same attack on
-several, physically distinct exit relays.  Winter et al.'s work~\cite[\S
-5.2]{Winter2014a} further showed that attackers make an effort to stay under the
-radar, which is why we cannot only rely on active probing to find such relays.
-We also seek to find potential ``partners in crime'' of each newly discovered
-malicious relay, which we discuss in Section~\ref{sec:nearest-neighbor}.
+several, physically distinct exit relays.  Winter et al.'s
+work~\cite[\S~5.2]{Winter2014a} further showed that attackers make an effort to
+stay under the radar, which is why we cannot only rely on active probing to
+find such relays.  We also seek to find potential ``partners in crime'' of each
+newly discovered malicious relay, which we discuss in
+Section~\ref{sec:nearest-neighbor}.
 
 We exposed malicious exit relays using Winter et al.'s exitmap
 tool~\cite{Winter2014a}.  Exitmap is a Python-based scanning framework for Tor
 exit relays.  Exitmap modules perform a network task that can then be run over
 all exit relays.  One use case is HTTPS man-in-the-middle detection: A module
 can fetch the certificate of a web server over all exit relays and then compare
-its fingerprint with the expected, valid fingerprint.  Exposed attacks, however,
-can be difficult to attribute because an attack can take place upstream of the
-exit relay, e.g., at a malicious autonomous system.
+its fingerprint with the expected, valid fingerprint.  Exposed attacks are
+sometimes difficult to attribute because an attack can take place upstream of the
+exit relay, e.g., at a malicious autonomous system.  However, attribution is
+only a secondary concern.  Our primary concern is protecting Tor users from
+harm, and we do not need to identify the culprit to succeed.
 
 In addition to the original modules that the exitmap authors shared with us, we
 implemented exitmap modules to detect HTML tampering and TLS downgrading, by
@@ -204,7 +207,7 @@ files or images.
 
 \begin{figure}[t]
 	\centering
-	\includegraphics[width=0.9\linewidth]{diagrams/sybilhunter-internal.pdf}
+	\includegraphics[width=0.9\linewidth]{diagrams/internal-architecture.pdf}
 	\caption{\Sys's internal architecture.}
 	\label{fig:shr-internal}
 \end{figure}
@@ -265,16 +268,17 @@ us anything about the nature of the underlying incident.
 \end{figure}
 
 To quantify the churn rate $\alpha$ between two subsequent consensus documents,
-we adapt Godfrey et al.'s formula, which yields a churn value that captures both
-systems that joined and systems that left the network~\cite{Godfrey2006a}.
-However, an unusually low number of systems that left could cancel out an
-unusually high number of new systems and vice versa---an undesired property for
-a technique that should spot abnormal changes.  To address this issue, we split
-the formula in two parts, creating a time series for new relays ($\alpha_{n}$)
-and for relays that left ($\alpha_{l}$).  $C_{t}$ is the network consensus at
-time $t$, and $\setminus$ denotes the complement between two consensuses, i.e.,
-the relays that are in the left operand, but not the right operand.  We define
-$\alpha_{n}$ and $\alpha_{l}$ as
+we adapt Godfrey et al.'s formula, which yields a churn value that captures
+both systems that joined and systems that left the
+network~\cite[\S~2.1]{Godfrey2006a}.  However, an unusually low number of
+systems that left could cancel out an unusually high number of new systems and
+vice versa---an undesired property for a technique that should spot abnormal
+changes.  To address this issue, we split the formula in two parts, creating a
+time series for new relays ($\alpha_{n}$) and for relays that left
+($\alpha_{l}$).  $C_{t}$ is the network consensus at time $t$, and $\setminus$
+denotes the complement between two consensuses, i.e., the relays that are in
+the left operand, but not the right operand.  We define $\alpha_{n}$ and
+$\alpha_{l}$ as
 
 \begin{equation}
 \alpha_{n} = \frac{\lvert C_{t} \setminus C_{t-1} \rvert}
@@ -337,18 +341,19 @@ correlated sequences are not adjacent in the visualization, we might miss them.
 We sort sequences using single-linkage clustering, a type of hierarchical
 clustering algorithm that forms groups bottom-up, based on the minimum distance
 between group members.  Our clustering algorithm requires a distance function.
-Similar to Andersen et al.~\cite{Andersen2002a}, we use Pearson's correlation
-coefficient as our distance function because it tells us if two uptime sequences
-change together.  The sample correlation coefficient $r$ yields a value in the
-interval $[-1, 1]$.  A coefficient of $-1$ denotes perfect anti-correlation
-(relay $R_1$ is only online when relay $R_2$ is offline) and 1 denotes perfect
-correlation (relay $R_1$ is only online when relay $R_2$ is online).  We define
-our distance function as $d(r) = 1 - r$, so two perfectly correlated sequences
-have a distance of zero while two perfectly anti-correlated sequences have a
-distance of two.  Once all sequences are sorted, we color adjacent sequences in
-red if their uptime sequence is identical.  Figure~\ref{fig:uptime-matrix} shows
-an example of our visualization algorithm, the uptime matrix for a subset of all
-Tor relays in November 2012.
+Similar to Andersen et al.~\cite[\S~II.B]{Andersen2002a}, we use Pearson's
+correlation coefficient as our distance function because it tells us if two
+uptime sequences change together.  The sample correlation coefficient $r$
+yields a value in the interval $[-1, 1]$.  A coefficient of $-1$ denotes
+perfect anti-correlation (relay $R_1$ is only online when relay $R_2$ is
+offline) and 1 denotes perfect correlation (relay $R_1$ is only online when
+relay $R_2$ is online).  We define our distance function as $d(r) = 1 - r$, so
+two perfectly correlated sequences have a distance of zero while two perfectly
+anti-correlated sequences have a distance of two.  Once all sequences are
+sorted, we color adjacent sequences in red if their uptime sequence is
+identical.  Figure~\ref{fig:uptime-matrix} shows an example of our
+visualization algorithm, the uptime matrix for a subset of all Tor relays in
+November 2012.
 
 \begin{figure}[t]
 	\centering
@@ -378,7 +383,7 @@ All HSDirs are public, making it possible to determine at which position in the
 DHT an onion service will end up at any point in the future.  Attackers can
 exploit the ability to predict the DHT position by repeatedly generating
 identity keys until their fingerprint is sufficiently close to the targeted
-onion service's index, thus becoming its HSDir~\cite{Biryukov2013a}.
+onion service's index, thus becoming its HSDir~\cite[\S~V.A]{Biryukov2013a}.
 
 We detect relays that change their fingerprint frequently by maintaining a
 lookup table that maps a relay's IP address to a list of all fingerprints we
