@@ -51,25 +51,25 @@ now discuss the most insightful incidents in greater detail.
 \makebox[0.7em][l]{\rotatebox{40}{\scriptsize\textbf{E}xitmap}} & \\
 
 \midrule
-\textbf{MitM} & Jan 2016 & rewrite$\dagger$ & 42 & \phantom{N,F,C,U,}E & Replaced onion domains
+\textbf{MitM} & Jan 2016 & rewrite$^*$ & 42 & \phantom{N,F,C,U,}E & Replaced onion domains
 with impersonation site. \\
 
-& Nov 2015 & rewrite$\dagger$ & 8 & \phantom{N,F,C,U,}E & Replaced onion domains with impersonation
+& Nov 2015 & rewrite$^*$ & 8 & \phantom{N,F,C,U,}E & Replaced onion domains with impersonation
 site. \\
 
-& Jun 2015 & rewrite$\dagger$ & 55 & \phantom{N,F,C,U,}E & Replaced onion domains with
+& Jun 2015 & rewrite$^*$ & 55 & \phantom{N,F,C,U,}E & Replaced onion domains with
 impersonation site. \\
 
-& Apr 2015 & rewrite$\dagger$ & 71 & \phantom{N,F,C,}U,E & Replaced onion domains with
+& Apr 2015 & rewrite$^*$ & 71 & \phantom{N,F,C,}U,E & Replaced onion domains with
 impersonation site. \\
 
-& Mar 2015 & redirect$\ddagger$ & 24 & \phantom{N,F,C,U,}E & Redirected users to impersonated site.
+& Mar 2015 & redirect$^\dagger$ & 24 & \phantom{N,F,C,U,}E & Redirected users to impersonated site.
 \\
 
-& Feb 2015 & redirect$\ddagger$ & 17 & \phantom{N,F,C,U,}E & Redirected users to impersonated site.
+& Feb 2015 & redirect$^\dagger$ & 17 & \phantom{N,F,C,U,}E & Redirected users to impersonated site.
 \\
 
-& Jan 2015 & redirect$\ddagger$ & 26 & \phantom{N,F,C,U,}E & Redirected users to impersonated site.
+& Jan 2015 & redirect$^\dagger$ & 26 & \phantom{N,F,C,U,}E & Redirected users to impersonated site.
 \\
 
 & & & & & \\
@@ -132,9 +132,10 @@ about scalability effects. \\
 \bottomrule
 
 \end{tabularx}
-\caption{The Sybil groups we discovered using \sys and our exitmap
-modules.  We believe that groups marked with the
-symbols $\dagger$ and $\ddagger$ were run by the same operator, respectively.}
+\caption{Some of the Sybil groups that \sys and our exitmap modules discovered.
+We believe that groups marked with the symbols $*$ and $\dagger$ were run by
+the same operator, respectively.  Note that \sys was unable to detect six Sybil
+groups in the category ``MitM.''}
 \label{tab:sybils}
 \end{table*}
 
