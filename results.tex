@@ -1,15 +1,19 @@
 \section{Evaluation and results}
 \label{sec:results}
 Equipped with \sys, we applied our techniques to nine years of archived Tor
-network data, resulting in several megabytes of CSV files and uptime images.
-We sorted our results in descending order by severity, and started manually
-analyzing the most significant incidents.  Several outliers were caused by
-problems and events in the Tor network that were unrelated to Sybil relays.
-Instead of providing an exhaustive list of all potential Sybils, we focus on
-our most salient findings---relay groups that were either clearly malicious or
-distinguished themselves otherwise.\footnote{Our datasets and visualizations
-	are available online, and can be inspected for an exhaustive list of
-	potential Sybils.  The URL is \url{https://nymity.ch/sybilhunting/}.}
+network data.  We did not set any thresholds, to capture every single churn
+value, fingerprint, and uptime sequence, resulting in an unfiltered dataset of
+several megabytes of CSV files and uptime images.  We then sorted this dataset
+in descending order by severity, and began manually analyzing the most
+significant incidents, e.g., the largest churn values.  We begin this section
+by characterizing Sybil groups we discovered that way in
+Subsection~\ref{sec:sybil_groups}.  Instead of providing an exhaustive list of
+all potential Sybils, we focus on our most salient findings---relay groups that
+were either clearly malicious or distinguished themselves
+otherwise.\footnote{Our datasets and visualizations are available online, and
+can be inspected for an exhaustive list of potential Sybils.  The URL is
+\url{https://nymity.ch/sybilhunting/}.}  Afterwards, we explore the impact of
+\sys's thresholds in Subsections~\ref{sec:churn} to~\ref{sec:accuracy}.
 
 Once we discovered a seemingly harmful Sybil group, we reported it to The Tor
 Project.  To defend against Sybil attacks, directory authorities can either
@@ -18,14 +22,7 @@ means that the relay is still in the consensus, but Tor clients will not
 consider it for their first or last hop in a circuit.  The majority of directory
 authorities, i.e., five out of nine, must agree on either strategy.  This
 mechanism is meant to distribute the power of removing relays into the hands of
-a diverse set of people.
-
-We present our results by first giving an overview of the most interesting
-Sybils we discovered in Section~\ref{sec:sybil_groups}; followed by
-technique-specific results in Sections~\ref{sec:churn}, \ref{sec:uptime}, and
-\ref{sec:fingerprints}; an evaluation of our nearest-neighbor search in
-Section~\ref{sec:accuracy}; and the computational cost of our techniques in
-Section~\ref{sec:performance}.
+a diverse set of people in different jurisdictions.
 
 \subsection{Sybil characterization}
 \label{sec:sybil_groups}
