@@ -397,9 +397,10 @@ malicious exit relay and we were left wondering if there were similar,
 potentially associated relays.  Looking for such relays involved extensive
 manual work, which we soon started to automate.  We needed an algorithm for
 nearest-neighbor search that takes as input a ``seed'' relay and finds its $n$
-most similar neighbors.  We define similarity as shared configuration parameters
-such as port numbers, IP addresses, exit policies, or bandwidth values.  Our
-search algorithm sorts relays by comparing these configuration parameters.
+most similar neighbors.  We define similarity as shared configuration
+parameters such as port numbers, IP addresses, exit policies, or bandwidth
+values.  Our search algorithm sorts relays by comparing these configuration
+parameters.
 
 To quantify the similarity between two relays, we use the Levenshtein distance,
 a distance metric that takes as input two strings and determines the minimum
@@ -424,7 +425,9 @@ $s_2$: \texttt{\setlength{\fboxsep}{0pt}%
 
 Our algorithm determines the Levenshtein distance between a ``seed'' relay and
 all $n-1$ relays in a consensus.  It then sorts the calculated distances in
-ascending order and prints the most similar relays to the console.  For a
-consensus consisting of 6,525 relays, our algorithm takes approximately 1.5
-seconds to finish.\footnote{We measured on an Intel Core i7-3520M CPU at 2.9
-GHz, a consumer-grade CPU.}
+ascending order and prints the most similar relays.  For a consensus consisting
+of 6,525 relays, our algorithm takes approximately 1.5 seconds to
+finish.\footnote{We measured on an Intel Core i7-3520M CPU at 2.9 GHz, a
+consumer-grade CPU.} Note that we designed nearest-neighbour to assist in
+manual analysis.  Unlike the other analysis techniques, it does not require a
+threshold.
