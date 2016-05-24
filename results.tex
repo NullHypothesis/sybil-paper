@@ -132,10 +132,10 @@ about scalability effects. \\
 \bottomrule
 
 \end{tabularx}
-\caption{Some of the Sybil groups that \sys and our exitmap modules discovered.
-We believe that groups marked with the symbols $*$ and $\dagger$ were run by
-the same operator, respectively.  Note that \sys was unable to detect six Sybil
-groups in the category ``MitM.''}
+\caption{The most salient Sybil groups that \sys and our exitmap modules
+	discovered.  We believe that groups marked with the symbols $*$ and
+	$\dagger$ were run by the same operator, respectively.  Note that \sys was
+	unable to detect six Sybil groups in the category ``MitM.''}
 \label{tab:sybils}
 \end{table*}
 
@@ -413,24 +413,6 @@ randomly-generated characters.  In April 2013, the relays finally disappeared.
 	approximately 100 Sybils.  The image shows the uptime of 2,000 relays for
 	all of August.}
 	\label{fig:2012-08-steppattern}
-\end{figure}
-
-Figure~\ref{fig:2014-04-heartbleed} shows the effect of the Heartbleed
-incident~\cite{Durumeric2014a} on the Tor network.  Several days after the
-incident, The Tor Project decided to block all relays that had not generated new
-key pairs.  The large red rectangle on the left side of the image illustrates
-when the biggest part of the block became active, rejecting approximately 1,700
-Tor relay fingerprints.
-% $ wc -l dirauth-conf/approved-routers.d/bleeding-edges.conf
-% 1779 dirauth-conf/approved-routers.d/bleeding-edges.conf
-
-\begin{figure}[t]
-	\centering
-	\includegraphics[width=\linewidth]{diagrams/2014-04.jpg}
-	\caption{In April 2014, the Heartbleed bug forced The Tor Project to reject
-	many affected relays.  The image shows the uptime of 3,000 relays for all of
-	April.}
-	\label{fig:2014-04-heartbleed}
 \end{figure}
 
 Figure~\ref{fig:2014-12-lizard} illustrates the largest Sybil group to date,
