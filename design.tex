@@ -199,11 +199,11 @@ quirks when relaying traffic.
 (\emph{iii}) find relays that might be associated with previously discovered,
 malicious relays.  Figure~\ref{fig:shr-internal} shows \sys's internal
 architecture.  Tor network data first passes a filtering component that can be
-used to inspect a subset of the data.  It is then forwarded to one or more
-modules that implement an analysis technique.  These modules work independently,
-but share a data structure to find suspicious relays that show up in more than
-one module.  Depending on the analysis technique, \sys's output is CSV
-files or images.
+used to inspect a subset of the data, e.g., only relays with a given IP address
+or nickname.  The data is then forwarded to one or more modules that implement
+an analysis technique.  These modules work independently, but share a data
+structure to find suspicious relays that show up in more than one module.
+Depending on the analysis technique, \sys's output is CSV files or images.
 
 \begin{figure}[t]
 	\centering
