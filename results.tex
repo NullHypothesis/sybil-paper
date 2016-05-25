@@ -439,8 +439,8 @@ fingerprint the most.  All these relays changed their fingerprint at least ten
 times.  Twenty one relays changed their fingerprint more than 100 times, and the
 relay at the very right end of the distribution changed its fingerprint 936
 times.  This relay's nickname was ``openwrt,'' suggesting that it was a home
-router that was rebooted regularly.  It was running from August 2010 to December
-2010.
+router that was rebooted regularly, presumably losing its long-term keys in the
+process.  The relay was running from August 2010 to December 2010.
 
 \begin{figure}[t]
 	\centering
@@ -495,7 +495,7 @@ frequently configure their relays identically on purpose.  At the time of this
 writing, a popular relay family has the nicknames ``AccessNow000'' to
 ``AccessNow009,'' adjacent IP addresses, and identical contact
 information---perfect prerequisites for our algorithm.  We expect the operators
-of malicious Sybils, however, to go out of their way to obscure the
+of \emph{malicious} Sybils, however, to go out of their way to obscure the
 relationship between their relays.
 
 To determine our algorithm's accuracy, we used all relay families that were

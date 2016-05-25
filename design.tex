@@ -391,7 +391,10 @@ onion service's index, thus becoming its HSDir~\cite[\S~V.A]{Biryukov2013a}.
 We detect relays that change their fingerprint frequently by maintaining a
 lookup table that maps a relay's IP address to a list of all fingerprints we
 have seen it use.  We sort the lookup table by the relays that changed their
-fingerprints the most, and output the results.
+fingerprints the most, and output the results.  Note that reboots or newly
+assigned IP addresses are not an issue for this technique---as long as relays
+do not lose their long-term keys that are stored on their hard drive, their
+fingerprint stays the same.
 
 \subsubsection{Nearest-neighbor ranking}
 \label{sec:nearest-neighbor}
