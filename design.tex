@@ -165,13 +165,16 @@ exit relay, e.g., at a malicious autonomous system.  However, attribution is
 only a secondary concern.  Our primary concern is protecting Tor users from
 harm, and we do not need to identify the culprit to succeed.
 
-In addition to the original modules that the exitmap authors shared with us, we
-implemented exitmap modules to detect HTML tampering and TLS downgrading, by
-connecting to servers under our control and raising an alert if the returned
-HTML or TLS server hello were modified.  Our modules ran from August 2014 to
-January 2016 and discovered 251 malicious exit relays whose attacks are
-discussed in Appendix~\ref{sec:malicious-relays}.  We reported all relays to The
-Tor Project, which subsequently blocked these relays.
+In addition to using the original modules that the exitmap authors shared with
+us~\cite[\S~3.1]{Winter2014a}, we implemented modules that detect HTML and HTTP
+tampering by connecting to a decoy server under our control, flagging an exit
+relay as malicious if the returned HTML or HTTP was modified, e.g., to inject
+data or redirect a user over a transparent HTTP proxy.  Since we controlled the
+decoy server, we knew what our Tor client should get in response.  Our modules
+ran from August 2014 to January 2016 and discovered 251 malicious exit relays
+whose attacks are discussed in Appendix~\ref{sec:malicious-relays}.  We
+reported all relays to The Tor Project, which subsequently blocked these
+relays.
 
 \subsection{Threat model}
 \label{sec:threat_model}
