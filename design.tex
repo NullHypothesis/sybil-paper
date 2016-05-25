@@ -390,27 +390,27 @@ lookup table that maps a relay's IP address to a list of all fingerprints we
 have seen it use.  We sort the lookup table by the relays that changed their
 fingerprints the most, and output the results.
 
-\subsubsection{Nearest-neighbor search}
+\subsubsection{Nearest-neighbor ranking}
 \label{sec:nearest-neighbor}
 We frequently found ourselves in a situation where exitmap discovered a
 malicious exit relay and we were left wondering if there were similar,
-potentially associated relays.  Looking for such relays involved extensive
-manual work, which we soon started to automate.  We needed an algorithm for
-nearest-neighbor search that takes as input a ``seed'' relay and finds its $n$
-most similar neighbors.  We define similarity as shared configuration
-parameters such as port numbers, IP addresses, exit policies, or bandwidth
-values.  Our search algorithm sorts relays by comparing these configuration
-parameters.
+potentially associated relays.  Looking for such relays involved tedious manual
+work, which we soon started to automate.  We needed an algorithm for
+nearest-neighbor ranking that takes as input a ``seed'' relay and creates as
+output a list of all relays, ranked by their similarity to the seed relay.  We
+define similarity as shared configuration parameters such as port numbers, IP
+addresses, exit policies, or bandwidth values.  Our algorithm ranks relays by
+comparing these configuration parameters.
 
-To quantify the similarity between two relays, we use the Levenshtein distance,
-a distance metric that takes as input two strings and determines the minimum
-number of modifications---insert, delete, and modify---that are necessary to
-turn string $s_{2}$ into $s_{1}$.  Our algorithm turns the router statuses and
-descriptors of two relays into strings and determines their Levenshtein
-distance.  As an example, consider a simplified configuration representation
-consisting of the concatenation of nickname, IP address, and port.  To turn
-string $s_2$ into $s_1$, six operations are necessary; four modifications
-(green) and two deletions (red):
+To quantify the similarity between two relays, we use the Levenshtein
+distance~\cite{Levenshtein1966a}, a distance metric that takes as input two
+strings and determines the minimum number of modifications---insert, delete,
+and modify---that are necessary to turn string $s_{2}$ into $s_{1}$.  Our
+algorithm turns the router statuses and descriptors of two relays into strings
+and determines their Levenshtein distance.  As an example, consider a simple
+representation consisting of the concatenation of nickname, IP address, and
+port.  To turn string $s_2$ into $s_1$, six operations are necessary; four
+modifications (green) and two deletions (red):
 
 \definecolor{change}{rgb}{0.7,1.0,0.7}
 \definecolor{delete}{rgb}{1.0,0.7,0.7}
@@ -424,10 +424,9 @@ $s_2$: \texttt{\setlength{\fboxsep}{0pt}%
 9001}
 
 Our algorithm determines the Levenshtein distance between a ``seed'' relay and
-all $n-1$ relays in a consensus.  It then sorts the calculated distances in
-ascending order and prints the most similar relays.  For a consensus consisting
-of 6,525 relays, our algorithm takes approximately 1.5 seconds to
-finish.\footnote{We measured on an Intel Core i7-3520M CPU at 2.9 GHz, a
-consumer-grade CPU.} Note that we designed nearest-neighbour to assist in
-manual analysis.  Unlike the other analysis techniques, it does not require a
-threshold.
+all other relays in a consensus.  It then ranks the calculated distances in
+ascending order.  For a consensus consisting of 6,525 relays, our algorithm
+takes approximately 1.5 seconds to finish.\footnote{We measured on an Intel
+Core i7-3520M CPU at 2.9 GHz, a consumer-grade CPU.}  Note that we designed our
+ranking algorithm to assist in manual analysis.  Unlike the other analysis
+techniques, it does not require a threshold.

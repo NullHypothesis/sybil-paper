@@ -32,7 +32,7 @@ The columns show (\emph{i}) what we believe to be the purpose of the Sybils,
 gave the Sybils, (\emph{iv}) the number of Sybil fingerprints, (\emph{v}) the
 analysis techniques that could discover the Sybils, and (\emph{vi}) a short
 description.  The analysis techniques are abbreviated as ``E'' (exitmap), ``C''
-(Churn), ``U'' (Uptime), ``F'' (Fingerprint), and ``N'' (Neighbor search).  We
+(Churn), ``U'' (Uptime), ``F'' (Fingerprint), and ``N'' (Neighbor ranking).  We
 now discuss the most insightful incidents in greater detail.
 
 \begin{table*}[ht!]
@@ -463,9 +463,9 @@ several people started Tor relays and since the VPN service would not assign
 permanent IP addresses, the Tor relays would periodically change their address,
 causing the churn we observe.
 
-\subsection{Accuracy of nearest-neighbor search}
+\subsection{Accuracy of nearest-neighbor ranking}
 \label{sec:accuracy}
-Given a Sybil relay, how good is our nearest-neighbor search at finding the
+Given a Sybil relay, how good is our nearest-neighbor ranking at finding the
 remaining Sybils?  To answer this question, we now evaluate our algorithm's
 \emph{accuracy}, which we define as the fraction of neighbors it correctly
 labels as Sybils.  For example, if eight out of ten Sybils are correctly
@@ -475,17 +475,18 @@ A sound evaluation requires ground truth, i.e., relays that are \emph{known} to
 be Sybils.  All we have, however, are relays that we \emph{believe} to be
 Sybils.  In addition, the number of Sybils we found is only a lower bound---we
 are unlikely to have detected all Sybil groups.  Therefore, our evaluation is
-doomed to overestimate our algorithm's accuracy because we are unable to test it
-on the Sybils we did not discover.
+doomed to overestimate our algorithm's accuracy because we are unable to test
+it on the Sybils we did not discover.
 
-We evaluate our search algorithm on two datasets; the ``bad exit'' Sybil groups
-from Table~\ref{tab:exitmap-dataset}, and relay families.  We chose the bad
-exit Sybils because we observed them running identical, active attacks, which
-makes us confident that they are in fact Sybils.  Recall that a relay family is
-a set of Tor relays that is controlled by a single operator, but configured to
-express this mutual relationship in the family members' configuration file.
-Relay families are benign Sybils.  As of January 2016, approximately 400
-families populate the Tor network, ranging in size from only two to 25 relays.
+We evaluate our ranking algorithm on two datasets; the ``bad exit'' Sybil
+groups from Table~\ref{tab:exitmap-dataset}, and relay families.  We chose the
+bad exit Sybils because we observed them running identical, active attacks,
+which makes us confident that they are in fact Sybils.  Recall that a relay
+family is a set of Tor relays that is controlled by a single operator, but
+configured to express this mutual relationship in the family members'
+configuration file.  Relay families are benign Sybils.  As of January 2016,
+approximately 400 families populate the Tor network, ranging in size from only
+two to 25 relays.
 
 We evaluate our algorithm by finding the nearest neighbors of a family member.
 Ideally, all neighbors are family members, but the use of relay families as
@@ -494,12 +495,12 @@ frequently configure their relays identically on purpose.  At the time of this
 writing, a popular relay family has the nicknames ``AccessNow000'' to
 ``AccessNow009,'' adjacent IP addresses, and identical contact
 information---perfect prerequisites for our algorithm.  We expect the operators
-of malicious Sybils, however, to go out of their way to obscure the relationship
-between their relays.
+of malicious Sybils, however, to go out of their way to obscure the
+relationship between their relays.
 
 To determine our algorithm's accuracy, we used all relay families that were
 present in the first consensus that was published in October 2015.  For each
-relay that had at least one mutual family relationship, we searched for its $n -
+relay that had at least one mutual family relationship, we determined its $n -
 1$ nearest neighbors where $n$ is the family size.  Basically, we evaluated how
 good our algorithm is at finding the relatives of a family member.  We
 determined the accuracy---a value in $[0,1]$---for each family member.  The
@@ -507,7 +508,7 @@ result is shown in Figure~\ref{fig:family-accuracy}, a distribution of accuracy
 values.
 
 Next, we repeated the evaluation with the bad exit Sybil groups from
-Table~\ref{tab:exitmap-dataset}.  Again, we searched for the $n - 1$ nearest
+Table~\ref{tab:exitmap-dataset}.  Again, we determined the $n - 1$ nearest
 neighbors of all bad exit relays, where $n$ is the size of the Sybil group.
 The accuracy is the fraction of relays that our algorithm correctly classified
 as neighbor.  The result is illustrated in Figure~\ref{fig:badexit-accuracy}.
@@ -529,13 +530,13 @@ as neighbor.  The result is illustrated in Figure~\ref{fig:badexit-accuracy}.
 \end{figure}
 
 As expected, our algorithm is significantly more accurate for the family
-dataset---66\% of searches had perfect accuracy.  The bad exit dataset, however,
-did worse.  Not a single search had perfect accuracy and 59\% of all searches
-had an accuracy in the interval $[0.3,0.6]$.  Nevertheless, we find that our
-search algorithm facilitates manual analysis given how quickly it can provide us
-with a list of the most similar relays.  Besides, false positives (i.e.,
-neighbors that are not Sybils) are cheap as \sys users would not spend much time
-on neighbors that bear little resemblance to the ``seed'' relay.
+dataset---66\% of rankings had perfect accuracy.  The bad exit dataset,
+however, did worse.  Not a single ranking had perfect accuracy and 59\% of all
+rankings had an accuracy in the interval $[0.3,0.6]$.  Nevertheless, we find
+that our algorithm facilitates manual analysis given how quickly it can provide
+us with a list of the most similar relays.  Besides, inaccurate results (i.e.,
+similar neighbors that are not Sybils) are cheap as \sys users would not spend
+much time on neighbors that bear little resemblance to the ``seed'' relay.
 
 \subsection{Computational cost}
 \label{sec:performance}
@@ -553,7 +554,7 @@ performance bottleneck.
 	\textbf{Method} & \textbf{Analysis window} & \textbf{Run time} \\
 	\midrule
 	Churn & Two consensuses & $\sim$0.2s \\
-	Neighbor search & One consensus & $\sim$1.6s \\
+	Neighbor ranking & One consensus & $\sim$1.6s \\
 	Fingerprint & One month & $\sim$58.0s \\
 	Uptimes & One month & $\sim$145.0s \\
 	\bottomrule
@@ -566,7 +567,7 @@ The table columns contain, from left to right, our analysis technique, the
 technique's analysis window, and how long it takes to compute its output.
 Network churn calculation is very fast; it takes as input only two consensus
 files and can easily be run for every new network consensus.  Nearest-neighbor
-search takes approximately 1.6 seconds for a single consensus counting 6,942
+ranking takes approximately 1.6 seconds for a single consensus counting 6,942
 relays.  Fingerprint and uptime analysis for one month worth of consensuses
 takes approximately one and two minutes, respectively---easy to invoke daily, or
 even several times a day.
