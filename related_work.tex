@@ -6,56 +6,56 @@ prevent Sybils~\cite{Douceur2002a}.  This approach conflicts with Tor's design
 philosophy that seeks to distribute trust and eliminate central points of
 control.  In addition, a major factor contributing to Tor's network growth is
 the low barrier of entry, allowing operators to set up relays both quickly and
-anonymously.  An identity-verifying authority would raise that barrier, alienate
-privacy-conscious relay operators, and impede Tor's growth.  Barring a central
-authority, researchers have proposed techniques that leverage a resource that is
-difficult for an attacker to scale.  Two categories of Sybil-resistant schemes
-turned out to be particularly popular, schemes that build on \emph{social
-constraints} and schemes that build on \emph{computational constraints}.  For a
-broad overview of alternative Sybil defenses, refer to Levine et
-al.~\cite{Levine2006a}.
+anonymously.  An identity-verifying authority would raise that barrier,
+alienate privacy-conscious relay operators, and impede Tor's growth.  Barring a
+central authority, researchers have proposed techniques that leverage a
+resource that is difficult for an attacker to scale.  Two categories of
+Sybil-resistant schemes turned out to be particularly popular, schemes that
+build on \emph{social constraints} and schemes that build on
+\emph{computational constraints}.  For a broad overview of alternative Sybil
+defenses, refer to Levine et al.~\cite{Levine2006a}.
 
 Social constraints rely on the assumption that it is difficult for an attacker
 to form trust relationships with honest users, e.g., befriend many unknown
 people on online social networks.  Past work leveraged this assumption in
 systems such as SybilGuard~\cite{Yu2006a}, SybilLimit~\cite{Yu2008a}, and
-SybilInfer~\cite{Danezis2009a}.  Unfortunately, social graph-based defenses
-do not work in our setting because there is no existing trust relationship
-between relay operators.\footnote{Relay operators can express in their
-configuration that their relays are run by the same operator, but this
-denotes an \emph{intra}-person and not an \emph{inter}-person trust
-relationship.} Note that we could create such a relationship by, e.g., linking
-relays to their operator's social networking account, or by creating a ``relay
-operator web of trust,'' but again, we believe that such an effort would
-alienate relay operators and receive limited adoption.
+SybilInfer~\cite{Danezis2009a}.  Unfortunately, social graph-based defenses do
+not work in our setting because there is no existing trust relationship between
+relay operators.\footnote{Relay operators can express in their configuration
+that their relays are run by the same operator, but this denotes an
+\emph{intra}-person and not an \emph{inter}-person trust relationship.}  Note
+that we could create such a relationship by, e.g., linking relays to their
+operator's social networking account, or by creating a ``relay operator web of
+trust,'' but again, we believe that such an effort would alienate relay
+operators and see limited adoption.
 
 Orthogonal to social constraints, computational resource constraints guarantee
-that an attacker that seeks to operate 100 Sybils needs 100 times the
+that an attacker seeking to operate 100 Sybils needs 100 times the
 computational resources she would have needed for a single virtual identity.
-Both Borisov~\cite{Borisov2006a} and Li et al.~\cite{Li2012a} used computational
-puzzles for that purpose.  Computational constraints work well in distributed
-systems where the cost of joining the network is low.  For example, a
-lightweight client is enough to use BitTorrent, allowing even low-end consumer
-devices to participate.  However, this is not the case in Tor because relay
-operations require constant use of bandwidth and CPU.  Unlike in many other
-distributed systems, it is impossible to run 100 Tor relays while not spending
-the resources for 100 relays.  Computational constraints are inherent to running
-a relay.
+Both Borisov~\cite{Borisov2006a} and Li et al.~\cite{Li2012a} used
+computational puzzles for that purpose.  Computational constraints work well in
+distributed systems where the cost of joining the network is low.  For example,
+a lightweight client is sufficient to use BitTorrent, allowing even low-end
+consumer devices to participate.  However, this is not the case in Tor because
+relay operations require constant use of bandwidth and CPU.  Unlike in many
+other distributed systems, it is impossible to run 100 Tor relays while not
+spending the resources for 100 relays.  Computational constraints are
+inherently tied to running a relay.
 
-In summary, we believe that existing Sybil defenses do not work well when
-applied to the Tor network; its distinctive features call for customized
-solutions that consider the nature of Tor relays.  There has already been
-some progress towards that direction; namely, The Tor Project has incorporated
-a number of both implicit and explicit Sybil defenses that are in place as of
+In summary, we believe that existing Sybil defenses are ill-suited for
+application in the Tor network; its distinctive features call for customized
+solutions that consider the nature of Tor relays.  There has already been some
+progress towards that direction; namely, The Tor Project has incorporated a
+number of both implicit and explicit Sybil defenses that are in place as of
 February 2016.  First, directory authorities---the ``gatekeepers'' of the Tor
-network---accept at most two relays per IP address to prevent low-resource Sybil
-attacks~\cite{Bauer2007a,Bauer2007b}.  Similarly, Tor's path selection algorithm
-states that Tor clients never select two relays in the same /16
+network---accept at most two relays per IP address to prevent low-resource
+Sybil attacks~\cite{Bauer2007a,Bauer2007b}.  Similarly, Tor's path selection
+algorithm states that Tor clients never select two relays in the same /16
 network~\cite{path-spec}.  Second, directory authorities automatically assign
 flags to relays, indicating their status and quality of service.  The Tor
 Project has recently increased the minimal time until relays obtain the
 \texttt{Stable} flag (seven days) and the \texttt{HSDir} flag (96 hours).  This
-change increases the cost of Sybil attacks and gives Tor developers more time to
-discover and block suspicious relays before they get in a position to run an
+change increases the cost of Sybil attacks and gives Tor developers more time
+to discover and block suspicious relays before they get in a position to run an
 attack.  Finally, the operation of a Tor relay causes recurring costs---most
 notably bandwidth and electricity---which can further restrain an adversary.
