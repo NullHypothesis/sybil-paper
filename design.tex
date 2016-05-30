@@ -297,11 +297,26 @@ Both $\alpha_{n}$ and $\alpha_{l}$ are bounded to the interval $[0, 1]$.  A
 churn value of 0 indicates no change between two subsequent consensuses whereas
 a churn value of 1 indicates a complete turnover.  Determining $\alpha_{n,l}$
 for the sequence $C_{t}, C_{t-1}$, \ldots, $C_{t-n}$, yields a time series of
-churn values that can readily be inspected for abnormal spikes.  We found that
-many churn anomalies are caused by relays that share a flag, or a flag
-combination, e.g., \texttt{HSDir} (onion service directories) and \texttt{Exit}
-(exit relays).  Therefore, \sys can also generate per-flag churn time series
-that can uncover patterns that would be lost in a flag-agnostic time series.
+churn values that can readily be inspected for abnormal spikes.
+Figure~\ref{fig:churn-sensitivity} illustrates the maximum number of Sybils an
+attacker can add to the network given a threshold for $\alpha$.  The figure
+shows both the theoretical maximum and a more realistic estimate that accounts
+for noise, i.e., the median number of new relays in each consensus, which is
+73.  We found that many churn anomalies are caused by relays that share a flag,
+or a flag combination, e.g., \texttt{HSDir} (onion service directories) and
+\texttt{Exit} (exit relays).  Therefore, \sys can also generate per-flag churn
+time series that can uncover patterns that would be lost in a flag-agnostic
+time series.
+
+\begin{figure}[t]
+	\centering
+	\includegraphics[width=0.8\linewidth]{diagrams/churn-sensitivity.pdf}
+	\caption{The number of new Sybils ($y$ axis) that can remain undetected
+	given a threshold for the churn value $\alpha$ ($x$ axis).  The diagram
+	shows both the maximum and a more realistic estimate that accounts for the
+	median number of new relays in consensuses.}
+	\label{fig:churn-sensitivity}
+\end{figure}
 
 Finally, to detect changes in the underlying time series trend---flat hills---we
 can smooth $\alpha_{n,l}$ using a simple moving average $\lambda$ defined as
