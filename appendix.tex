@@ -6,7 +6,7 @@ Table~\ref{tab:exitmap-dataset} provides an overview of our second dataset, 251
 bad exit relays that we discovered between August 2014 and January 2016.  We
 believe that all single relays in the dataset were isolated incidents while sets
 of relays constituted Sybil groups.  Sybil groups marked with the symbols
-$\dagger$, $\ddagger$, and $\mathsection$ were run by the same attacker.
+$*$, $\dagger$, and $\ddagger$ were run by the same attacker.
 
 \begin{table*}
 \small
@@ -51,7 +51,7 @@ HTTPS links to unencrypted HTTP links in returned HTML. \\
 & & \\
 
 % Message-ID: <20150109195428.GA29115@nymity.ch>
-Jan 2015 & 23$\ddagger$ & Blockchain.info's web server redirects its
+Jan 2015 & 23$^*$ & Blockchain.info's web server redirects its
 users from HTTP to HTTPS.  These relays tampered with blockchain.info's redirect
 and returned unprotected HTTP instead---presumably to sniff login credentials. \\
 
@@ -85,7 +85,7 @@ HTML.  The injected content was not clearly malicious, but suspicious. \\
 & & \\
 
 % Message-ID: <20150423004031.GA11395@nymity.ch>
-Apr 2015 & 70$\dagger$ & These exit relays transparently rewrote onion domains
+Apr 2015 & 70$^\dagger$ & These exit relays transparently rewrote onion domains
 in returned HTML to an impersonation domain.  The impersonation domain looked
 identical to the original, but had different Bitcoin addresses.  We believe that
 this was attempt to trick Tor users into sending Bitcoin transactions to
@@ -94,12 +94,12 @@ phishing addresses. \\
 & & \\
 
 % Message-ID: <20150630022923.GA2340@nymity.ch>
-Jun 2015 & 55$\dagger$ & Same as above. \\
+Jun 2015 & 55$^\dagger$ & Same as above. \\
 
 & & \\
 
 % Message-ID: <20150804202838.GA4774@nymity.ch>
-Aug 2015 & 4$\dagger$ & Same as above. \\
+Aug 2015 & 4$^\dagger$ & Same as above. \\
 
 & & \\
 
@@ -114,25 +114,25 @@ activity. \\
 Nov 2015 & 1 & The relay ran the MitM tool sslstrip. \\
 
 % Message-ID: <20151117150055.GA25187@nymity.ch>
-& 8$\dagger$ & Same as the relays marked with a $\dagger$. \\
+& 8$^\dagger$ & Same as the relays marked with a $\dagger$. \\
 
 & & \\
 
 % Message-ID: <20151213025807.GB20685@nymity.ch>
-Dec 2015 & 1$\mathsection$ & The relay ran the MitM tool sslstrip. \\
+Dec 2015 & 1$^\ddagger$ & The relay ran the MitM tool sslstrip. \\
 
 % Message-ID: <20151214230014.GA27729@nymity.ch>
-& 1$\mathsection$ & Same as above. \\
+& 1$^\ddagger$ & Same as above. \\
 
 & & \\
 
 % Message-ID: <20160112033141.GA499@nymity.ch>
-Jan 2016 & 43$\dagger$ & Same as the relays marked with a $\dagger$. \\
+Jan 2016 & 43$^\dagger$ & Same as the relays marked with a $\dagger$. \\
 \bottomrule
 \end{tabularx}
 \caption{An overview of our second dataset, 251 malicious exit relays that we
 discovered using exitmap.  We believe that Sybil groups marked with an
-$\dagger$, $\mathsection$, and $\ddagger$ were run by the same adversary.}
+$*$, $\dagger$, and $\ddagger$ were run by the same adversary.}
 \label{tab:exitmap-dataset}
 \end{table*}
 
