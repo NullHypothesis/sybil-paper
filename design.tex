@@ -18,7 +18,7 @@ and consists of 3,300 lines of code.
 	\includegraphics[width=0.8\linewidth]{diagrams/architecture.pdf}
 	\caption{\Sys's architecture.  Two datasets serve as input to
 		\sys; consensuses and server descriptors, and malicious
-		relays gathered with exitmap~\cite{Winter2014a}.}
+		relays gathered with exitmap~\cite[\S~3.1]{Winter2014a}.}
 	\label{fig:system}
 \end{figure}
 
@@ -155,15 +155,15 @@ newly discovered malicious relay, which we discuss in
 Section~\ref{sec:nearest-neighbor}.
 
 We exposed malicious exit relays using Winter et al.'s exitmap
-tool~\cite{Winter2014a}.  Exitmap is a Python-based scanning framework for Tor
-exit relays.  Exitmap modules perform a network task that can then be run over
-all exit relays.  One use case is HTTPS man-in-the-middle detection: A module
-can fetch the certificate of a web server over all exit relays and then compare
-its fingerprint with the expected, valid fingerprint.  Exposed attacks are
-sometimes difficult to attribute because an attack can take place upstream of the
-exit relay, e.g., at a malicious autonomous system.  However, attribution is
-only a secondary concern.  Our primary concern is protecting Tor users from
-harm, and we do not need to identify the culprit to succeed.
+tool~\cite[\S~3.1]{Winter2014a}.  Exitmap is a Python-based scanning framework
+for Tor exit relays.  Exitmap modules perform a network task that can then be
+run over all exit relays.  One use case is HTTPS man-in-the-middle detection: A
+module can fetch the certificate of a web server over all exit relays and then
+compare its fingerprint with the expected, valid fingerprint.  Exposed attacks
+are sometimes difficult to attribute because an attack can take place upstream
+of the exit relay, e.g., at a malicious autonomous system.  However,
+attribution is only a secondary concern.  Our primary concern is protecting Tor
+users from harm, and we do not need to identify the culprit to succeed.
 
 In addition to using the original modules that the exitmap authors shared with
 us~\cite[\S~3.1]{Winter2014a}, we implemented modules that detect HTML and HTTP

@@ -20,7 +20,7 @@ the attacker's consensus weight grows, the following attacks become easier.
 		the last hop in a Tor circuit, when leaving the Tor network.
 		Controlling exit relays, an attacker can eavesdrop on traffic to
 		collect unencrypted credentials, break into TLS-protected connections,
-		or inject malicious content~\cite{Winter2014a}.
+		or inject malicious content~\cite[\S~5.2]{Winter2014a}.
 	\item[Website fingerprinting:] Tor's encryption prevents guard relays (the
 		first hop in a Tor circuit) from learning their user's online activity.
 		Ignoring the encrypted payload, an attacker can still take advantage of
@@ -32,7 +32,7 @@ the attacker's consensus weight grows, the following attacks become easier.
 		addresses, which is why bridge distribution is rate-limited.  However,
 		an attacker can harvest bridge addresses by running a middle relay and
 		looking for incoming connections that do not originate from any of the
-		publicly known guard relays~\cite{Ling2015b}.
+		publicly known guard relays~\cite[\S~3.4]{Ling2015b}.
 	\item[End-to-end correlation:] By running both entry guards and exit relays,
 		an attacker can use timing analysis to link a Tor user's identity to her
 		activity, e.g., learn that \emph{Alice} is visiting \emph{Facebook}.
@@ -50,11 +50,11 @@ In addition to the above attacks, an adversary needs Sybil relays to manipulate
 onion services, which are TCP servers whose IP address is hidden by Tor.  In the
 current onion service protocol, six Sybil relays are sufficient to take offline
 an onion service because of a weakness in the design of the distributed hash
-table (DHT) that powers onion services~\cite{Biryukov2013a}.  Finally, instead
-of being a direct means to an end, Sybil relays can be a \emph{side effect} of
-another issue.  In Section~\ref{sec:sybil_groups}, we provide evidence for what
-appears to be botnets whose zombies are running Tor relays, perhaps because of a
-misguided attempt to help the Tor network grow.
+table (DHT) that powers onion services~\cite[\S~V]{Biryukov2013a}.  Finally,
+instead of being a direct means to an end, Sybil relays can be a \emph{side
+effect} of another issue.  In Section~\ref{sec:sybil_groups}, we provide
+evidence for what appears to be botnets whose zombies are running Tor relays,
+perhaps because of a misguided attempt to help the Tor network grow.
 
 Motivated by the lack of practical Sybil detection tools, we design and
 implement heuristics, leveraging our observation that Sybils (\emph{i})
