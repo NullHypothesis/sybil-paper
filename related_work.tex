@@ -16,9 +16,9 @@ build on \emph{social constraints} and schemes that build on
 defenses, refer to Levine et al.~\cite{Levine2006a}.
 
 Social constraints rely on the assumption that it is difficult for an attacker
-to form trust relationships with honest users, e.g., befriend many unknown
-people on online social networks.  Past work leveraged this assumption in
-systems such as SybilGuard~\cite{Yu2006a}, SybilLimit~\cite{Yu2008a}, and
+to form trust relationships with honest users, e.g., befriend many strangers on
+online social networks.  Past work leveraged this assumption in systems such as
+SybilGuard~\cite{Yu2006a}, SybilLimit~\cite{Yu2008a}, and
 SybilInfer~\cite{Danezis2009a}.  Unfortunately, social graph-based defenses do
 not work in our setting because there is no existing trust relationship between
 relay operators.\footnote{Relay operators can express in their configuration
@@ -47,10 +47,10 @@ application in the Tor network; its distinctive features call for customized
 solutions that consider the nature of Tor relays.  There has already been some
 progress towards that direction; namely, The Tor Project has incorporated a
 number of both implicit and explicit Sybil defenses that are in place as of
-February 2016.  First, directory authorities---the ``gatekeepers'' of the Tor
+June 2016.  First, directory authorities---the ``gatekeepers'' of the Tor
 network---accept at most two relays per IP address to prevent low-resource
 Sybil attacks~\cite{Bauer2007a,Bauer2007b}.  Similarly, Tor's path selection
-algorithm states that Tor clients never select two relays in the same /16
+algorithm ensures that Tor clients never select two relays in the same /16
 network~\cite{path-spec}.  Second, directory authorities automatically assign
 flags to relays, indicating their status and quality of service.  The Tor
 Project has recently increased the minimal time until relays obtain the

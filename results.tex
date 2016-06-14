@@ -5,15 +5,15 @@ network data.  We did not set any thresholds, to capture every single churn
 value, fingerprint, and uptime sequence, resulting in an unfiltered dataset of
 several megabytes of CSV files and uptime images.  We then sorted this dataset
 in descending order by severity, and began manually analyzing the most
-significant incidents, e.g., the largest churn values.  We begin this section
-by characterizing Sybil groups we discovered that way in
-Subsection~\ref{sec:sybil_groups}.  Instead of providing an exhaustive list of
-all potential Sybils, we focus on our most salient findings---relay groups that
-were either clearly malicious or distinguished themselves
-otherwise.\footnote{Our datasets and visualizations are available online, and
-can be inspected for an exhaustive list of potential Sybils.  The URL is\\
-\url{https://nymity.ch/sybilhunting/}.}  Afterwards, we explore the impact of
-\sys's thresholds in Subsections~\ref{sec:numalerts} to~\ref{sec:accuracy}.
+significant incidents, e.g., the largest churn values.  In
+Section~\ref{sec:sybil_groups}, we begin by characterizing Sybil groups we
+discovered that way.  Instead of providing an exhaustive list of all potential
+Sybils, we focus on our most salient findings---relay groups that were either
+clearly malicious or distinguished themselves otherwise.\footnote{Our datasets
+and visualizations are available online, and can be inspected for an exhaustive
+set of potential Sybils.  The URL is\\\url{https://nymity.ch/sybilhunting/}.}
+Afterwards, we explore the impact of \sys's thresholds in
+Sections~\ref{sec:numalerts} to~\ref{sec:accuracy}.
 
 Once we discovered a seemingly harmful Sybil group, we reported it to The Tor
 Project.  To defend against Sybil attacks, directory authorities can either
@@ -29,11 +29,12 @@ a diverse set of people in different jurisdictions.
 Table~\ref{tab:sybils} shows the most interesting Sybil groups we identified.
 The columns show (\emph{i}) what we believe to be the purpose of the Sybils,
 (\emph{ii}) when the Sybil group was at its peak size, (\emph{iii}) the ID we
-gave the Sybils, (\emph{iv}) the number of Sybil fingerprints, (\emph{v}) the
-analysis techniques that could discover the Sybils, and (\emph{vi}) a short
-description.  The analysis techniques are abbreviated as ``E'' (exitmap), ``C''
-(Churn), ``U'' (Uptime), ``F'' (Fingerprint), and ``N'' (Neighbor ranking).  We
-now discuss the most insightful incidents in greater detail.
+gave the Sybils, (\emph{iv}) the number of Sybil fingerprints at its peak,
+(\emph{v}) the analysis techniques that could discover the Sybils, and
+(\emph{vi}) a short description.  The analysis techniques are abbreviated as
+``N'' (Neighbor ranking), ``F'' (Fingerprint), ``C'' (Churn), ``U'' (Uptime),
+and ``E'' (exitmap).  We now discuss the most insightful incidents in greater
+detail.
 
 \begin{table*}[ht!]
 \small
@@ -139,10 +140,10 @@ about scalability effects. \\
 
 \paragraph{The ``rewrite'' Sybils}
 These recurring Sybils hijacked Bitcoin transactions by rewriting Bitcoin
-addresses.  All relays had the \texttt{Exit} flag and replaced onion domains
-found in a web server's HTTP response with an impersonation domain, presumably
-hosted by the attacker.  Interestingly, the impersonation domains shared a
-prefix with the original.  For example, the domain
+addresses in relayed HTML.  All relays had the \texttt{Exit} flag and replaced
+onion domains found in a web server's HTTP response with an impersonation
+domain, presumably hosted by the attacker.  Interestingly, the impersonation
+domains shared a prefix with the original.  For example, the domain
 \textbf{sigaint}evyh2rzvw.onion was replaced with the impersonation domain
 \textbf{sigaint}z7qjj3val.onion whose first seven digits are identical to the
 original.  The attacker could create shared prefixes by repeatedly generating
@@ -158,17 +159,17 @@ mid-range laptop GPU, is able to generate 90 million hashes per second.  On
 this GPU, a partial collision for a seven-digit prefix can be found in $2^{34}
 \cdot \frac{1}{90,000,000} \simeq 190$ seconds, i.e., just over three minutes.
 
-We inspected some of the phishing domains and found that the attackers replaced
-the original Bitcoin addresses, presumably with addresses under their control,
-to hijack transactions.  Therefore, we believe that this attack was financially
-motivated.
+We inspected some of the phishing domains and found that the attackers further
+replaced the original Bitcoin addresses with addresses that are presumably
+controlled by the attackers, enabling them to hijack Bitcoin transactions.  As
+a result, we believe that the attack was financially motivated.
 
 \paragraph{The ``redirect'' Sybils}
 These relays all had the \texttt{Exit} flag and tampered with HTTP redirects of
-exit traffic.  Some Bitcoin sites would redirect users from their HTTP site to
-the encrypted HTTPS version, to protect their users' login credentials.  This
+exit traffic.  To protect their users' login credentials, some Bitcoin sites
+would redirect users from their HTTP site to the encrypted HTTPS version.  This
 Sybil group tampered with the redirect and directed users to an impersonation
-site, resembling the original Bitcoin site, perhaps to steal credentials.  We
+site, resembling the original Bitcoin site, probably to steal credentials.  We
 only observed this attack for Bitcoin sites, but cannot rule out that other
 sites were not attacked.
 
@@ -188,9 +189,9 @@ It is possible that this Sybil group was run by the same attackers that
 controlled the ``rewrite'' group but we have no evidence to support that
 hypothesis.  Interestingly, only our exitmap module was able to spot these
 Sybils.  The relays joined the network gradually over time and had little in
-common in their configuration, which is why our \sys methods failed.  In fact,
-we cannot rule out that the adversary was upstream, or gained control over these
-relays.
+common in their configuration, which is why our heuristics failed.  In fact, we
+cannot rule out that the adversary was upstream of the exit relay, or gained
+control over these relays.
 
 \paragraph{The ``FDCservers'' Sybils}
 Attackers used these Sybils to deanonymize onion service users, as discussed by
@@ -198,13 +199,14 @@ The Tor Project in a July 2014 blog post~\cite{cmucert}.  Supposedly,
 CMU/SEI-affiliated researchers were executing a traffic confirmation attack by
 sending sequences of \texttt{RELAY\_EARLY} and \texttt{RELAY} cells as a signal
 down the circuit to the client, which the reference implementation never
-does~\cite{cmucert,cmucert2}.  The attacking relays were onion service
+does~\cite{cmucert,cmucert2}.  The attacking relays were both onion service
 directories and guards, allowing them to control both ends of the circuit for
-some Tor clients that were fetching onion service descriptors.  Most relays
-were running FreeBSD, used Tor in version 0.2.4.18-rc, had identical flags,
-mostly identical bandwidth values, and were located in 50.7.0.0/16 and
-204.45.0.0/16.  All of these shared configuration options made the relays easy
-to identify.
+some Tor clients that were fetching onion service descriptors.  Therefore, the
+relays could tell for a fraction of Tor users what onion service they were
+intending to visit.  Most relays were running FreeBSD, used Tor in version
+0.2.4.18-rc, had identical flags, mostly identical bandwidth values, and were
+located in 50.7.0.0/16 and 204.45.0.0/16.  All of these shared configuration
+options made the relays easy to identify.
 
 The relays were added to the network in batches, presumably starting in October
 2013.  On January 30, 2014, the attackers added 58 relays to the 63 existing
@@ -265,20 +267,13 @@ fingerprint 24 times, but not randomly: the fingerprints were chosen
 systematically, in a small range.  For example, relay 54.242.248.129 had
 fingerprints with the prefixes \texttt{8D}, \texttt{8E}, \texttt{8F}, and
 \texttt{90}.  The relays were online for 48 hours.  After 24 hours, most of the
-relays obtained the \texttt{HSDir} flag.
+relays obtained the \texttt{HSDir} flag.  This behavior appears to be a clear
+attempt to manipulate Tor's DHT.
 
 We believe that this Sybil group was run by Biryukov, Pustogarov, and Weinmann
 as part of their Security and Privacy 2013 paper ``Trawling for Tor Hidden
 Services''~\cite{Biryukov2013a}---one of the few Sybil groups that were likely
 run by academic researchers.
-
-\paragraph{The ``FuslVZTOR'' Sybils}
-All machines were middle relays and hosted in the netblock 212.38.181.0/24,
-owned by a UK VPS provider.  The directory authorities started rejecting the
-relays five hours after they joined the network.  The relays advertized the
-default bandwidth of 1 GiB/s and used randomly determined ports.  The Sybils
-were active in parallel to the ``LizardNSA'' attack, but there is no reason to
-believe that both incidents were related.
 
 \paragraph{The ``Anonpoke'' Sybils}
 All relays shared the nickname ``Anonpoke'' and were online for four hours until
@@ -304,13 +299,21 @@ the directory authorities started to reject them.  The majority of machines were
 middle relays (96\%), but the attackers also started some exit relays (4\%).
 The Sybils were set up to be onion service directories, but the relays were
 taken offline before they could earn the \texttt{HSDir} flag.  If all relays
-would have obtained the \texttt{HSDir} flag in time, they would have constituted
-almost 50\% of all onion service directories; the median number of onion
-service directories on December 26 was 3,551.
+would have obtained the \texttt{HSDir} flag, they would have constituted almost
+50\% of all onion service directories; the median number of onion service
+directories on December 26 was 3,551.
 
 Shortly after the attack began, somebody claimed responsibility on the tor-talk
 mailing list~\cite{lizards}.  Judging by the supposed attacker's demeanor, the
 attack was mere mischief.
+
+\paragraph{The ``FuslVZTOR'' Sybils}
+All machines were middle relays and hosted in the netblock 212.38.181.0/24,
+owned by a UK VPS provider.  The directory authorities started rejecting the
+relays five hours after they joined the network.  The relays advertized the
+default bandwidth of 1 GiB/s and used randomly determined ports.  The Sybils
+were active in parallel to the ``LizardNSA'' attack, but there is no reason to
+believe that both incidents were related.
 
 \subsection{Alerts per method}
 \label{sec:numalerts}
@@ -320,12 +323,12 @@ this end, we first determined conservative thresholds, chosen to yield a
 manageable number of alerts per week.  For network churn, we set the threshold
 for $\alpha_n$ for relays with the \texttt{Valid} flag to 0.017.  For the
 fingerprint method, we raised an alert if a relay changed its fingerprint at
-least ten times per month, and for uptime visualizations we raise an alert if at
-least five relays exhibit an identical uptime sequence.  We used a variety of
-analysis windows to achieve representative results.  For example, the Tor
+least ten times per month, and for uptime visualizations we raised an alert if
+at least five relays exhibited an identical uptime sequence.  We used a variety
+of analysis windows to achieve representative results.  For example, the Tor
 network's churn rate slowly reduced over the years, which is why we only
 analyzed 2015 and 2016.  Table~\ref{tab:num-alerts} shows the results.  For
-comparison, we also included our exitmap modules, which did not require any
+comparison, the table also shows our exitmap modules, which did not require any
 thresholds.
 
 \begin{table*}[ht]
@@ -340,12 +343,12 @@ thresholds.
 	\textbf{Alerts per week} \\
 
 	\midrule
-	Fingerprint & 10/2007 -- 01/2016 & 10 & 551 & 1.3 \\
-	Churn & 01/2015 -- 01/2016 & 0.017 & 110 & 1.9 \\
-	Uptimes & 01/2009 -- 01/2016 & 5 & 3,052 & 8.3 \\
+	Fingerprint & 10/2007--01/2016 & 10 & 551 & 1.3 \\
+	Churn & 01/2015--01/2016 & 0.017 & 110 & 1.9 \\
+	Uptimes & 01/2009--01/2016 & 5 & 3,052 & 8.3 \\
 	% We have exitmap scans for 18 months.
 	\midrule
-	Exitmap & 08/2014 -- 01/2016 & --- & 251 & 3.2 \\
+	Exitmap & 08/2014--01/2016 & --- & 251 & 3.2 \\
 	\bottomrule
 	\end{tabular}
 	\caption{The number of alerts our methods raised.  We used different
@@ -359,7 +362,7 @@ thresholds.
 We determined the churn rate between two subsequent consensuses for all 72,061
 consensuses that were published between October 2007 and January 2016.
 Considering that (\emph{i}) there are 162 gaps in the archived data, that
-(\emph{ii}) we create time series for joining and leaving relays, and that
+(\emph{ii}) we created time series for joining and leaving relays, and that
 (\emph{iii}) we determined churn values for all twelve relay flags, we ended up
 with $(72,061 - 162) \cdot 2 \cdot 12 = 1,725,576$ churn values.
 Figure~\ref{fig:churn-boxplot} shows a box plot for the churn distribution
@@ -384,10 +387,10 @@ network has steadily decreased over the years, from $0.04$ in 2008 to $0.02$ in
 
 Figure~\ref{fig:2008-08} illustrates churn rates for five days in August 2008,
 featuring the most significant anomaly in our data.  On August 19, 822 relays
-left the network, resulting in a sudden spike, and an increase in the baseline.
-The spike was caused by the Tor network's switch from consensus format version
-three to four.  The changelog says that in version four, routers that
-do not have the \texttt{Running} flag are no longer listed in the consensus.
+left the network, resulting in a sudden spike, and a baseline shift.  The spike
+was caused by the Tor network's switch from consensus format version three to
+four.  The changelog says that in version four, routers that do not have the
+\texttt{Running} flag are no longer listed in the consensus.
 
 \begin{figure}[t]
 	\centering
@@ -417,18 +420,19 @@ because we do not have ground truth.
 
 \subsection{Uptime analysis}
 \label{sec:uptime}
-We generated relay uptime visualizations for each month since 2007, resulting in
-100 images.  We now discuss a subset of these images that contain particularly
-interesting patterns.
+We generated relay uptime visualizations for each month since 2007, resulting
+in 100 images.  We now discuss a subset of these images, those containing
+particularly interesting patterns.
 
 Figure~\ref{fig:2010-06-planetlab} shows June 2010, featuring a clear ``Sybil
 block'' in the center.  The Sybils belonged to a researcher who, as documented
 by The Tor Project~\cite{progressreport}, started several hundred Tor relays on
-PlanetLab for research on scalability.  Our manual analysis could verify this.
-The relays were easy to identify because their nicknames suggested that they
-were hosted on PlanetLab, containing strings such as ``planetlab,'' ``planet,''
-and ``plab.''  Note the small height of the Sybil block, indicating that the
-relays were only online for a short time.
+PlanetLab for research on scalability (the ``PlanetLab'' Sybils discussed
+above).  Our manual analysis could verify this.  The relays were easy to
+identify because their nicknames suggested that they were hosted on PlanetLab,
+containing strings such as ``planetlab,'' ``planet,'' and ``plab.''  Note the
+small height of the Sybil block, indicating that the relays were only online
+for a short time.
 
 \begin{figure}[t]
 	\centering
@@ -456,17 +460,17 @@ randomly-generated characters.  In April 2013, the relays finally disappeared.
 \end{figure}
 
 Figure~\ref{fig:2014-12-lizard} illustrates the largest Sybil group to date,
-comprising 4,615 Tor relays.  An attacker set up these relays in the Google
-cloud in December 2014.  Because of its magnitude, the attack was spotted
-almost instantly, and The Tor Project removed the offending relays only ten
-hours after they appeared.
+comprising 4,615 Tor relays (the ``LizardNSA'' Sybils discussed above).  An
+attacker set up these relays in the Google cloud in December 2014.  Because of
+its magnitude, the attack was spotted almost instantly, and The Tor Project
+removed the offending relays only ten hours after they appeared.
 
 \begin{figure}[t]
 	\centering
 	\includegraphics[width=\linewidth]{diagrams/2014-12.jpg}
-	\caption{In December 2014, a group of attacker started several hundred Tor
-		relays in the Google cloud.  The image shows the uptime of 4,000 relays
-		for all of December.}
+	\caption{In December 2014, an attacker started several thousand Tor relays
+	in the Google cloud.  The image shows the uptime of 4,000 relays for all of
+	December.}
 	\label{fig:2014-12-lizard}
 \end{figure}
 
@@ -476,7 +480,7 @@ We determined how often all Tor relays changed their fingerprint from 2007 to
 2015.  Figure~\ref{fig:fingerprints} illustrates the number of fingerprints ($y$
 axis) we have observed for the 1,000 Tor relays ($x$ axis) that changed their
 fingerprint the most.  All these relays changed their fingerprint at least ten
-times.  Twenty one relays changed their fingerprint more than 100 times, and the
+times.  Twenty-one relays changed their fingerprint more than 100 times, and the
 relay at the very right end of the distribution changed its fingerprint 936
 times.  This relay's nickname was ``openwrt,'' suggesting that it was a home
 router that was rebooted regularly, presumably losing its long-term keys in the
@@ -492,10 +496,10 @@ process.  The relay was running from August 2010 to December 2010.
 
 Figure~\ref{fig:fingerprints} further contains a peculiar plateau, shown in the
 shaded area between index 707 and 803.  This plateau was caused by a group of
-Sybils, hosted in Amazon EC2, that changed their fingerprint exactly 24 times.
-Upon inspection, we noticed that this was likely an experiment for a Security
-and Privacy 2013 paper on deanonymizing Tor onion
-services~\cite[\S~V]{Biryukov2013a}.
+Sybils, hosted in Amazon EC2, that changed their fingerprint exactly 24 times
+(the ``Amazon EC2'' Sybils discussed above).  Upon inspection, we noticed that
+this was likely an experiment for a Security and Privacy 2013 paper on
+deanonymizing Tor onion services~\cite[\S~V]{Biryukov2013a}.
 
 We also found that many IP addresses in the netblock 199.254.238.0/24
 frequently changed their fingerprint.  We contacted the owner of the address
@@ -508,9 +512,9 @@ causing the churn we observe.
 \label{sec:accuracy}
 Given a Sybil relay, how good is our nearest-neighbor ranking at finding the
 remaining Sybils?  To answer this question, we now evaluate our algorithm's
-\emph{accuracy}, which we define as the fraction of neighbors it correctly
-labels as Sybils.  For example, if eight out of ten Sybils are correctly
-labeled as neighbors, the accuracy is 0.8.
+accuracy, which we define as the fraction of neighbors it correctly labels as
+Sybils.  For example, if eight out of ten Sybils are correctly labeled as
+neighbors, the accuracy is 0.8.
 
 A sound evaluation requires ground truth, i.e., relays that are \emph{known} to
 be Sybils.  All we have, however, are relays that we \emph{believe} to be
@@ -525,9 +529,9 @@ bad exit Sybils because we observed them running identical, active attacks,
 which makes us confident that they are in fact Sybils.  Recall that a relay
 family is a set of Tor relays that is controlled by a single operator, but
 configured to express this mutual relationship in the family members'
-configuration file.  Relay families are benign Sybils.  As of January 2016,
-approximately 400 families populate the Tor network, ranging in size from only
-two to 25 relays.
+configuration file.  Therefore, relay families are benign Sybils.  As of
+January 2016, approximately 400 families populate the Tor network, ranging in
+size from only two to 25 relays.
 
 We evaluate our algorithm by finding the nearest neighbors of a family member.
 Ideally, all neighbors are family members, but the use of relay families as

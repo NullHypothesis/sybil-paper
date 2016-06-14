@@ -5,34 +5,37 @@ disproportionately large influence in a network.  These attacks take many
 shapes, such as sockpuppets hijacking online discourse~\cite{Thomas2012a}; the
 manipulation of BitTorrent's distributed hash table~\cite{Wang2012a}; and, most
 relevant to our work, relays in the Tor network that seek to deanonymize
-users~\cite{cmucert}.  In addition to coining the term ``Sybil,'' Douceur showed
-that practical Sybil defenses are challenging, arguing that Sybil attacks are
-always possible without a central authority~\cite{Douceur2002a}.  In this work,
-we focus on Sybils in Tor---relays that are controlled by a single operator.
-But what harm can Sybils do?
+users~\cite{cmucert}.  In addition to coining the term ``Sybil,''\footnote{The
+term is a reference to a book in which the female protagonist, Sybil, suffers
+from dissociative identity disorder~\cite{Schreiber1973}.} Douceur showed that
+practical Sybil defenses are challenging, arguing that Sybil attacks are always
+possible without a central authority~\cite{Douceur2002a}.  In this work, we
+focus on Sybils in Tor---relays that are controlled by a single operator.  But
+what harm can Sybils do?
 
 The effectiveness of many attacks on Tor depends on how large a fraction of the
 network's traffic---called the consensus weight---an attacker can observe.  As
 the attacker's consensus weight grows, the following attacks become easier.
 
 \begin{description}[noitemsep]
-	\item[Exit traffic tampering:] A Tor user's traffic traverses exit relays,
-		the last hop in a Tor circuit, when leaving the Tor network.
-		Controlling exit relays, an attacker can eavesdrop on traffic to
-		collect unencrypted credentials, break into TLS-protected connections,
-		or inject malicious content~\cite[\S~5.2]{Winter2014a}.
+	\item[Exit traffic tampering:] When leaving the Tor network, a Tor user's
+		traffic traverses exit relays, the last hop in a Tor circuit.
+		Controlling exit relays, an attacker can eavesdrop on traffic to collect
+		unencrypted credentials, break into TLS-protected connections, or inject
+		malicious content~\cite[\S~5.2]{Winter2014a}.
 	\item[Website fingerprinting:] Tor's encryption prevents guard relays (the
 		first hop in a Tor circuit) from learning their user's online activity.
 		Ignoring the encrypted payload, an attacker can still take advantage of
 		flow information such as packet lengths and timings to infer what
-		websites her users are visiting~\cite{Juarez2014a}.
+		websites Tor users are visiting~\cite{Juarez2014a}.
 	\item[Bridge address harvesting:] Users behind censorship systems use
-		private Tor relays (``bridges'') as hidden stepping stones into the Tor
-		network.  It is important that censors cannot obtain all bridge
-		addresses, which is why bridge distribution is rate-limited.  However,
-		an attacker can harvest bridge addresses by running a middle relay and
-		looking for incoming connections that do not originate from any of the
-		publicly known guard relays~\cite[\S~3.4]{Ling2015b}.
+		private Tor relays---typically called bridges---as hidden stepping
+		stones into the Tor network.  It is important that censors cannot obtain
+		all bridge addresses, which is why The Tor Project rate-limits bridge
+		distribution.  However, an attacker can harvest bridge addresses by
+		running a middle relay and looking for incoming connections that do not
+		originate from any of the publicly known guard
+		relays~\cite[\S~3.4]{Ling2015b}.
 	\item[End-to-end correlation:] By running both entry guards and exit relays,
 		an attacker can use timing analysis to link a Tor user's identity to her
 		activity, e.g., learn that \emph{Alice} is visiting \emph{Facebook}.
@@ -57,32 +60,30 @@ evidence for what appears to be botnets whose zombies are running Tor relays,
 perhaps because of a misguided attempt to help the Tor network grow.
 
 Motivated by the lack of practical Sybil detection tools, we design and
-implement heuristics, leveraging our observation that Sybils (\emph{i})
+implement heuristics, leveraging our observations that Sybils (\emph{i})
 frequently go online and offline simultaneously, (\emph{ii}) share similarities
 in their configuration, and (\emph{iii}) may change their identity
 fingerprint---a relay's fingerprint is the hash over its public
 key---frequently, to manipulate Tor's DHT.  Three of our four heuristics are
 automated and designed to run autonomously while one assists in manual analysis
-by ranking what relays are the most similar to a given reference relay.  Our
-results suggest that our heuristics differ in their effectiveness; one method
-detected a small number of incidents, some of which were not detected by any
-other method.  Other heuristics produced a large number results, and seem
-well-suited to spot the ``low hanging fruit.'' We implemented these heuristics
-in a tool, \sys, whose development required a major engineering effort because
-we had to process 100 GiB of data and millions of files.  We used \sys to
-analyze archived network data, dating back to 2007, to discover past attacks and
-anomalies.  Finally, we characterize the Sybil groups we discovered.  To sum up,
+by ranking what relays in the network are the most similar to a given reference
+relay.  Our evaluation suggests that our heuristics differ in their
+effectiveness; one method detected only a small number of incidents, but some of
+them no other method could detect.  Other heuristics produced a large number of
+results, and seem well-suited to spot the ``low hanging fruit.'' We implemented
+these heuristics in a tool, \sys, which we subsequently used to analyze 100 GiB
+worth of archived network data, consisting of millions of files, and dating back
+to 2007.  Finally, we characterize the Sybil groups we discovered.  To sum up,
 we make the following key contributions:
 \begin{itemize}
 	\item We design and implement \sys, a tool to analyze past and future Tor
 		network data.  While we designed it specifically for the use in Tor, our
 		techniques are general in nature and can easily be applied to other
 		distributed systems such as I2P~\cite{i2p}.
-	\item We expose and characterize Sybil groups, and publish our findings as
-		datasets to stimulate future research.\footnote{The datasets are
-		available online at\\\url{https://nymity.ch/sybilhunting/}.} We find
-		that Sybils run MitM attacks, DoS attacks, and are used for research
-		projects.
+	\item We characterize Sybil groups and publish our findings as datasets to
+		stimulate future research.\footnote{The datasets are available online
+		at\\\url{https://nymity.ch/sybilhunting/}.} We find that Sybils run MitM
+		attacks, DoS attacks, and are used for research projects.
 \end{itemize}
 
 The rest of this paper is structured as follows.  We begin by discussing related
